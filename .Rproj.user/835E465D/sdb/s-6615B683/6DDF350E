@@ -1,0 +1,22 @@
+{
+    "contents" : "",
+    "created" : 1424815858268.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "6DDF350E",
+    "lastKnownWriteTime" : 498216206336,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "caption" : "SDY2 : Concomitant Medications",
+        "contentUrl" : "content?title=SDY2+%3A+Concomitant+Medications&file=556e520df6404ed18f0745c6a4f3b0d9.htm",
+        "displayedObservations" : 178,
+        "displayedVariables" : 13,
+        "totalObservations" : 178,
+        "variables" : 13
+    },
+    "source_on_save" : false,
+    "type" : "r_dataframe"
+}

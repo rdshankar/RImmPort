@@ -1,0 +1,9 @@
+Package: RImmPort
+Type: Package
+Title: Get data from ImmPort
+Version: 0.5.1
+Date: 2015-02-22
+Author: Ravi Shankar <rshankar@stanford.edu>
+Maintainer: Ravi Shankar <rshankar@stanford.edu>
+Description: Get data from ImmPort
+License: GPL-2
