@@ -1,5 +1,11 @@
 
-adverse_events_column_names <- c("study_id", "subject_id", "sponsor_defined_id", "reported_term", "modified_reported_term", 
+# adverse_events_column_names <- c("STUDYID", "DOMAIN", "USUBJID", "AESPID", "AETERM", "AEMODIFY", 
+#                                  "AEBODYSYS", "AELOC", "AESEV", "AESER",
+#                                  "AEACN", "AEACNOTH", "AEREL", 
+#                                  "AERELNST", "AEOUT",
+#                                  "AESTDTC", "AEENDTC", "AESTDY", "AEENDY")
+
+adverse_events_column_names <- c("study_id", "domain", "subject_id", "sponsor_defined_id", "reported_term", "modified_reported_term", 
                                  "body_system_or_organ_class", "location_of_event", "severity_intensity", "serious_event",
                                  "action_taken_with_study_treatment", "other_action_taken", "causality", 
                                  "relationship_to_nonstudy_treatment", "outcome_of_adverse_event",
@@ -11,6 +17,7 @@ getAdverseEvents <- function(conn,study_id) {
   sql_stmt <- paste("
                     SELECT distinct
                     ae.study_accession,
+                    \"AE\" as domain,
                     ae.subject_accession,
                     ae.adverse_event_accession,
                     ae.name_reported,

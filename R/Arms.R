@@ -1,5 +1,7 @@
 
-arms_column_names <- c("study_id", "arm_code", "arm", "sort_order")
+# arms_column_names <- c("STUDYID", "DOMAIN", "ARMCD", "ARM")
+
+arms_column_names <- c("study_id", "domain", "arm_code", "arm")
 
 getArms <- function(conn,study_id) {
   cat("loading Study Arms data....")
@@ -7,9 +9,9 @@ getArms <- function(conn,study_id) {
   sql_stmt <- paste("
                     SELECT distinct
                     a1.study_accession,
+                    \"TA\" as domain,
                     a1.arm_accession,
-                    a1.name as arm_name,
-                    a1.sort_order
+                    a1.name as arm_name
                     FROM arm_or_cohort a1
                     WHERE a1.study_accession in (\'", study_id,"\')
                     ORDER BY a1.sort_order", sep="")

@@ -1,5 +1,7 @@
 
-demographics_column_names <- c("study_id", "subject_id","age", "age_unit", "sex", "race", "ethnicity", "arm_code", "arm")
+# demographics_column_names <- c("STUDYID", "DOMAIN","USUBJID", "AGE", "AGEU", "SEX", "RACE", "ETHNIC", "ARMCD", "ARM")
+
+demographics_column_names <- c("study_id", "domain", "subject_id","age", "age_unit", "sex", "race", "ethnicity", "arm_code", "arm")
 
 getDemographics <- function(conn,study_id) {
   cat("loading Demographics data....")
@@ -7,6 +9,7 @@ getDemographics <- function(conn,study_id) {
   sql_stmt <- paste("
                                   SELECT distinct
                                   a2.study_accession,
+                                  \"DM\" as domain,
                                   s1.subject_accession,
                                   s1.age_reported,
                                   s1.age_unit,
