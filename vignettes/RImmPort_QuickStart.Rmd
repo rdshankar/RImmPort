@@ -1,0 +1,224 @@
+---
+title: "RImmPort: Quick Start Guide"
+author: "Ravi Shankar"
+date: "`r Sys.Date()`"
+output: 
+    rmarkdown::pdf_document:
+        number_sections: true
+vignette: >
+  %\VignetteIndexEntry{RImmPort: Quick Start Guide}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+*****
+# Introduction
+ImmPort study data is available for download in 2 formats currently: MySQL format, and TSV (Tab) format. The RImmPort workflow is as follows: 
+1) MySQL formatted study data: 
+       User downloads 1 or  more studies in MySQL zip files. 
+       Unzips the files. 
+       Loads private db instance. 
+       Connects to the db. 
+       Sets the ImmPort data source to the connection handle. 
+       Invokes RImmPort functions.
+2) Tab: 
+       User downloads 1 or more studies in Tab format. 
+       Passes the folder where the zip files are, to an RImmPort function that builds SQLite db. 
+       Connects to the db. 
+       Sets the ImmPort data source to the connection handle. 
+       Invokes RImmPort functions.
+
+User downloads study data of interest from the ImmPort website. Depending on the format, loads the data into a private MySQL database The user writes R script that installs the RImmPort package, loads the RImmPort library, connects to the private ImmPort database, and calls RImmPort methods to load sudy data from the database into R. Please refer to the RImmPort_Article.pdf for a detailed discussion on RImmPort.
+
+# Initial Steps
+
+- Download MySQL or Tab formatted data of studies of interest, from the ImmPort website
+- If working with MySQL-format, load the data in to a private MySQL database
+- Install RImmPort package
+
+# Load the RImmPort library
+
+```{r}
+library(RImmPort)
+library(DBI)
+library(sqldf)
+library(plyr)
+
+```
+# Setup ImmPort data source that all RImmPort functions will use
+
+## Option 1: ImmPort MySQL database
+
+### Download zip files of ImmPort data, in MySQL format, of studies of interest: 'SDY139' and 'SDY208'
+### Load the data in these zip files into a private MySQL database
+
+### Connect to the private ImmPort MySQL database.
+```{r eval=FALSE}
+
+# provide appropriate connection parameters
+mysql_conn <- dbConnect(MySQL(), user="username", password="password", 
+                   dbname="database",host="host")
+
+```
+
+### Set the data source as the ImmPort MySQL database.
+
+```{r  eval=FALSE}
+setImmPortDataSource(mysql_conn)
+```
+
+## Option 2: ImmPort SQLite database
+
+### Download zip files of ImmPort data, in Tab format, of studies of interest: 'SDY139' and 'SDY208'
+```{r}
+# get the directory where ImmPort sample data is stored in the directory structure of RImmPort package
+studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+
+# set tab_dir to the folder where the zip files are located
+tab_dir <- file.path(studies_dir, "Tab")
+list.files(tab_dir)
+```
+
+### Build a private SQLite ImmPort database instance. 
+```{r}
+# set db_dir to the folder where the database file 'ImmPort.sqlite' should be stored
+db_dir <- file.path(studies_dir, "Db")
+```
+```{r eval=FALSE}
+# build a new ImmPort SQLite database with the data in the downloaded zip files
+buildNewSqliteDb(tab_dir, db_dir) 
+```
+```{r}
+list.files(db_dir)
+```
+
+### Connect to the ImmPort SQLite database 
+```{r}
+
+# connect to the private instance of the ImmPort database
+sqlite_conn <- dbConnect(SQLite(), dbname=file.path(db_dir, "ImmPort.sqlite"))
+```
+
+### Set the data source to the ImmPort SQLite DB
+```{r}
+setImmPortDataSource(sqlite_conn)
+```
+
+# NOTE: In rest of the script, all RImmPort functions will use the SQLite ImmPort database as the ImmPort data source.
+
+# Get all study ids
+```{r}
+getListOfStudies()
+```
+
+# Get all data of a specific study
+The `getStudyFromDatabase` queries the ImmPort database for the entire dataset of a specifc study, and instantiates the `Study` reference class with that data. 
+```{r}
+?Study
+
+# load all the data of study: `SDY139`
+study_id <- 'SDY139'
+sdy139 <- getStudy(study_id)
+
+# access Demographics data of SDY139
+dm_df <- sdy139$special_purpose$dm_l$dm_df
+head(dm_df)
+
+# access Concomitant Medications data of SDY139
+cm_df <- sdy139$interventions$cm_l$cm_df
+head(cm_df)
+
+# get Trial Title from Trial Summary
+ts_df <- sdy139$trial_design$ts_l$ts_df
+title <- ts_df$TSVAL[ts_df$TSPARMCD== "TITLE"]
+title
+```
+
+# Get the list of Domain names. 
+Note that some RImmPort functions take a domain name as input.
+
+```{r}
+
+# get the list of names of all supported Domains
+getListOfDomains()
+
+?"Demographics Domain"
+
+```
+
+# Get list of studies with specifc domain data
+The Domain name should be exact to what is found in the list of Domain names.
+```{r}
+# get list of studies with Cellular Quantification data
+domain_name <- "Cellular Quantification"
+study_ids_l <- getStudiesWithSpecificDomainData(domain_name)
+study_ids_l
+```
+
+# Get specifc domain data of one or more studies
+The Domain name should be exact to what is found in the list of Domain names. 
+```{r}
+# get Cellular Quantification data of studies `SDY139` and `SDY208`
+
+# get domain code of Cellular Quantification domain
+domain_name <- "Cellular Quantification"
+getDomainCode(domain_name)
+
+study_ids <- c("SDY139", "SDY208")
+domain_name <- "Cellular Quantification"
+zb_l <- getDomainDataOfStudies(domain_name, study_ids)
+if (length(zb_l) > 0) 
+  names(zb_l)
+head(zb_l$zb_df)
+```
+
+# Get the list of assay types that ImmPort studies have data for.
+```{r}
+getListOfAssayTypes()
+```
+
+# Get specific assay data of one or more studies
+The assay type should be exact to what is found in the list of supported assay types. 
+```{r}
+
+# get 'ELISPOT' data of study `SDY139`
+assay_type <- "ELISPOT"
+study_id = "SDY139"
+elispot_l <- getAssayDataOfStudies(study_id, assay_type)
+if (length(elispot_l) > 0)
+  names(elispot_l)
+head(elispot_l$zb_df)
+
+```
+
+# Serialize RImmPort-formatted study data as .rds files
+```{r eval=FALSE}
+
+# serialize all of the data of studies `SDY139` and `SDY208'
+study_ids <- c('SDY139', 'SDY208')
+
+# the folder where the .rds files will be stored
+rds_dir <- file.path(studies_dir, "Rds")
+
+serialzeStudyData(study_ids, rds_dir)
+list.files(rds_dir)
+
+```
+
+# Load the serialzed data (.rds) files of a specific domain of a study from the directory where the files are located
+```{r}
+# get the directory where ImmPort sample data is stored in the directory structure of RImmPort package
+studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+
+# the folder where the .rds files will be stored
+rds_dir <- file.path(studies_dir, "Rds")
+
+# list the studies that have been serialized
+list.files(rds_dir)
+
+# load the serialized data of study `SDY208` 
+study_id <- 'SDY208'
+dm_l <- loadSerializedStudyData(rds_dir, study_id, "Demographics")
+head(dm_l[[1]])
+
+```

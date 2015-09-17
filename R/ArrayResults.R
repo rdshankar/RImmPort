@@ -1,80 +1,74 @@
-#library(GEOquery)
 
-array_column_names <- c("study_id", "subject_id", 
-                        "geo_id", "assay_purpose",
-                        "speciment_name", "specimen_type", "specimen_subtype",
-                        "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
-                        "study_time_t0_event", "study_time_t0_event_specify")
+array_cols <- c("study_id", "subject_id", "result_id", "repository_name", "repository_id", 
+                        "experiment_title", "assay_purpose", "measurement_technique",
+                        "biosample_accession", "specimen_type", "specimen_subtype", 
+                        "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection")
 
-# array_column_names <- c("study_id", "subject_id", 
-#                         "geo_id", "assay_purpose",
-#                         "speciment_name", "specimen_type", "specimen_subtype",
-#                         "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
-#                         "study_time_t0_event", "study_time_t0_event_specify", 
-#                         "channel_count", "data_row_count", 
-#                         "label_ch1", "label_ch2", 
-#                         "molecule_ch1", "moloecule_ch2", 
-#                         "organism_ch1", "organism_ch2")
+# call to globalVariables to prevent from generating NOTE: no visible binding for global variable <variable name>
+# this hack is to satisfy CRAN (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
+globalVariables(c("result_id"))
 
-getArrayResults <- function(conn,study_id) {
-  cat("loading Array Results data....")
-  
-  sql_stmt <- paste("
-                    SELECT distinct
-                    bs.study_accession,
-                    bs.subject_accession,
-                    er.repository_accession,
-                    ex.purpose,
-                    bs.name,
-                    bs.type,
-                    bs.subtype,
-                    bs.study_time_collected,
-                    bs.study_time_collected_unit,
-                    bs.study_time_t0_event,
-                    bs.study_time_t0_event_specify
-                    FROM experiment ex,
-                    biosample bs,
-                    biosample_2_expsample be,
-                    expsample_public_repository er
-                    WHERE ex.study_accession in (\'", study_id,"\') AND 
-                    be.experiment_accession=ex.experiment_accession AND
-                    bs.biosample_accession=be.biosample_accession AND
-                    be.expsample_accession=er.expsample_accession AND
-                    er.repository_name='GEO'
-                    ORDER BY bs.subject_accession",sep="")
-  
-  array <- dbGetQuery(conn,statement=sql_stmt)
-  if (nrow(array) > 0) {
-    colnames(array) <- array_column_names 
-  
-# get GEO metadata
-
-#     for(i in 1:nrow(array)) {
-#       row <- array[i,]
-#       if ((regexpr("GSM", row$geo_id)[1]) == 1) {
-#         gsm <- getGEO(row$geo_id)
-#         meta <- Meta(gsm)
-#         array[i,]$channel_count <- meta$channel_count
-#         array[i,]$data_row_count <- meta$data_row_count
-#         if (meta$channel_count == 1) {
-#           array[i,]$label_ch1 <- meta$label_ch1
-#           array[i,]$molecule_ch1 <- meta$molecule_ch1
-#           array[i,]$organism_ch1 <- meta$organism_ch1
-#         }
-#         if (meta$channel_count == 2) {
-#           array[i,]$label_ch1 <- meta$label_ch1
-#           array[i,]$molecule_ch1 <- meta$molecule_ch1
-#           array[i,]$organism_ch1 <- meta$organism_ch1
-#           array[i,]$label_ch2 <- meta$label_ch2
-#           array[i,]$molecule_ch2 <- meta$molecule_ch2
-#           array[i,]$organism_ch2 <- meta$organism_ch2
-#         }
-#       }
-#     }
-   }
-
-  
-  cat("done", "\n")
-  
-  array
+#' @importFrom data.table as.data.table is.data.table .N :=
+getArrayResults <- function(conn, study_id, measurement_type) {
+    cat("loading Array Results data....")
+    
+    sql_stmt <- paste("SELECT distinct
+                         bs.study_accession,
+                         bs.subject_accession,
+                         cast(0 as UNSIGNED INTEGER) as result_id,
+                         er.repository_name,
+                         er.repository_accession,
+                         ex.title,
+                         ex.purpose,
+                         ex.measurement_technique,
+                         bs.biosample_accession, 
+                         bs.type,
+                         bs.subtype,
+                         bs.study_time_collected,
+                         bs.study_time_collected_unit
+                       FROM experiment ex,
+                         biosample bs,\
+                         biosample_2_expsample be,
+                         expsample_public_repository er
+                       WHERE ex.study_accession in ('", study_id, "') AND 
+                         be.experiment_accession=ex.experiment_accession AND
+                         bs.biosample_accession=be.biosample_accession AND
+                         be.expsample_accession=er.expsample_accession AND
+                         er.repository_name='GEO'
+                       ORDER BY bs.subject_accession", sep = "")
+    
+    arr_df <- DBI::dbGetQuery(conn, statement = sql_stmt)
+    colnames(arr_df) <- array_cols
+    if (nrow(arr_df) > 0) {
+        arr_df <- transform(arr_df, result_id = as.integer(result_id))
+        arr_dt <- as.data.table(arr_df)
+        if (is.data.table(arr_dt) == TRUE) {
+          arr_dt[, `:=`(result_id, seq_len(.N)), by = "subject_id"]
+        }
+        arr_df <- as.data.frame(arr_dt)
+            
+    }
+    
+    
+    cat("done", "\n")
+    
+    arr_df
 }
+
+getCountOfArrayResults <- function(conn, study_id) {
+    sql_stmt <- paste("SELECT count(*)
+                      FROM experiment ex,
+                        biosample bs,
+                        biosample_2_expsample be,
+                        expsample_public_repository er
+                      WHERE ex.study_accession in ('", study_id, "') AND
+                        be.experiment_accession=ex.experiment_accession AND
+                        bs.biosample_accession=be.biosample_accession AND
+                        be.expsample_accession=er.expsample_accession AND
+                        er.repository_name='GEO'", sep = "")
+    
+    count <- dbGetQuery(conn, statement = sql_stmt)
+    
+    count[1, 1]
+    
+} 

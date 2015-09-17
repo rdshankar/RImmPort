@@ -1,0 +1,208 @@
+## ----eval=FALSE----------------------------------------------------------
+#  
+#  # Truncated code to improve clarity - for illustration purpose only
+#  
+#  Study <- setRefClass("Study", fields = list(
+#    special_purpose="SpecialPurpose",
+#    interventions="Interventions",
+#    events="Events",
+#    findings="Findings",
+#    trial_design="TrialDesign"),
+#    ...
+#  ))
+#  
+#  SpecialPurpose <- setRefClass("SpecialPurpose",
+#                               fields = list(
+#                                 dm_l="list",
+#                                 sv_l="list"),
+#                               ...
+#  
+#  Interventions <- setRefClass("Interventions",
+#                                  fields = list(
+#                                    cm_l="list",
+#                                    ex_l="list",
+#                                    su_l="list"),
+#                               ...
+#  
+#  Events <- setRefClass("Events", fields = list(
+#                                    ae_l="list",
+#                                    dv_l="list",
+#                                    mh_l="list",
+#                                    apmh_l="list"),
+#                        ...
+#  
+#  Findings <- setRefClass("Findings",
+#                          fields = list(
+#                                  lb_l="list",
+#                                  pe_l="list",
+#                                  vs_l="list",
+#                                  qs_l="list",
+#                                  fa_l="list",
+#                                  sr_l="list",
+#                                  pf_l="list",
+#                                  za_l="list",
+#                                  zb_l="list",
+#                                  zc_l="list",
+#                                  zd_l="list"),
+#                          ...
+#  
+#  TrialDesign <- setRefClass("TrialDesign",
+#                          fields = list(
+#                            ta_l="list",
+#                            ti_l="list",
+#                            ts_l="list"),
+#                          ...
+#  
+#  
+
+## ------------------------------------------------------------------------
+library(RImmPort)
+library(DBI)
+library(sqldf)
+library(plyr)
+
+## ----eval=FALSE----------------------------------------------------------
+#  
+#  # provide appropriate MySQL database connection parameters
+#  mysql_conn <- dbConnect(MySQL(), user="username", password="password",
+#                     dbname="database",host="host")
+#  
+#  # set the data source as the ImmPort MySQL database.
+#  
+
+## ----eval=FALSE----------------------------------------------------------
+#  setImmPortDataSource(mysql_conn)
+
+## ------------------------------------------------------------------------
+# get the directory of a sample SQLite database that has been bundled into the RImmPort package
+db_dir <- system.file("extdata", "ImmPortStudies", "Db", package = "RImmPort")
+
+# connect to the database
+sqlite_conn <- dbConnect(SQLite(), dbname=file.path(db_dir, "ImmPort.sqlite"))
+
+# set the ImmPort SQLite database as the ImmPort data source
+setImmPortDataSource(sqlite_conn)
+
+## ------------------------------------------------------------------------
+# view documentation on Study
+?Study
+
+# get all study ids
+getListOfStudies()
+
+# load the entire data of study: `SDY139`
+study_id <- 'SDY139'
+sdy139 <- getStudy(study_id)
+
+# access Demographics data of SDY139
+dm_df <- sdy139$special_purpose$dm_l$dm_df
+head(dm_df)
+
+# access Concomitant Medications data of SDY139
+cm_df <- sdy139$interventions$cm_l$cm_df
+head(cm_df)
+
+# get Trial Title from Trial Summary
+ts_df <- sdy139$trial_design$ts_l$ts_df
+title <- ts_df$TSVAL[ts_df$TSPARMCD== "TITLE"]
+title
+
+## ------------------------------------------------------------------------
+
+# get the list of names of all supported Domains
+getListOfDomains()
+
+?"Demographics Domain"
+
+# get domain code of Demographics domain
+domain_name <- "Demographics"
+getDomainCode(domain_name)
+
+dm_l <- getDomainDataOfStudies(domain_name, "SDY139")
+if (length(dm_l) > 0) 
+  names(dm_l)
+head(dm_l$dm_df)
+
+
+## ------------------------------------------------------------------------
+# get list of studies with Cellular Quantification data
+domain_name <- "Cellular Quantification"
+study_ids_l <- getStudiesWithSpecificDomainData(domain_name)
+study_ids_l
+
+## ------------------------------------------------------------------------
+# get Cellular Quantification data of studies `SDY139` and `SDY208`
+
+# get domain code of Cellular Quantification domain
+domain_name <- "Cellular Quantification"
+getDomainCode(domain_name)
+
+study_ids <- c("SDY139", "SDY208")
+domain_name <- "Cellular Quantification"
+zb_l <- getDomainDataOfStudies(domain_name, study_ids)
+if (length(zb_l) > 0) 
+  names(zb_l)
+head(zb_l$zb_df)
+
+## ------------------------------------------------------------------------
+getListOfAssayTypes()
+
+## ------------------------------------------------------------------------
+
+# get 'ELISPOT' data of study `SDY139`
+assay_type <- "ELISPOT"
+study_id = "SDY139"
+elispot_l <- getAssayDataOfStudies(study_id, assay_type)
+if (length(elispot_l) > 0)
+  names(elispot_l)
+head(elispot_l$zb_df)
+
+
+## ----eval=FALSE----------------------------------------------------------
+#  # get the directory where ImmPort sample data is stored in the directory structure of RImmPort package
+#  studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+#  
+#  # serialize all of the data of studies `SDY139` and `SDY208'
+#  study_ids <- c('SDY139', 'SDY208')
+#  
+#  # the folder where the .rds files will be stored
+#  rds_dir <- file.path(studies_dir, "Rds")
+#  
+#  serialzeStudyData(study_ids, rds_dir)
+#  list.files(rds_dir)
+#  
+
+## ------------------------------------------------------------------------
+# get the directory where ImmPort sample data is stored in the directory structure of RImmPort package
+studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+
+# the folder where the .rds files will be stored
+rds_dir <- file.path(studies_dir, "Rds")
+
+# list the studies that have been serialized
+list.files(rds_dir)
+
+# load the serialized data of study `SDY208` 
+study_id <- 'SDY208'
+dm_l <- loadSerializedStudyData(rds_dir, study_id, "Demographics")
+head(dm_l[[1]])
+
+
+## ------------------------------------------------------------------------
+# get the directory where ImmPort sample data is stored in the directory structure of RImmPort package
+studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+
+# set tab_dir to the folder where the zip files are located
+tab_dir <- file.path(studies_dir, "Tab")
+list.files(tab_dir)
+
+# set db_dir to the folder where the database file 'ImmPort.sqlite' should be stored
+db_dir <- file.path(studies_dir, "Db")
+
+## ----eval=FALSE----------------------------------------------------------
+#  # build a new ImmPort SQLite database with the data in the downloaded zip files
+#  buildNewSqliteDb(tab_dir, db_dir)
+
+## ------------------------------------------------------------------------
+list.files(db_dir)
+

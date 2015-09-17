@@ -1,9 +1,20 @@
 Package: RImmPort
 Type: Package
-Title: Get data from ImmPort
-Version: 0.5.2
-Date: 2015-05-27
+Title: RImmPort: Enabling ready-for-analysis immunology research data
+Version: 0.9.5
+Date: 2015-09-16
 Author: Ravi Shankar <rshankar@stanford.edu>
 Maintainer: Ravi Shankar <rshankar@stanford.edu>
-Description: Get data from ImmPort
-License: GPL-2
+Description: The RImmPort package simplifies access to ImmPort data for analysis in the R environment. It provides a standards-based interface to the ImmPort study data that is in a proprietary format.
+License: GPL-3
+Imports: plyr,
+    dplyr,
+    DBI,
+    data.table,
+    reshape2,
+    methods,
+    sqldf,
+    tools,
+    RSQLite
+Suggests: knitr
+VignetteBuilder: knitr
