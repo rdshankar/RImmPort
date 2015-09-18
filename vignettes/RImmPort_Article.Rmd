@@ -30,7 +30,7 @@ Allergy and Infectious Diseases (NIAID). With more than 100 datasets now publicl
 - Assessments
 - Concomitant Medications
 - Study Interventions
-- Laboratory Test Results
+- Laboratory Test Results 
 - Mechanistic Assay Results 
 - Adverse Events
 

@@ -9,7 +9,7 @@ domain_names_codes <- c(
   c("Physical Examination", "PE"),
   c("Protocol Deviations", "DV"),
   c("Trial Arms", "TA"),
-  c("Trial Inclusions Exclusion Criteria", "TI"),
+  c("Trial Inclusion Exclusion Criteria", "TI"),
   c("Trial Summary", "TS"),
   c("Subject Visits", "SV"),
   c("Substance Use", "SU"),
@@ -1399,12 +1399,20 @@ getListOfStudies <- function() {
     study_ids_df <- dbGetQuery(data_src,statement=sql_stmt)
     study_ids <- study_ids_df[['study_accession']]
   } else {
-    study_dirs <- list.files(path = data_src, pattern = "_R$")
+    zip_files <- list.files(path = data_src, pattern = "\\.zip$")
+    zip_files
     study_ids <- c()
-    for (sd in study_dirs) {
-      study_id <- strsplit(sd, "-")[[1]][1]
-      study_ids <- c(study_ids, study_id)
+    for (f in zip_files) {
+      fname <- file_path_sans_ext(f)
+      study_ids <- c(study_ids, fname)
     }
+      
+#     study_dirs <- list.files(path = data_src, pattern = "_R$")
+#     study_ids <- c()
+#     for (sd in study_dirs) {
+#       study_id <- strsplit(sd, "-")[[1]][1]
+#       study_ids <- c(study_ids, study_id)
+#     }
   }
     
   study_ids

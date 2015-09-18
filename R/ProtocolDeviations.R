@@ -22,17 +22,18 @@ globalVariables(c("DVSEQ", "QNAM", "QVAL", "DVRELAE", "DVREASON", "DVRESOL",
 # The function \code{getProtocolDeviations} queries the ImmPort database for Protocol Deviations data and 
 # reformats it to the CDISC SDTM Protocol Deviations (DV) domain model 
 # 
-# @param conn A connection handle to ImmPort database instance
+# @param data_src A connection handle to ImmPort (MySQL or SQLite) database instance or 
+# a directory handle to folder where study RDS files are located
 # @param study_id Identifier of a specific study
 # @return a list of 2 data frames containing 1) Protocol Deviations data \code{\link{DV}} and 2) any supplemental 
 #   Protocol Deviations data \code{\link{SUPPDV}}
 # @examples
 # \dontrun{
-#   getProtocolDeviations(conn, "SDY1")
+#   getProtocolDeviations(data_src, "SDY1")
 # }
 #' @importFrom DBI dbGetQuery
 #' @importFrom data.table as.data.table is.data.table .N :=
-getProtocolDeviations <- function(conn, study_id) {
+getProtocolDeviations <- function(data_src, study_id) {
     cat("loading Protocol Deviations data....")
     
     sql_stmt <- paste("SELECT distinct
@@ -50,42 +51,48 @@ getProtocolDeviations <- function(conn, study_id) {
                       FROM  protocol_deviation pd
                       WHERE pd.study_accession in ('", study_id, "')
                       ORDER BY pd.subject_accession", sep = "")
-    
-    dv_df <- dbGetQuery(conn, statement = sql_stmt)
-    colnames(dv_df) <- dv_cols
-    suppdv_df <- data.frame()
-    if (nrow(dv_df) > 0) {
-      dv_df <- transform(dv_df, DVSEQ = as.integer(DVSEQ))
-      dv_dt <- as.data.table(dv_df)
-      if (is.data.table(dv_dt) == TRUE) {
-        dv_dt[, `:=`(DVSEQ, seq_len(.N)), by = "USUBJID"]
+
+    if ((class(data_src)[1] == 'MySQLConnection') || 
+        (class(data_src)[1] == 'SQLiteConnection')) {
+      dv_df <- dbGetQuery(data_src, statement = sql_stmt)
+      colnames(dv_df) <- dv_cols
+      suppdv_df <- data.frame()
+      if (nrow(dv_df) > 0) {
+        dv_df <- transform(dv_df, DVSEQ = as.integer(DVSEQ))
+        dv_dt <- as.data.table(dv_df)
+        if (is.data.table(dv_dt) == TRUE) {
+          dv_dt[, `:=`(DVSEQ, seq_len(.N)), by = "USUBJID"]
+        }
+        dv_df <- as.data.frame(dv_dt)
+      
+      
+      
+        qnam_values = c("DVRELAE", "DVREASON", "DVRESOL", "DVCONT", "DVSTDY", "DVENDY")
+  
+        qlabel_values= c("Is Deviation Related to an Adverse Event?", "Reason for Deviation", 
+                         "Resulotion of Deviation", "Did Subject continued in Study?",
+                         "Study Day of Start of Deviation", "Study Day of End of Deviation")
+      
+        suppdv_df <- reshape2::melt(dv_df, id = c("STUDYID", "DOMAIN", "USUBJID", "DVSEQ"), 
+                                    measure = qnam_values, 
+                                    variable.name = "QNAM", 
+                                    value.name = "QVAL")
+        suppdv_df <- transform(suppdv_df, QLABEL = unlist(qlabel_values[QNAM]))
+        suppdv_df <- plyr::rename(suppdv_df, c("DOMAIN" = "RDOMAIN", "DVSEQ" = "IDVARVAL"))
+        suppdv_df$IDVAR <- "DVSEQ"
+      
+        suppdv_df <- suppdv_df[suppdv_cols]
+        
+        # remove rows that have empty QVAL values
+        suppdv_df <- subset(suppdv_df,QVAL!="")      
+        
+        dv_df <- subset(dv_df, select = -c(DVRELAE, DVREASON, DVRESOL, DVCONT, DVSTDY, DVENDY))
       }
-      dv_df <- as.data.frame(dv_dt)
-    
-    
-    
-      qnam_values = c("DVRELAE", "DVREASON", "DVRESOL", "DVCONT", "DVSTDY", "DVENDY")
-
-      qlabel_values= c("Is Deviation Related to an Adverse Event?", "Reason for Deviation", 
-                       "Resulotion of Deviation", "Did Subject continued in Study?",
-                       "Study Day of Start of Deviation", "Study Day of End of Deviation")
-    
-      suppdv_df <- reshape2::melt(dv_df, id = c("STUDYID", "DOMAIN", "USUBJID", "DVSEQ"), 
-                                  measure = qnam_values, 
-                                  variable.name = "QNAM", 
-                                  value.name = "QVAL")
-      suppdv_df <- transform(suppdv_df, QLABEL = unlist(qlabel_values[QNAM]))
-      suppdv_df <- plyr::rename(suppdv_df, c("DOMAIN" = "RDOMAIN", "DVSEQ" = "IDVARVAL"))
-      suppdv_df$IDVAR <- "DVSEQ"
-    
-      suppdv_df <- suppdv_df[suppdv_cols]
-      
-      # remove rows that have empty QVAL values
-      suppdv_df <- subset(suppdv_df,QVAL!="")      
-      
-      dv_df <- subset(dv_df, select = -c(DVRELAE, DVREASON, DVRESOL, DVCONT, DVSTDY, DVENDY))
+    } else {
+      l <- loadSerializedStudyData(data_src, study_id, "Protocol Deviations")
+      dv_df <- l[[1]]
+      suppdv_df <- l[[2]]
     }
-
     cat("done", "\n")
 
     dv_l <- list()
