@@ -18,7 +18,7 @@ suppcq_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "
 # this hack is to satisfy CRAN (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
 globalVariables(c("subject_id", "experiment_title", "assay_purpose", "measurement_technique",
                   "base_parent_population", "population_cell_number", "population_cell_number_unit",
-                  "population_definition_reported", "population_name_reported", "specimen_type",
+                  "population_defnition_reported", "population_name_reported", "specimen_type",
                   "specimen_subtype", "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
                   "biosample_accession", "file_name", "ZBSEQ", "result_id", "cell_type", "spot_number",
                   "analyte", "cell_number", "ZBBASPOP", "ZBPOPDEF"))
@@ -58,7 +58,7 @@ getCellularQuantification <- function(data_src, study_id, assay_type="ALL") {
         if (nrow(flow_df) > 0) {
             flow_df <- select(flow_df, STUDYID = study_id, USUBJID = subject_id, ZBSEQ = sequence, ZBTEST = experiment_title, 
                 ZBCAT = assay_purpose, ZBMETHOD = measurement_technique, ZBBASPOP = base_parent_population, ZBORRES = population_cell_number, 
-                ZBORRESU = population_cell_number_unit, ZBPOPDEF = population_definition_reported, ZBPOPNAM = population_name_reported, 
+                ZBORRESU = population_cell_number_unit, ZBPOPDEF = population_defnition_reported, ZBPOPNAM = population_name_reported, 
                 ZBSPEC = specimen_type, ZBSPECSB = specimen_subtype, ZBDY = study_time_of_specimen_collection, ZBDYU = unit_of_study_time_of_specimen_collection, 
                 ZBREFID = biosample_accession, ZBXFN = file_name)
             

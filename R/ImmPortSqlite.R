@@ -239,10 +239,10 @@ buildNewSqliteDb <- function(data_dir, db_dir) {
       if (fname == 'fcs_analyzed_result') {
         if ("STUDY_ACCSSION" %in% colnames(df)) 
           setnames(df, "STUDY_ACCSSION", "STUDY_ACCESSION")
-        if ("POPULATION_DEFNITION_REPORTED" %in% colnames(df)) 
-          setnames(df, "POPULATION_DEFNITION_REPORTED", "POPULATION_DEFINITION_REPORTED")
-        if ("POPULATION_DEFNITION_PREFERRED" %in% colnames(df)) 
-          setnames(df, "POPULATION_DEFNITION_PREFERRED", "POPULATION_DEFINITION_PREFERRED")
+#         if ("POPULATION_DEFNITION_REPORTED" %in% colnames(df)) 
+#           setnames(df, "POPULATION_DEFNITION_REPORTED", "POPULATION_DEFINITION_REPORTED")
+#         if ("POPULATION_DEFNITION_PREFERRED" %in% colnames(df)) 
+#           setnames(df, "POPULATION_DEFNITION_PREFERRED", "POPULATION_DEFINITION_PREFERRED")
       }
       if (fname == 'file_info') {
         if ("ORIGINAL_FILE_NAME" %in% colnames(df)) 

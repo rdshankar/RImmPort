@@ -10,7 +10,7 @@ fcs_cols <- c("study_id", "subject_id", "sequence",
 far_cols <- c("experiment_sample_accession",
                       "base_parent_population", 
                       "population_cell_number", "population_cell_number_unit",
-                      "population_definition_reported", "population_name_reported")
+                      "population_defnition_reported", "population_name_reported")
 
 getFcsResults <- function(conn,study_id, measurement_types) {
   cat("loading FCS Results data....")
@@ -63,7 +63,7 @@ getFcsResults <- function(conn,study_id, measurement_types) {
                       far.base_parent_population, 
                       far.population_cell_number, 
                       far.population_cell_number_unit,
-                      far.population_definition_reported, 
+                      far.population_defnition_reported, 
                       far.population_name_reported
                       
                       FROM  
