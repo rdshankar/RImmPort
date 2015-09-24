@@ -82,16 +82,16 @@ setImmPortDataSource <- function(data_src){
 #'  @export SpecialPurpose
 #'  @exportClass SpecialPurpose
 SpecialPurpose <- setRefClass("SpecialPurpose", 
-                             fields = list( 
-                                 dm_l="list",
-                                 sv_l="list" 
-                               ),
-                             methods = list(
-                               getSpecialPurpose = function(data_src, study_id) {
-                                 dm_l <<- getDemographics(data_src, study_id)
-                                 sv_l <<- getSubjectVisits(data_src, study_id)
-                               }
-                             ))
+                              fields = list( 
+                                dm_l="list",
+                                sv_l="list" 
+                              ),
+                              methods = list(
+                                getSpecialPurpose = function(data_src, study_id) {
+                                  dm_l <<- getDemographics(data_src, study_id)
+                                  sv_l <<- getSubjectVisits(data_src, study_id)
+                                }
+                              ))
 #' Interventions class
 #' 
 #'  @field cm_l Concomitant Medications data \code{\link{CM}} and supplemental Concomitant Medications data \code{\link{SUPP}}
@@ -100,18 +100,18 @@ SpecialPurpose <- setRefClass("SpecialPurpose",
 #'  @export Interventions
 #'  @exportClass Interventions
 Interventions <- setRefClass("Interventions", 
-                                fields = list(
-                                    cm_l="list",
-                                    ex_l="list",
-                                    su_l="list"
-                                  ),
-                                methods = list(
-                                  getInterventions = function(data_src, study_id) {
-                                    cm_l <<- getConcomitantMedications(data_src, study_id)
-                                    ex_l <<- getExposure(data_src, study_id)
-                                    su_l <<- getSubstanceUse(data_src, study_id)
-                                  }
-                              ))
+                             fields = list(
+                               cm_l="list",
+                               ex_l="list",
+                               su_l="list"
+                             ),
+                             methods = list(
+                               getInterventions = function(data_src, study_id) {
+                                 cm_l <<- getConcomitantMedications(data_src, study_id)
+                                 ex_l <<- getExposure(data_src, study_id)
+                                 su_l <<- getSubstanceUse(data_src, study_id)
+                               }
+                             ))
 #' Events class
 #' 
 #'  @field ae_l Adverse Events data \code{\link{AE}} and supplemental Adverse Events data \code{\link{SUPP}}
@@ -121,19 +121,19 @@ Interventions <- setRefClass("Interventions",
 #'  @export Events
 #'  @exportClass Events
 Events <- setRefClass("Events", fields = list(
-                                    ae_l="list",
-                                    dv_l="list",
-                                    mh_l="list",
-                                    apmh_l="list"
-                                  ),
-                                methods = list(
-                                  getEvents = function(data_src, study_id) {
-                                    ae_l <<- getAdverseEvents(data_src, study_id)
-                                    dv_l <<- getProtocolDeviations(data_src, study_id)
-                                    mh_l <<- getMedicalHistory(data_src, study_id)
-                                    apmh_l <<- getAssociatedPersonsMedicalHistory(data_src, study_id)
-                                  }
-                                ))
+  ae_l="list",
+  dv_l="list",
+  mh_l="list",
+  apmh_l="list"
+),
+methods = list(
+  getEvents = function(data_src, study_id) {
+    ae_l <<- getAdverseEvents(data_src, study_id)
+    dv_l <<- getProtocolDeviations(data_src, study_id)
+    mh_l <<- getMedicalHistory(data_src, study_id)
+    apmh_l <<- getAssociatedPersonsMedicalHistory(data_src, study_id)
+  }
+))
 #' Findings class
 #' 
 #'  @field lb_l Laboratory Test Results data \code{\link{LB}} and supplemental Laboratory Test Results data \code{\link{SUPPLB}}
@@ -151,18 +151,18 @@ Events <- setRefClass("Events", fields = list(
 #'  @exportClass Findings
 Findings <- setRefClass("Findings", 
                         fields = list(
-                                  lb_l="list",
-                                  pe_l="list",
-                                  vs_l="list",
-                                  qs_l="list",
-                                  fa_l="list",
-                                  sr_l="list",
-                                  pf_l="list",
-                                  za_l="list",
-                                  zb_l="list",
-                                  zc_l="list",
-                                  zd_l="list"
-                                ),
+                          lb_l="list",
+                          pe_l="list",
+                          vs_l="list",
+                          qs_l="list",
+                          fa_l="list",
+                          sr_l="list",
+                          pf_l="list",
+                          za_l="list",
+                          zb_l="list",
+                          zc_l="list",
+                          zd_l="list"
+                        ),
                         methods = list(
                           getFindings = function(data_src, study_id) {
                             lb_l <<- getLaboratoryTestResults(data_src, study_id)
@@ -186,18 +186,18 @@ Findings <- setRefClass("Findings",
 #'  @export TrialDesign
 #'  @exportClass TrialDesign
 TrialDesign <- setRefClass("TrialDesign", 
-                        fields = list(
-                            ta_l="list",
-                            ti_l="list",
-                            ts_l="list"
-                          ),
-                        methods = list(
-                          getTrialDesign = function(data_src, study_id) {
-                            ta_l <<- getTrialArms(data_src, study_id)
-                            ti_l <<- getTrialInclusionExclusionCriteria(data_src, study_id)
-                            ts_l <<- getTrialSummary(data_src, study_id)
-                          }
-                        ))
+                           fields = list(
+                             ta_l="list",
+                             ti_l="list",
+                             ts_l="list"
+                           ),
+                           methods = list(
+                             getTrialDesign = function(data_src, study_id) {
+                               ta_l <<- getTrialArms(data_src, study_id)
+                               ti_l <<- getTrialInclusionExclusionCriteria(data_src, study_id)
+                               ts_l <<- getTrialSummary(data_src, study_id)
+                             }
+                           ))
 
 #' Study class
 #' 
@@ -218,30 +218,30 @@ Study <- setRefClass("Study", fields = list(
   methods = list(
     getTableOfContents = function() {
       contents_l <- list(
-                    r1=list(c1="Special Purpose", c2="Demographics", c3=""), 
-                    r2=list(c1="Special Purpose", c2="Subject Visits", c3=""), 
-                    r4=list(c1="Interventions", c2="Concomitant Medications", c3=""), 
-                    r5=list(c1="Interventions", c2="Exposure", c3=""), 
-                    r7=list(c1="Interventions", c2="Substance Use", c3=""), 
-                    r8=list(c1="Events", c2="Adverse Events", c3=""), 
-                    r11=list(c1="Events", c2="Protocol Deviations", c3=""), 
-                    r13=list(c1="Events", c2="Medical History", c3=""), 
-                    r14=list(c1="Events", c2="Associated Persons Medical History", c3=""), 
-                    r20=list(c1="Findings", c2="Laboratory Test Results", c3=""),  
-                    r29=list(c1="Findings", c2="Vital Signs", c3=""), 
-                    r3o=list(c1="Findings", c2="Questionnaires", c3=""), 
-                    r31=list(c1="Findings", c2="Findings About", c3=""), 
-                    r32=list(c1="Findings", c2="Skin Response", c3=""), 
-                    r33=list(c1="Findings", c2="Physical Examination", c3=""), 
-                    r34=list(c1="Findings", c2="Genetics Findings", c3=""), 
-                    r35=list(c1="Findings", c2="Protein Quantification", c3=""), 
-                    r36=list(c1="Findings", c2="Cellular Quantification", c3=""), 
-                    r37=list(c1="Findings", c2="Nucleic Acid Quantification", c3=""), 
-                    r38=list(c1="Findings", c2="Titer Assay Results", c3=""), 
-                    r45=list(c1="Trial Design", c2="Trial Inclusion Exclusion Criteria", c3=""), 
-                    r46=list(c1="Trial Design", c2="Trial Arms", c3=""), 
-                    r47=list(c1="Trial Design", c2="Trial Summary", c3=""))
-    
+        r1=list(c1="Special Purpose", c2="Demographics", c3=""), 
+        r2=list(c1="Special Purpose", c2="Subject Visits", c3=""), 
+        r4=list(c1="Interventions", c2="Concomitant Medications", c3=""), 
+        r5=list(c1="Interventions", c2="Exposure", c3=""), 
+        r7=list(c1="Interventions", c2="Substance Use", c3=""), 
+        r8=list(c1="Events", c2="Adverse Events", c3=""), 
+        r11=list(c1="Events", c2="Protocol Deviations", c3=""), 
+        r13=list(c1="Events", c2="Medical History", c3=""), 
+        r14=list(c1="Events", c2="Associated Persons Medical History", c3=""), 
+        r20=list(c1="Findings", c2="Laboratory Test Results", c3=""),  
+        r29=list(c1="Findings", c2="Vital Signs", c3=""), 
+        r3o=list(c1="Findings", c2="Questionnaires", c3=""), 
+        r31=list(c1="Findings", c2="Findings About", c3=""), 
+        r32=list(c1="Findings", c2="Skin Response", c3=""), 
+        r33=list(c1="Findings", c2="Physical Examination", c3=""), 
+        r34=list(c1="Findings", c2="Genetics Findings", c3=""), 
+        r35=list(c1="Findings", c2="Protein Quantification", c3=""), 
+        r36=list(c1="Findings", c2="Cellular Quantification", c3=""), 
+        r37=list(c1="Findings", c2="Nucleic Acid Quantification", c3=""), 
+        r38=list(c1="Findings", c2="Titer Assay Results", c3=""), 
+        r45=list(c1="Trial Design", c2="Trial Inclusion Exclusion Criteria", c3=""), 
+        r46=list(c1="Trial Design", c2="Trial Arms", c3=""), 
+        r47=list(c1="Trial Design", c2="Trial Summary", c3=""))
+      
       contents_df <- ldply (contents_l, data.frame, stringsAsFactors = FALSE)
       
       contents_df$.id <- NULL
@@ -298,7 +298,7 @@ Study <- setRefClass("Study", fields = list(
       
       contents_df
     }
-))
+  ))
 
 ########################################################################
 
@@ -323,7 +323,7 @@ getStudy <- function(study_id) {
   }
   
   data_src <- RImmPort.env$data_src
-
+  
   cat("loading Study ID = ", study_id, "\n")
   
   study <- Study$new()
@@ -333,9 +333,9 @@ getStudy <- function(study_id) {
   study$events$getEvents(data_src, study_id)
   study$findings$getFindings(data_src, study_id)
   study$trial_design$getTrialDesign(data_src, study_id)  
-
+  
   cat("done loading Study ID = ", study_id, "\n")
-
+  
   study
 }
 
@@ -385,7 +385,7 @@ getDomainDataOfStudies <- function(domain, study_ids) {
   
   if (domain %in% getListOfDomains()[,'Domain Name'] == FALSE) {
     stop(paste("domain = ", domain, " is not found in the list of supported domains; 
-         Run getListOfDomains() for a complete list"))
+               Run getListOfDomains() for a complete list"))
   }
   
   data_l= list()
@@ -462,7 +462,7 @@ getDomainDataOfStudies <- function(domain, study_ids) {
           }
   )
   data_l
-}
+  }
 
 getAdverseEventsOfStudies <- function(data_src, study_ids) {
   data_df <- data.frame()
@@ -926,7 +926,7 @@ getAssayDataOfStudies <- function(study_ids, assay_type) {
     stop("assay type is not found in the list of supported assay types; 
          Run getListOfAssayTypes() for a complete list")
   }
-
+  
   pq_l <- getProteinQuantificationOfStudies(data_src, study_ids, assay_type)
   cq_l <- getCellularQuantificationOfStudies(data_src, study_ids, assay_type)
   nq_l <- getNucleicAcidQuantificationOfStudies(data_src, study_ids, assay_type)
@@ -936,13 +936,14 @@ getAssayDataOfStudies <- function(study_ids, assay_type) {
   data_l <- c(pq_l, cq_l, nq_l, ta_l, gf_l)
   
   data_l
-}
+  }
 
 
 ########################################################################
 ##' Get a list of studies that have specific domain data
 ##' 
 ##' @param domain Name of a specific domain
+##' @param all_study_ids List of study indentifiers to search on
 ##' @return List of study indentifiers
 ##' @examples
 ##' \dontrun{ 
@@ -950,7 +951,7 @@ getAssayDataOfStudies <- function(study_ids, assay_type) {
 ##'    study_ids <- getStudiesWithSpecificDomainData("Adverse Events")
 ##' }
 ##' @export
-getStudiesWithSpecificDomainData <- function(domain) {
+getStudiesWithSpecificDomainData <- function(domain, all_study_ids = c("ALL")) {
   study_ids = c()
   
   if (is.null(r <- get0("data_src", envir = RImmPort.env))) {
@@ -961,16 +962,18 @@ getStudiesWithSpecificDomainData <- function(domain) {
   
   if (domain %in% getListOfDomains()[,'Domain Name'] == FALSE) {
     stop(paste("domain = ", domain, " is not found in the list of supported domains; 
-         Run getListOfDomains() for a complete list"))
+               Run getListOfDomains() for a complete list"))
   }
   
   if (class(data_src) == "character") { # data source is .rds files
     if (file.exists(data_src) == FALSE) {
       stop("data source = ", data_src, " not found")
     }  
-  
+    
     domain_code <- getDomainCode(domain)
-    all_study_ids <- getListOfStudies()
+    if (all_study_ids[1] == "ALL")
+      all_study_ids <- getListOfStudies()
+    
     for (study_id in all_study_ids) {
       study_path <- file.path(data_src, study_id)
       if (file.exists(file.path(study_path, paste(tolower(domain_code),".rds", sep=""))))
@@ -1051,7 +1054,7 @@ getStudiesWithSpecificDomainData <- function(domain) {
   }
   
   study_ids
-}
+  }
 
 getStudiesWithAdverseEvents <- function(data_src) {
   all_study_ids <- getListOfStudies()
@@ -1333,6 +1336,7 @@ getStudiesWithTiterAssayResults <- function(data_src) {
 ##' Get a list of studies that have specific assay type data
 ##' 
 ##' @param assay_type Assay Type
+##' @param all_study_ids List of study indentifiers to search on
 ##' @return List of study indentifiers
 ##' @examples
 ##' \dontrun{ 
@@ -1340,7 +1344,7 @@ getStudiesWithTiterAssayResults <- function(data_src) {
 ##'    study_ids <- getStudiesWithSpecificAssayData("Flow")
 ##' }
 ##' @export
-getStudiesWithSpecificAssayData <- function(assay_type) {
+getStudiesWithSpecificAssayData <- function(assay_type, all_study_ids = c("ALL")) {
   if (is.null(r <- get0("data_src", envir = RImmPort.env))) {
     stop("ImmPort data source is not set: See ?setImmPortDataSource() ")
   }
@@ -1352,23 +1356,25 @@ getStudiesWithSpecificAssayData <- function(assay_type) {
          Run getListOfAssayTypes() for a complete list")
   }
   
-  all_study_ids <- getListOfStudies()
+  if (all_study_ids[1] == "ALL")
+    all_study_ids <- getListOfStudies()
+  
   study_ids = c()
   for (study_id in all_study_ids) {
-    if (getCountOfCellularQuantification(study_id, assay_type) > 0)
+    if (getCountOfCellularQuantification(data_src, study_id, assay_type) > 0)
       study_ids = c(study_ids,study_id)
-    if (getCountOfGeneticsFindings(study_id, assay_type) > 0)
+    if (getCountOfGeneticsFindings(data_src, study_id, assay_type) > 0)
       study_ids = c(study_ids,study_id)
-    if (getCountOfNucleicAcidQuantification(study_id, assay_type) > 0)
+    if (getCountOfNucleicAcidQuantification(data_src, study_id, assay_type) > 0)
       study_ids = c(study_ids,study_id)
-    if (getCountOfProteinQuantification(study_id, assay_type) > 0)
+    if (getCountOfProteinQuantification(data_src, study_id, assay_type) > 0)
       study_ids = c(study_ids,study_id)
-    if (getCountOfTiterAssayResults(study_id, assay_type) > 0)
+    if (getCountOfTiterAssayResults(data_src, study_id, assay_type) > 0)
       study_ids = c(study_ids,study_id)
   }
   
   study_ids
-}
+  }
 
 
 
@@ -1392,9 +1398,9 @@ getListOfStudies <- function() {
   if ((class(data_src)[1] == 'MySQLConnection') || 
       (class(data_src)[1] == 'SQLiteConnection')) {
     sql_stmt <- paste("
-                  SELECT distinct
-                    s.study_accession
-                    FROM study s", sep="")
+                      SELECT distinct
+                      s.study_accession
+                      FROM study s", sep="")
     
     study_ids_df <- dbGetQuery(data_src,statement=sql_stmt)
     study_ids <- study_ids_df[['study_accession']]
@@ -1406,15 +1412,15 @@ getListOfStudies <- function() {
       fname <- file_path_sans_ext(f)
       study_ids <- c(study_ids, fname)
     }
-      
-#     study_dirs <- list.files(path = data_src, pattern = "_R$")
-#     study_ids <- c()
-#     for (sd in study_dirs) {
-#       study_id <- strsplit(sd, "-")[[1]][1]
-#       study_ids <- c(study_ids, study_id)
-#     }
-  }
     
+    #     study_dirs <- list.files(path = data_src, pattern = "_R$")
+    #     study_ids <- c()
+    #     for (sd in study_dirs) {
+    #       study_id <- strsplit(sd, "-")[[1]][1]
+    #       study_ids <- c(study_ids, study_id)
+    #     }
+  }
+  
   study_ids
 } 
 
@@ -1496,8 +1502,8 @@ loadSerializedStudyData <- function(data_dir, study_id, domain) {
   cat("suppdomain_file_path = ", file.path(study_path, paste("supp", tolower(domain_code),".rds", sep="")), "\n")
   if (file.exists(suppdomain_file_path))
     suppdomain_df <- readRDS(file=file.path(study_path, paste("supp", tolower(domain_code),".rds", sep="")))
-
+  
   list(domain_df, suppdomain_df)
-}
+  }
 
 
