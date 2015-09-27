@@ -114,7 +114,7 @@ getGeneticsFindings <- function(data_src, study_id, assay_type="ALL") {
     if ((assay_type == "ALL") || (assay_type =="Array")) {
       # get Array results
       
-      #   array_column_names <- c("study_id", "subject_id", "result_id", "repository_name", "repository_id", 
+      #   array_column_names <- c("study_id", "subject_id", "result_id", "dataset_id", 
       #                           "experiment_title", "assay_purpose", "measurement_technique",
       #                           "biosample_accession", "specimen_type", "specimen_subtype", 
       #                           "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection")
@@ -122,13 +122,11 @@ getGeneticsFindings <- function(data_src, study_id, assay_type="ALL") {
       arr_df <- getArrayResults(data_src, study_id, "")
       if (nrow(arr_df) > 0) {
         arr_df <- arr_df %>% 
-          select(STUDYID = study_id, USUBJID = subject_id, PFSEQ = result_id, repository_id,
+          select(STUDYID = study_id, USUBJID = subject_id, PFSEQ = result_id, PFXFN = dataset_id,
                          PFTEST = experiment_title, PFCAT = assay_purpose, PFMETHOD = measurement_technique, 
                          PFSPEC = specimen_type, PFSPECSB = specimen_subtype, 
                          PFDY = study_time_of_specimen_collection, PFDYU = unit_of_study_time_of_specimen_collection,
-                         PFREFID = biosample_accession ) %>%
-          mutate(PFXFN = paste("urn:lsid:", "www.ncbi.nlm.nih.gov/geo", ":GEO:", repository_id))
-        
+                         PFREFID = biosample_accession )
         arr_df$DOMAIN <- "PF"
         arr_df$PFGRPID <- ""
         arr_df$PFGENRI <- ""
