@@ -4,10 +4,12 @@
 \alias{getStudiesWithSpecificAssayData}
 \title{Get a list of studies that have specific assay type data}
 \usage{
-getStudiesWithSpecificAssayData(assay_type)
+getStudiesWithSpecificAssayData(assay_type, all_study_ids = c("ALL"))
 }
 \arguments{
 \item{assay_type}{Assay Type}
+
+\item{all_study_ids}{List of study indentifiers to search on}
 }
 \value{
 List of study indentifiers

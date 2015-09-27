@@ -4,10 +4,12 @@
 \alias{getStudiesWithSpecificDomainData}
 \title{Get a list of studies that have specific domain data}
 \usage{
-getStudiesWithSpecificDomainData(domain)
+getStudiesWithSpecificDomainData(domain, all_study_ids = c("ALL"))
 }
 \arguments{
 \item{domain}{Name of a specific domain}
+
+\item{all_study_ids}{List of study indentifiers to search on}
 }
 \value{
 List of study indentifiers

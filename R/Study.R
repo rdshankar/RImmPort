@@ -1424,6 +1424,39 @@ getListOfStudies <- function() {
   study_ids
 } 
 
+#' Merge the Domain dataframe and Supplemental dataframe (long form) 
+#' 
+#' The Domain data list comprises of the the Domain datafrome that is in wide form, and any Supplemental
+#' dataframe that is in long form. The function \code{mergeDomainAndSupplemental} transposes the Supplemental
+#' dataframe into a wide form, and merges it with the Domain dataframe.
+#' 
+#' @param data_list A list of 1) Domain dataframe and 2) any Supplemental dataframe 
+#' @return The merged dataframe
+#' @examples
+#' \dontrun{ 
+#'  l <- getDomainDataOfStudies("Genetics Findings", "SDY208")
+#'  df <- mergeDomainAndSupplemental(l)
+#' }
+##' @export
+mergeDomainAndSupplemental <- function(data_list) {
+  merged_df <- data.frame()
+  
+  if (length(data_list) > 0) {
+    merged_df <- data_list[[1]]
+    if (length(data_list) == 2) {
+      supp_df <- data_list[[2]]
+      if (nrow(supp_df) > 0) {
+        wide_supp_df <- dcast(supp_df, STUDYID + RDOMAIN + USUBJID + IDVARVAL ~ QNAM, value.var="QVAL")
+        names(wide_supp_df)[names(wide_supp_df)=="RDOMAIN"] <- "DOMAIN"
+        names(wide_supp_df)[names(wide_supp_df)=="IDVARVAL"] <- supp_df$IDVAR[1]
+        merged_df <- full_join(merged_df, wide_supp_df)
+      }
+    } 
+  }
+  
+  merged_df
+}
+
 ########################################################################
 ########################################################################
 
