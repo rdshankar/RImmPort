@@ -68,7 +68,7 @@ getCountOfElisaResults <- function(conn,study_id) {
                     INNER JOIN
                       biosample bs ON els.biosample_accession=bs.biosample_accession
                     LEFT OUTER JOIN
-                      expsample_2_file_info es2fi ON elp.expsample_accession=es2fi.expsample_accession
+                      expsample_2_file_info es2fi ON els.expsample_accession=es2fi.expsample_accession
                     LEFT OUTER JOIN
                       file_info fi ON es2fi.file_info_id=fi.file_info_id
                     WHERE els.study_accession in (\'", study_id,"\') AND
