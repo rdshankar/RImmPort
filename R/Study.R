@@ -1537,6 +1537,60 @@ loadSerializedStudyData <- function(data_dir, study_id, domain) {
     suppdomain_df <- readRDS(file=file.path(study_path, paste("supp", tolower(domain_code),".rds", sep="")))
   
   list(domain_df, suppdomain_df)
-  }
+}
 
+covertElaspsedTimeToISO8601Format <- function(time, time_unit) {
+  if (is.na(time) | is.na(time_unit)) 
+    return(NA)
+  
+  if (time_unit %in% c("Days", "Hours", "Minutes")) {
+    if (time < 0) {
+      eltm <- "-PT"
+      time <- abs(time)
+    } else
+      eltm <- "PT"
+  }
+  
+  switch (time_unit,          
+          "Days" = {
+            if (time%%1 == 0) { 
+              # no fraction
+              eltm <- paste(eltm, as.integer(time), "D", sep="")
+            } else { 
+              # has fraction; convert days to hours
+              eltm <- paste(eltm, as.integer(time*24), "H", sep="")
+            }
+          },  
+          "Hours" = {
+            if (time%%1 == 0) { 
+              # no fraction
+              eltm <- paste(eltm, as.integer(time), "H", sep="")
+            } else { 
+              # has fraction; convert hours to minutes
+              eltm <- paste(eltm, as.integer(time*60), "M", sep="")
+            }
+          },
+          "Minutes" = {
+            if (time%%1 == 0) { 
+              # no fraction
+              eltm <- paste(eltm, as.integer(time), "M", sep="")
+            } else { 
+              # has fraction; convert minutes to seconds
+              eltm <- paste(eltm, as.integer(time*60), "S", sep="")
+            }
+          },
+          {
+            eltm <- NA
+          }
+  )
+  
+  eltm
+}
+
+getTimePointReference <- function(time_event, time_event_specify) {
+  if (time_event == "Other") 
+    return(time_event_specify)
+  else
+    return(time_event)
+}
 
