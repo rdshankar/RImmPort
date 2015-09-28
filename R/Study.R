@@ -1575,7 +1575,11 @@ covertElaspsedTimeToISO8601Format <- function(time, time_unit) {
               eltm <- paste(eltm, as.integer(time), "H", sep="")
             } else { 
               # has fraction
+<<<<<<< HEAD
               eltm <- paste(eltm, time, "H", sep="")
+=======
+              eltm <- paste(eltm, time, "M", sep="")
+>>>>>>> 644588d06159e9fdb963388578f7de7a6e4e5d6c
             }
           },
           "Minutes" = {
@@ -1584,7 +1588,11 @@ covertElaspsedTimeToISO8601Format <- function(time, time_unit) {
               eltm <- paste(eltm, as.integer(time), "M", sep="")
             } else { 
               # has fraction
+<<<<<<< HEAD
               eltm <- paste(eltm, time, "M", sep="")
+=======
+              eltm <- paste(eltm, time, "S", sep="")
+>>>>>>> 644588d06159e9fdb963388578f7de7a6e4e5d6c
             }
           },
           {
