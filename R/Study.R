@@ -1540,7 +1540,7 @@ loadSerializedStudyData <- function(data_dir, study_id, domain) {
 }
 
 covertElaspsedTimeToISO8601Format <- function(time, time_unit) {
-  if (is.na(time) | is.na(time_unit)) 
+  if ( is.na(time) | is.na(time_unit) ) 
     return(NA)
   
   if (time_unit %in% c("Years", "Months", "Days")) {
