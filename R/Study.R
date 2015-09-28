@@ -1543,22 +1543,30 @@ covertElaspsedTimeToISO8601Format <- function(time, time_unit) {
   if (is.na(time) | is.na(time_unit)) 
     return(NA)
   
-  if (time_unit %in% c("Days", "Hours", "Minutes")) {
+  if (time_unit %in% c("Years", "Months", "Days")) {
+    if (time < 0) {
+      eltm <- "-P"
+      time <- abs(time)
+    } else
+      eltm <- "P"
+  }  
+  
+  if (time_unit %in% c("Hours", "Minutes", "Seconds")) {
     if (time < 0) {
       eltm <- "-PT"
       time <- abs(time)
     } else
       eltm <- "PT"
   }
-  
+
   switch (time_unit,          
           "Days" = {
             if (time%%1 == 0) { 
               # no fraction
               eltm <- paste(eltm, as.integer(time), "D", sep="")
             } else { 
-              # has fraction; convert days to hours
-              eltm <- paste(eltm, as.integer(time*24), "H", sep="")
+              # has fraction
+              eltm <- paste(eltm, time, "D", sep="")
             }
           },  
           "Hours" = {
@@ -1566,8 +1574,8 @@ covertElaspsedTimeToISO8601Format <- function(time, time_unit) {
               # no fraction
               eltm <- paste(eltm, as.integer(time), "H", sep="")
             } else { 
-              # has fraction; convert hours to minutes
-              eltm <- paste(eltm, as.integer(time*60), "M", sep="")
+              # has fraction
+              eltm <- paste(eltm, time, "M", sep="")
             }
           },
           "Minutes" = {
@@ -1575,8 +1583,8 @@ covertElaspsedTimeToISO8601Format <- function(time, time_unit) {
               # no fraction
               eltm <- paste(eltm, as.integer(time), "M", sep="")
             } else { 
-              # has fraction; convert minutes to seconds
-              eltm <- paste(eltm, as.integer(time*60), "S", sep="")
+              # has fraction
+              eltm <- paste(eltm, time, "S", sep="")
             }
           },
           {
