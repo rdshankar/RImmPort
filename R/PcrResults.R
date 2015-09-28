@@ -41,8 +41,16 @@ getPcrResults <- function(conn,study_id, measurement_type) {
                     ORDER BY pcr.subject_accession",sep="")
   
   pcr_df <- dbGetQuery(conn,statement=sql_stmt)
-  if (nrow(pcr_df) > 0)
+  if (nrow(pcr_df) > 0) {
     colnames(pcr_df) <- pcr_cols 
+    
+    pcr_df <- ddply(pcr_df, .(study_id, subject_id, result_id), mutate, elapsed_time_of_specimen_collection = 
+                      covertElaspsedTimeToISO8601Format(study_time_of_specimen_collection, 
+                                                        unit_of_study_time_of_specimen_collection))
+    
+    pcr_df <- ddply(pcr_df, .(study_id, subject_id, result_id), mutate, time_point_reference = 
+                      getTimePointReference(study_time_t0_event, study_time_t0_event_specify))
+  }
   
   cat("done", "\n")
   pcr_df

@@ -2,7 +2,8 @@
 array_cols <- c("study_id", "subject_id", "result_id", "dataset_id", 
                         "experiment_title", "assay_purpose", "measurement_technique",
                         "biosample_accession", "specimen_type", "specimen_subtype", 
-                        "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection")
+                        "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
+                        "study_time_t0_event", "study_time_t0_event_specify")
 
 # call to globalVariables to prevent from generating NOTE: no visible binding for global variable <variable name>
 # this hack is to satisfy CRAN (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
@@ -24,7 +25,9 @@ getArrayResults <- function(conn, study_id, measurement_type) {
                          bs.type,
                          bs.subtype,
                          bs.study_time_collected,
-                         bs.study_time_collected_unit
+                         bs.study_time_collected_unit,
+                         bs.study_time_t0_event,
+                         bs.study_time_t0_event_specify
                        FROM experiment ex,
                          biosample bs,
                          biosample_2_expsample be,
@@ -40,7 +43,7 @@ getArrayResults <- function(conn, study_id, measurement_type) {
     if (nrow(geo_df) > 0) {
       geo_df <- mutate(geo_df, dataset_id = paste("urn:lsid:", "www.ncbi.nlm.nih.gov/geo", ":GEO:", dataset_id))
     }
-    
+
     sql_stmt <- paste("SELECT distinct
                         bs.study_accession,
                         bs.subject_accession,
@@ -53,7 +56,9 @@ getArrayResults <- function(conn, study_id, measurement_type) {
                         bs.type,
                         bs.subtype,
                         bs.study_time_collected,
-                        bs.study_time_collected_unit
+                        bs.study_time_collected_unit,
+                        bs.study_time_t0_event,
+                        bs.study_time_t0_event_specify
                       FROM 
                         experiment ex,
                         biosample bs,
@@ -80,7 +85,14 @@ getArrayResults <- function(conn, study_id, measurement_type) {
           arr_dt[, `:=`(result_id, seq_len(.N)), by = "subject_id"]
         }
         arr_df <- as.data.frame(arr_dt)
-            
+
+        arr_df <- ddply(arr_df, .(study_id, subject_id, result_id), mutate, elapsed_time_of_specimen_collection = 
+                          covertElaspsedTimeToISO8601Format(study_time_of_specimen_collection, 
+                                                            unit_of_study_time_of_specimen_collection))
+        
+        arr_df <- ddply(arr_df, .(study_id, subject_id, result_id), mutate, time_point_reference = 
+                          getTimePointReference(study_time_t0_event, study_time_t0_event_specify))
+        
     }
     
     

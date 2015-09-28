@@ -9,7 +9,7 @@ NULL
 #> NULL 
 
 cq_cols <- c("STUDYID", "DOMAIN", "USUBJID", "ZBSEQ", "ZBTEST", "ZBCAT", "ZBMETHOD", "ZBPOPDEF", "ZBPOPNAM", "ZBORRES", 
-    "ZBORRESU", "ZBBASPOP", "ZBSPEC", "ZBSPECSB", "ZBDY", "ZBDYU", "ZBREFID", 
+    "ZBORRESU", "ZBBASPOP", "ZBSPEC", "ZBSPECSB", "ZBELTM", "ZBTPTREF", "ZBREFID", 
     "ZBXFN")
 
 suppcq_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
@@ -19,7 +19,7 @@ suppcq_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "
 globalVariables(c("subject_id", "experiment_title", "assay_purpose", "measurement_technique",
                   "base_parent_population", "population_cell_number", "population_cell_number_unit",
                   "population_defnition_reported", "population_name_reported", "specimen_type",
-                  "specimen_subtype", "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
+                  "specimen_subtype", "elapsed_time_of_specimen_collection", "time_point_reference",
                   "biosample_accession", "file_name", "ZBSEQ", "result_id", "cell_type", "spot_number",
                   "analyte", "cell_number", "ZBBASPOP", "ZBPOPDEF"))
 
@@ -59,12 +59,13 @@ getCellularQuantification <- function(data_src, study_id, assay_type="ALL") {
             flow_df <- select(flow_df, STUDYID = study_id, USUBJID = subject_id, ZBSEQ = sequence, ZBTEST = experiment_title, 
                 ZBCAT = assay_purpose, ZBMETHOD = measurement_technique, ZBBASPOP = base_parent_population, ZBORRES = population_cell_number, 
                 ZBORRESU = population_cell_number_unit, ZBPOPDEF = population_defnition_reported, ZBPOPNAM = population_name_reported, 
-                ZBSPEC = specimen_type, ZBSPECSB = specimen_subtype, ZBDY = study_time_of_specimen_collection, ZBDYU = unit_of_study_time_of_specimen_collection, 
+                ZBSPEC = specimen_type, ZBSPECSB = specimen_subtype, 
+                ZBELTM = elapsed_time_of_specimen_collection, ZBTPTREF = time_point_reference, 
                 ZBREFID = biosample_accession, ZBXFN = file_name)
             
             flow_df$DOMAIN <- "ZB"
             flow_df <- flow_df[, c("STUDYID", "DOMAIN", "USUBJID", "ZBSEQ", "ZBTEST", "ZBCAT", "ZBMETHOD", "ZBPOPDEF", "ZBPOPNAM", "ZBORRES", 
-                                   "ZBORRESU", "ZBBASPOP", "ZBSPEC", "ZBSPECSB", "ZBDY", "ZBDYU", "ZBREFID", 
+                                   "ZBORRESU", "ZBBASPOP", "ZBSPEC", "ZBSPECSB", "ZBELTM", "ZBTPTREF", "ZBREFID", 
                                    "ZBXFN")]
             flow_df <- transform(flow_df, ZBSEQ = as.integer(ZBSEQ))
             setDT(flow_df)[, `:=`(ZBSEQ, seq_len(.N)), by = "USUBJID"]
@@ -90,8 +91,8 @@ getCellularQuantification <- function(data_src, study_id, assay_type="ALL") {
             select(STUDYID = study_id, USUBJID = subject_id, ZBSEQ = result_id, ZBTEST = experiment_title, 
                                       ZBCAT = assay_purpose, ZBMETHOD = measurement_technique, ZBBASPOP=cell_type, ZBORRES = spot_number, 
                                       ZBPOPDEF = analyte, cell_number, 
-                                       ZBSPEC = specimen_type, ZBSPECSB = specimen_subtype, ZBDY = study_time_of_specimen_collection, 
-                                      ZBDYU = unit_of_study_time_of_specimen_collection,  
+                                       ZBSPEC = specimen_type, ZBSPECSB = specimen_subtype, ZBELTM = elapsed_time_of_specimen_collection, 
+                                      ZBTPTREF = time_point_reference,  
                                       ZBREFID = biosample_accession, ZBXFN = file_name) %>% 
             mutate(ZBORRESU = paste(cell_number, ZBBASPOP))  %>% 
             mutate(ZBPOPNAM = ZBPOPDEF) 
@@ -99,7 +100,7 @@ getCellularQuantification <- function(data_src, study_id, assay_type="ALL") {
           elp_df$DOMAIN <- "ZB"
           
           elp_df <- elp_df[, c("STUDYID", "DOMAIN", "USUBJID", "ZBSEQ", "ZBTEST", "ZBCAT", "ZBMETHOD", "ZBPOPDEF", "ZBPOPNAM", "ZBORRES", 
-                               "ZBORRESU", "ZBBASPOP", "ZBSPEC", "ZBSPECSB", "ZBDY", "ZBDYU", "ZBREFID", 
+                               "ZBORRESU", "ZBBASPOP", "ZBSPEC", "ZBSPECSB", "ZBELTM", "ZBTPTREF", "ZBREFID", 
                                "ZBXFN")]
           cq_df <- rbind(cq_df, elp_df)
           
@@ -172,8 +173,8 @@ getCountOfCellularQuantification <- function(data_src, study_id, assay_type="ALL
 ##'     ZBBASPOP \tab Base Parent Population \cr
 ##'     ZBSPEC \tab Specimen Type \cr
 ##'     ZBSPECSB \tab Specimen Subtype \cr
-##'     ZBDY \tab Study Day of Specimen Collection \cr
-##'     ZBDYU \tab Units of Study Day of Specimen Collection \cr
+##'     ZBELTM \tab Planned Elapsed Time from Time Point Ref \cr
+##'     ZBTPTREF \tab Time Point Reference \cr
 ##'     ZBREFID \tab Specimen Identifier \cr
 ##'     ZBXFN \tab Raw Data File or Life Science Identifier
 ##'   }

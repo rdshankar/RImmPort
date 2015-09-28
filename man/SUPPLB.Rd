@@ -23,7 +23,6 @@ The following table enumerates the values in QNAM and QLABEL variables {
   \tabular{ll}{
     \strong{QNAM} \tab \strong{QLABEL} \cr
     LBSPECSB \tab Specimen Subtype \cr
-    LBDYU \tab Units of Study Day of Specimen Collection
   }
 }
 }

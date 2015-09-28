@@ -9,7 +9,7 @@ NULL
 #> NULL 
 
 ta_cols <- c("STUDYID", "DOMAIN", "USUBJID", "ZDSEQ", "ZDTEST", "ZDCAT", "ZDMETHOD", "ZDSTRAIN", "ZDORRES", 
-                     "ZDORRESU",  "ZDSPEC", "ZDSPECSB", "ZDREFID", "ZDSDY", "ZDDYU")
+                     "ZDORRESU",  "ZDSPEC", "ZDSPECSB", "ZDREFID", "ZDELTM", "ZDTPTREF")
 
 suppta_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
 
@@ -18,7 +18,7 @@ suppta_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "
 globalVariables(c("subject_id", "result_id", "experiment_title", "assay_purpose", "measurement_technique",
                   "virus_strain", "result_in_original_units", "original_units",
                   "specimen_type", "specimen_subtype", 
-                  "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
+                  "elapsed_time_of_specimen_collection", "time_point_reference",
                   "biosample_accession"))
 
 # Get Titer Assay Results data of a specific study
@@ -56,7 +56,7 @@ getTiterAssayResults <- function(data_src, study_id, assay_type="ALL") {
       #                               "result_in_original_units", "original_units", 
       #                               "experiment_title", "assay_purpose", "measurement_technique",
       #                               "biosample_accession", "specimen_type", "specimen_subtype",
-      #                               "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
+      #                               "elapsed_time_of_specimen_collection", "time_point_reference",
       #                               "study_time_t0_event", "study_time_t0_event_specify",
       #                               "virus_strain")  
   
@@ -66,13 +66,13 @@ getTiterAssayResults <- function(data_src, study_id, assay_type="ALL") {
                           ZDCAT = assay_purpose, ZDMETHOD = measurement_technique, ZDSTRAIN = virus_strain, 
                           ZDORRES = result_in_original_units, ZDORRESU = original_units,  
                           ZDSPEC = specimen_type, ZDSPECSB = specimen_subtype, 
-                          ZDSDY = study_time_of_specimen_collection, ZDDYU = unit_of_study_time_of_specimen_collection, 
+                          ZDELTM = elapsed_time_of_specimen_collection, ZDTPTREF = time_point_reference, 
                           ZDREFID = biosample_accession)
         
         hai.df$DOMAIN <- "ZD"
         
         hai.df <- hai.df[, c("STUDYID", "DOMAIN", "USUBJID", "ZDSEQ", "ZDTEST", "ZDCAT", "ZDMETHOD", "ZDSTRAIN", "ZDORRES", 
-                               "ZDORRESU",  "ZDSPEC", "ZDSPECSB", "ZDREFID", "ZDSDY", "ZDDYU" )]
+                               "ZDORRESU",  "ZDSPEC", "ZDSPECSB", "ZDREFID", "ZDELTM", "ZDTPTREF" )]
     
         ta_df <- rbind(ta_df, hai.df)
         
@@ -88,13 +88,13 @@ getTiterAssayResults <- function(data_src, study_id, assay_type="ALL") {
                          ZDCAT = assay_purpose, ZDMETHOD = measurement_technique, ZDSTRAIN = virus_strain, 
                          ZDORRES = result_in_original_units, ZDORRESU = original_units,  
                          ZDSPEC = specimen_type, ZDSPECSB = specimen_subtype, 
-                         ZDSDY = study_time_of_specimen_collection, ZDDYU = unit_of_study_time_of_specimen_collection, 
+                         ZDELTM = elapsed_time_of_specimen_collection, ZDTPTREF = time_point_reference, 
                         ZDREFID = biosample_accession)
         
         nat.df$DOMAIN <- "ZD"
         
         nat.df <- nat.df[, c("STUDYID", "DOMAIN", "USUBJID", "ZDSEQ", "ZDTEST", "ZDCAT", "ZDMETHOD", "ZDSTRAIN", "ZDORRES", 
-                             "ZDORRESU",  "ZDSPEC", "ZDSPECSB", "ZDREFID", "ZDSDY", "ZDDYU")]
+                             "ZDORRESU",  "ZDSPEC", "ZDSPECSB", "ZDREFID", "ZDELTM", "ZDTPTREF")]
         
         ta_df <- rbind(ta_df, nat.df)
         
@@ -169,8 +169,8 @@ getCountOfTiterAssayResults <- function(data_src, study_id, assay_type="ALL") {
 ##'     ZDSPEC \tab Specimen Type \cr
 ##'     ZDSPECSB \tab Specimen Subtype \cr
 ##'     ZDREFID \tab Specimen Identifier \cr
-##'     ZDDY \tab Study Day of Specimen Collection \cr
-##'     ZDDYU \tab Units of Study Day of Specimen Collection \cr
+##'     ZDELTM \tab Planned Elapsed Time from Time Point Ref \cr
+##'     ZDTPTREF \tab Time Point Reference \cr
 ##'     ZDXFN \tab Raw Data File or Life Science Identifier
 ##'   }
 ##' }

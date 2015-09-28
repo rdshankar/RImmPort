@@ -52,8 +52,17 @@ getElispotResults <- function(conn,study_id, measurement_types) {
   
   elispot_df <- dbGetQuery(conn,statement=sql_stmt)
 
-  if (nrow(elispot_df) > 0)
+  if (nrow(elispot_df) > 0) {
     colnames(elispot_df) <- elispot_cols 
+
+    elispot_df <- ddply(elispot_df, .(study_id, subject_id, result_id), mutate, elapsed_time_of_specimen_collection = 
+                      covertElaspsedTimeToISO8601Format(study_time_of_specimen_collection, 
+                                                        unit_of_study_time_of_specimen_collection))
+    
+    elispot_df <- ddply(elispot_df, .(study_id, subject_id, result_id), mutate, time_point_reference = 
+                      getTimePointReference(study_time_t0_event, study_time_t0_event_specify))
+    
+  }
   
   cat("done", "\n")
   elispot_df

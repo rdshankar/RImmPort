@@ -21,8 +21,8 @@
     ZBBASPOP \tab Base Parent Population \cr
     ZBSPEC \tab Specimen Type \cr
     ZBSPECSB \tab Specimen Subtype \cr
-    ZBDY \tab Study Day of Specimen Collection \cr
-    ZBDYU \tab Units of Study Day of Specimen Collection \cr
+    ZBELTM \tab Planned Elapsed Time from Time Point Ref \cr
+    ZBTPTREF \tab Time Point Reference \cr
     ZBREFID \tab Specimen Identifier \cr
     ZBXFN \tab Raw Data File or Life Science Identifier
   }

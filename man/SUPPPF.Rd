@@ -23,8 +23,7 @@ The following table enumerates the values in QNAM and QLABEL variables {
   \tabular{ll}{
     \strong{QNAM} \tab \strong{QLABEL} \cr
     PFPOPAR \tab Geographic Area of the Population \cr
-    PFSPECSB \tab Specimen Subtype \cr
-    PDYU \tab Units of Study Day of Specimen Collection \cr
+    PFSPECSB \tab Specimen Subtype
   }
 }
 }

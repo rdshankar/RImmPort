@@ -51,8 +51,16 @@ getElisaResults <- function(conn,study_id, measurement_types) {
                     ORDER BY els.subject_accession",sep="")
 
   elisa_df <- dbGetQuery(conn,statement=sql_stmt)
-  if (nrow(elisa_df) > 0)
+  if (nrow(elisa_df) > 0) {
     colnames(elisa_df) <- elisa_cols 
+    elisa_df <- ddply(elisa_df, .(study_id, subject_id, result_id), mutate, elapsed_time_of_specimen_collection = 
+                      covertElaspsedTimeToISO8601Format(study_time_of_specimen_collection, 
+                                                        unit_of_study_time_of_specimen_collection))
+    
+    elisa_df <- ddply(elisa_df, .(study_id, subject_id, result_id), mutate, time_point_reference = 
+                      getTimePointReference(study_time_t0_event, study_time_t0_event_specify))
+    
+  }
   
   cat("done", "\n")
   elisa_df

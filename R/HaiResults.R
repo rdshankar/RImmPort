@@ -38,8 +38,17 @@ getHaiResults <- function(conn,study_id, measurement_type) {
                     ORDER BY hai.subject_accession",sep="")
   
   hai_df <- dbGetQuery(conn,statement=sql_stmt)
-  if (nrow(hai_df) > 0)
+  if (nrow(hai_df) > 0) {
     colnames(hai_df) <- hai_cols 
+    
+    hai_df <- ddply(hai_df, .(study_id, subject_id, result_id), mutate, elapsed_time_of_specimen_collection = 
+                      covertElaspsedTimeToISO8601Format(study_time_of_specimen_collection, 
+                                                        unit_of_study_time_of_specimen_collection))
+    
+    hai_df <- ddply(hai_df, .(study_id, subject_id, result_id), mutate, time_point_reference = 
+                      getTimePointReference(study_time_t0_event, study_time_t0_event_specify))
+    
+  }
   
   cat("done", "\n")
   hai_df

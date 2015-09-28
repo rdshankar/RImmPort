@@ -20,7 +20,8 @@
     PFALLELC \tab Allele (Chromosome) Identifier \cr
     PFSPEC \tab Specimen Type \cr
     PFREFID \tab Reference ID (Specimen Identifier) \cr
-    PFDY \tab Study Day of Specimen Collection \cr
+    PFELTM \tab Planned Elapsed Time from Time Point Ref \cr
+    PFTPTREF \tab Time Point Reference
   }
 }
 }

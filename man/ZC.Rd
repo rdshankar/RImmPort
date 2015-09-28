@@ -22,8 +22,8 @@
     ZCSPEC \tab Specimen Type \cr
     ZCSPECSB \tab Specimen Subtype \cr
     ZCREFID \tab Specimen Identifier \cr
-    ZCDY \tab Study Day of Specimen Collection \cr
-    ZCDYU \tab Units of Study Time of Specimen Collection \cr
+    ZCELTM \tab Planned Elapsed Time from Time Point Ref \cr
+    ZCTPTREF \tab Time Point Reference
   }
 }
 }

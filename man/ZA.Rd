@@ -19,9 +19,9 @@
     ZAORRESU \tab Original Units \cr
     ZASPEC \tab Specimen Type \cr
     ZASPECSB \tab Specimen Subtype \cr
-    ZADY \tab Study Time of Specimen Collection \cr
-    ZADTCU \tab Units of Study Time of Specimen Collection \cr
-    ZASPECID \tab Specimen Identifier \cr
+    ZAELTM \tab Planned Elapsed Time from Time Point Ref \cr
+    ZATPTREF \tab Time Point Reference \cr
+    ZAREFID \tab Specimen Identifier \cr
     ZAXFN \tab Raw Data File or Life Science Identifier
   }
 }

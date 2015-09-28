@@ -57,6 +57,15 @@ getFcsResults <- function(conn,study_id, measurement_types) {
   fcs_df <- dbGetQuery(conn,statement=sql_stmt)
   if (nrow(fcs_df) > 0) {
     colnames(fcs_df) <- fcs_cols 
+    fcs_df <- transform(fcs_df, sequence = as.integer(sequence))
+    setDT(fcs_df)[, `:=`(sequence, seq_len(.N)), by = "subject_id"]
+    fcs_df <- as.data.frame(fcs_df)
+    fcs_df <- ddply(fcs_df, .(study_id, subject_id, sequence), mutate, elapsed_time_of_specimen_collection = 
+            covertElaspsedTimeToISO8601Format(study_time_of_specimen_collection, 
+                                              unit_of_study_time_of_specimen_collection))
+    
+    fcs_df <- ddply(fcs_df, .(study_id, subject_id, sequence), mutate, time_point_reference = 
+                      getTimePointReference(study_time_t0_event, study_time_t0_event_specify))
     sql_stmt <- paste("
                       SELECT distinct
                       far.expsample_accession,
@@ -74,7 +83,7 @@ getFcsResults <- function(conn,study_id, measurement_types) {
     
     far_df <- dbGetQuery(conn,statement=sql_stmt)
     colnames(far_df) <- far_cols 
-    fcs_df <- merge(fcs_df ,far_df, by=c("experiment_sample_accession"), all=TRUE)
+    fcs_df <- merge(fcs_df ,far_df, all=TRUE)
   }
   
   cat("done", "\n")

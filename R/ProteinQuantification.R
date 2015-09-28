@@ -9,7 +9,7 @@ NULL
 #> NULL 
 
 pq_cols <- c("STUDYID", "DOMAIN", "USUBJID", "ZASEQ", "ZATEST", "ZACAT", "ZAMETHOD", "ZAANALYT", "ZAORRES", 
-    "ZAORRESU", "ZASPEC", "ZASPECSB", "ZADTC", "ZADTCU", "ZATPT0", "ZATPT0SP", "ZASPECID", "ZAXFN")
+    "ZAORRESU", "ZASPEC", "ZASPECSB", "ZAELTM", "ZATPTREF", "ZATPT0", "ZATPT0SP", "ZAREFID", "ZAXFN")
 
 supppq_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
 
@@ -17,7 +17,7 @@ supppq_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "
 # this hack is to satisfy CRAN (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
 globalVariables(c("subject_id", "result_id", "experiment_title", "assay_purpose", "measurement_technique",
                   "analyte", "value", "unit", "specimen_type",
-                  "specimen_subtype", "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
+                  "specimen_subtype", "elapsed_time_of_specimen_collection", "time_point_reference",
                   "biosample_accession", "file_name", "concentration_value", "concentration_unit", 
                   "mfi", "mfi_coordinate", "QNAM", "QVAL", "ZAMFI", "ZAMFICRD"))
 
@@ -59,13 +59,13 @@ getProteinQuantification <- function(data_src, study_id, assay_type="ALL") {
             els.df <- select(els.df, STUDYID = study_id, USUBJID = subject_id, ZASEQ = result_id, ZATEST = experiment_title, 
                 ZACAT = assay_purpose, ZAMETHOD = measurement_technique, ZAANALYT = analyte, ZAORRES = value, ZAORRESU = unit, 
                 ZASPEC = specimen_type, ZASPECSB = specimen_subtype, 
-                ZADTC = study_time_of_specimen_collection, ZADTCU = unit_of_study_time_of_specimen_collection, 
-                ZASPECID = biosample_accession, ZAXFN = file_name)
+                ZAELTM = elapsed_time_of_specimen_collection, ZATPTREF = time_point_reference, 
+                ZAREFID = biosample_accession, ZAXFN = file_name)
             
             els.df$DOMAIN <- "ZA"
             
             els.df <- els.df[, c("STUDYID", "DOMAIN", "USUBJID", "ZASEQ", "ZATEST", "ZACAT", "ZAMETHOD", "ZAANALYT", "ZAORRES", 
-                "ZAORRESU", "ZASPEC", "ZASPECSB", "ZADTC", "ZADTCU", "ZASPECID", "ZAXFN")]
+                "ZAORRESU", "ZASPEC", "ZASPECSB", "ZAELTM", "ZATPTREF", "ZAREFID", "ZAXFN")]
   
             pq_df <- rbind(pq_df, els.df)
             
@@ -78,22 +78,22 @@ getProteinQuantification <- function(data_src, study_id, assay_type="ALL") {
         
         # mbaa_column_names <- c('study_id', 'subject_id', 'result_id', 'analyte', 'concentration_unit',
         # 'concentration_value', 'mfi', 'mfi_coordinate', 'experiment_title', 'assay_purpose', 'measurement_technique',
-        # 'biosample_accession', 'specimen_type', 'specimen_subtype', 'study_time_of_specimen_collection',
-        # 'unit_of_study_time_of_specimen_collection', 'file_name')
+        # 'biosample_accession', 'specimen_type', 'specimen_subtype', 'elapsed_time_of_specimen_collection',
+        # 'time_point_reference', 'file_name')
         measurement_types <- list("Cytokine_Quantification")
         mbaa_df <- getMbaaResults(data_src, study_id, "")
         if (nrow(mbaa_df) > 0) {
             mbaa_df <- mbaa_df %>% 
               select(STUDYID = study_id, USUBJID = subject_id, ZASEQ = result_id, ZATEST = experiment_title, 
                 ZACAT = assay_purpose, ZAMETHOD = measurement_technique, ZAANALYT = analyte, ZAORRES = concentration_value, 
-                ZAORRESU = concentration_unit, ZASPEC = specimen_type, ZASPECSB = specimen_subtype, ZADTC = study_time_of_specimen_collection, 
-                ZADTCU = unit_of_study_time_of_specimen_collection, 
-                ZASPECID = biosample_accession, ZAXFN = file_name, ZAMFI = mfi, ZAMFICRD = mfi_coordinate)
+                ZAORRESU = concentration_unit, ZASPEC = specimen_type, ZASPECSB = specimen_subtype, ZAELTM = elapsed_time_of_specimen_collection, 
+                ZATPTREF = time_point_reference, 
+                ZAREFID = biosample_accession, ZAXFN = file_name, ZAMFI = mfi, ZAMFICRD = mfi_coordinate)
             
             mbaa_df$DOMAIN <- "ZA"
             
             mbaa_df <- mbaa_df[, c("STUDYID", "DOMAIN", "USUBJID", "ZASEQ", "ZATEST", "ZACAT", "ZAMETHOD", "ZAANALYT", 
-                "ZAORRES", "ZAORRESU", "ZASPEC", "ZASPECSB", "ZADTC", "ZADTCU", "ZASPECID", "ZAXFN", 
+                "ZAORRES", "ZAORRESU", "ZASPEC", "ZASPECSB", "ZAELTM", "ZATPTREF", "ZAREFID", "ZAXFN", 
                 "ZAMFI", "ZAMFICRD")]
     
             qnam_values = c("ZAMFI", "ZAMFICRD")
@@ -183,9 +183,9 @@ getCountOfProteinQuantification <- function(data_src, study_id, assay_type="ALL"
 ##'     ZAORRESU \tab Original Units \cr
 ##'     ZASPEC \tab Specimen Type \cr
 ##'     ZASPECSB \tab Specimen Subtype \cr
-##'     ZADY \tab Study Time of Specimen Collection \cr
-##'     ZADTCU \tab Units of Study Time of Specimen Collection \cr
-##'     ZASPECID \tab Specimen Identifier \cr
+##'     ZAELTM \tab Planned Elapsed Time from Time Point Ref \cr
+##'     ZATPTREF \tab Time Point Reference \cr
+##'     ZAREFID \tab Specimen Identifier \cr
 ##'     ZAXFN \tab Raw Data File or Life Science Identifier
 ##'   }
 ##' }

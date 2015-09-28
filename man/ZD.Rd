@@ -22,8 +22,8 @@
     ZDSPEC \tab Specimen Type \cr
     ZDSPECSB \tab Specimen Subtype \cr
     ZDREFID \tab Specimen Identifier \cr
-    ZDDY \tab Study Day of Specimen Collection \cr
-    ZDDYU \tab Units of Study Day of Specimen Collection \cr
+    ZDELTM \tab Planned Elapsed Time from Time Point Ref \cr
+    ZDTPTREF \tab Time Point Reference \cr
     ZDXFN \tab Raw Data File or Life Science Identifier
   }
 }

@@ -48,8 +48,16 @@ getMbaaResults <- function(conn,study_id, measurement_types) {
                     ORDER BY mbaa.subject_accession",sep="")
   
   mbaa_df <- dbGetQuery(conn,statement=sql_stmt)
-  if (nrow(mbaa_df) > 0)
+  if (nrow(mbaa_df) > 0) {
     colnames(mbaa_df) <- mbaa_cols 
+    
+    mbaa_df <- ddply(mbaa_df, .(study_id, subject_id, result_id), mutate, elapsed_time_of_specimen_collection = 
+                      covertElaspsedTimeToISO8601Format(study_time_of_specimen_collection, 
+                                                        unit_of_study_time_of_specimen_collection))
+    
+    mbaa_df <- ddply(mbaa_df, .(study_id, subject_id, result_id), mutate, time_point_reference = 
+                      getTimePointReference(study_time_t0_event, study_time_t0_event_specify))
+  }
   
   cat("done", "\n")
   mbaa_df
