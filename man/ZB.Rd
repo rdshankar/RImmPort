@@ -21,6 +21,7 @@
     ZBBASPOP \tab Base Parent Population \cr
     ZBSPEC \tab Specimen Type \cr
     ZBSPECSB \tab Specimen Subtype \cr
+    VISIT \tab Visit Name \cr
     ZBELTM \tab Planned Elapsed Time from Time Point Ref \cr
     ZBTPTREF \tab Time Point Reference \cr
     ZBREFID \tab Specimen Identifier \cr

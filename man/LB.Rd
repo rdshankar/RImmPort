@@ -17,6 +17,7 @@
     LBORRESU \tab Original Units \cr
     LBSPEC \tab Specimen Type \cr
     LBREFID \tab Specimen Identifier \cr
+    VISIT \tab Visit Name \cr
     LBELTM \tab Planned Elapsed Time from Time Point Ref \cr
     LBTPTREF \tab Time Point Reference
   }

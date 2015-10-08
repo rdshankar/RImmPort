@@ -9,7 +9,7 @@ NULL
 #> NULL 
 
 ta_cols <- c("STUDYID", "DOMAIN", "USUBJID", "ZDSEQ", "ZDTEST", "ZDCAT", "ZDMETHOD", "ZDSTRAIN", "ZDORRES", 
-                     "ZDORRESU",  "ZDSPEC", "ZDSPECSB", "ZDREFID", "ZDELTM", "ZDTPTREF")
+                     "ZDORRESU",  "ZDSPEC", "ZDSPECSB", "ZDREFID", "VISIT", "ZDELTM", "ZDTPTREF")
 
 suppta_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
 
@@ -66,13 +66,13 @@ getTiterAssayResults <- function(data_src, study_id, assay_type="ALL") {
                           ZDCAT = assay_purpose, ZDMETHOD = measurement_technique, ZDSTRAIN = virus_strain, 
                           ZDORRES = result_in_original_units, ZDORRESU = original_units,  
                           ZDSPEC = specimen_type, ZDSPECSB = specimen_subtype, 
-                          ZDELTM = elapsed_time_of_specimen_collection, ZDTPTREF = time_point_reference, 
+                          VISIT = visit_name, ZDELTM = elapsed_time_of_specimen_collection, ZDTPTREF = time_point_reference, 
                           ZDREFID = biosample_accession)
         
         hai.df$DOMAIN <- "ZD"
         
         hai.df <- hai.df[, c("STUDYID", "DOMAIN", "USUBJID", "ZDSEQ", "ZDTEST", "ZDCAT", "ZDMETHOD", "ZDSTRAIN", "ZDORRES", 
-                               "ZDORRESU",  "ZDSPEC", "ZDSPECSB", "ZDREFID", "ZDELTM", "ZDTPTREF" )]
+                               "ZDORRESU",  "ZDSPEC", "ZDSPECSB", "ZDREFID", "VISIT", "ZDELTM", "ZDTPTREF" )]
     
         ta_df <- rbind(ta_df, hai.df)
         
@@ -88,13 +88,13 @@ getTiterAssayResults <- function(data_src, study_id, assay_type="ALL") {
                          ZDCAT = assay_purpose, ZDMETHOD = measurement_technique, ZDSTRAIN = virus_strain, 
                          ZDORRES = result_in_original_units, ZDORRESU = original_units,  
                          ZDSPEC = specimen_type, ZDSPECSB = specimen_subtype, 
-                         ZDELTM = elapsed_time_of_specimen_collection, ZDTPTREF = time_point_reference, 
+                         VISIT = visit_name, ZDELTM = elapsed_time_of_specimen_collection, ZDTPTREF = time_point_reference, 
                         ZDREFID = biosample_accession)
         
         nat.df$DOMAIN <- "ZD"
         
         nat.df <- nat.df[, c("STUDYID", "DOMAIN", "USUBJID", "ZDSEQ", "ZDTEST", "ZDCAT", "ZDMETHOD", "ZDSTRAIN", "ZDORRES", 
-                             "ZDORRESU",  "ZDSPEC", "ZDSPECSB", "ZDREFID", "ZDELTM", "ZDTPTREF")]
+                             "ZDORRESU",  "ZDSPEC", "ZDSPECSB", "ZDREFID", "VISIT", "ZDELTM", "ZDTPTREF")]
         
         ta_df <- rbind(ta_df, nat.df)
         
@@ -169,6 +169,7 @@ getCountOfTiterAssayResults <- function(data_src, study_id, assay_type="ALL") {
 ##'     ZDSPEC \tab Specimen Type \cr
 ##'     ZDSPECSB \tab Specimen Subtype \cr
 ##'     ZDREFID \tab Specimen Identifier \cr
+##'     VISIT \tab Visit Name \cr
 ##'     ZDELTM \tab Planned Elapsed Time from Time Point Ref \cr
 ##'     ZDTPTREF \tab Time Point Reference \cr
 ##'     ZDXFN \tab Raw Data File or Life Science Identifier

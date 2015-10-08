@@ -3,9 +3,9 @@
 hla_cols <- c("study_id", "subject_id", "result_id", "result_set_id",
                             "allele_1", "allele_2", 
                             "locus_name", "pop_area_name", 
-                      "experiment_title", "assay_purpose", "measurement_technique",
-                      "biosample_accession", "specimen_type", "specimen_subtype",
-                            "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
+                            "experiment_title", "assay_purpose", "measurement_technique",
+                            "biosample_accession", "specimen_type", "specimen_subtype",
+                            "visit_name", "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
                             "study_time_t0_event", "study_time_t0_event_specify")
 
 getHlaTypingResults <- function(conn,study_id, measurement_type) {
@@ -27,6 +27,7 @@ getHlaTypingResults <- function(conn,study_id, measurement_type) {
                     bs.biosample_accession, 
                     bs.type,
                     bs.subtype,
+                    pv.visit_name,
                     bs.study_time_collected,
                     bs.study_time_collected_unit,
                     bs.study_time_t0_event,
@@ -37,6 +38,8 @@ getHlaTypingResults <- function(conn,study_id, measurement_type) {
                       experiment ex ON hla.experiment_accession=ex.experiment_accession
                     INNER JOIN
                       biosample bs ON hla.biosample_accession=bs.biosample_accession
+                    INNER JOIN
+                      planned_visit pv ON bs.planned_visit_accession=pv.planned_visit_accession
                     WHERE hla.study_accession in (\'", study_id,"\') 
                     ORDER BY hla.subject_accession",sep="")
   

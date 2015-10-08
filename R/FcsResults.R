@@ -3,7 +3,7 @@ fcs_cols <- c("study_id", "subject_id", "sequence",
                       "experiment_title", "assay_purpose", "measurement_technique",
                       "experiment_sample_accession",
                       "biosample_accession", "specimen_type", "specimen_subtype",
-                      "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
+                      "visit_name", "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
                       "study_time_t0_event", "study_time_t0_event_specify",
                       "file_name")
 
@@ -32,6 +32,7 @@ getFcsResults <- function(conn,study_id, measurement_types) {
                       bs.biosample_accession,
                       bs.type,
                       bs.subtype,
+                      pv.visit_name,
                       bs.study_time_collected,
                       bs.study_time_collected_unit,
                       bs.study_time_t0_event,
@@ -42,6 +43,8 @@ getFcsResults <- function(conn,study_id, measurement_types) {
                       biosample bs
                     INNER JOIN
                       biosample_2_expsample bs2es ON bs.biosample_accession=bs2es.biosample_accession
+                    INNER JOIN
+                      planned_visit pv ON bs.planned_visit_accession=pv.planned_visit_accession
                     INNER JOIN
                       experiment ex ON bs2es.experiment_accession=ex.experiment_accession
                     INNER JOIN

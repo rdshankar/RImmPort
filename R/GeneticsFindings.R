@@ -9,7 +9,7 @@ NULL
 #> NULL 
 
 gf_cols <- c("STUDYID", "DOMAIN", "USUBJID", "PFSEQ", "PFGRPID", "PFTEST","PFCAT", "PFMETHOD", "PFGENRI", "PFORRES",  
-             "PFALLELC", "PFXFN", "PFSPEC", "PFREFID", "PFELTM", "PFTPTREF")
+             "PFALLELC", "PFXFN", "PFSPEC", "PFREFID", "VISIT", "PFELTM", "PFTPTREF")
 
 suppgf_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
 
@@ -17,8 +17,8 @@ suppgf_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "
 # this hack is to satisfy CRAN (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
 globalVariables(c("subject_id", "result_id", "result_set_id", "experiment_title", "assay_purpose", "measurement_technique",
                   "locus_name", "allele_1", "allele_2",
-                  "pop_area_name", "specimen_type",
-                  "specimen_subtype", "elapsed_time_of_specimen_collection", "time_point_reference",
+                  "pop_area_name", "specimen_type", "specimen_subtype",
+                  "visit_name", "elapsed_time_of_specimen_collection", "time_point_reference",
                   "biosample_accession", "repository_id", 
                   "QNAM", "QVAL", "PFSPECSB", "PFPOPAR"))
 
@@ -59,7 +59,7 @@ getGeneticsFindings <- function(data_src, study_id, assay_type="ALL") {
       #                         "locus_name", "pop_area_name", 
       #                         "experiment_title", "assay_purpose", "measurement_technique",
       #                         "biosample_accession", "specimen_type", "specimen_subtype",
-      #                         "elapsed_time_of_specimen_collection", "time_point_reference",
+      #                         "visit_name", "elapsed_time_of_specimen_collection", "time_point_reference",
       #                         "study_time_t0_event", "study_time_t0_event_specify")
     
       hla_df <- getHlaTypingResults(data_src, study_id, "")
@@ -68,7 +68,7 @@ getGeneticsFindings <- function(data_src, study_id, assay_type="ALL") {
                          PFTEST = experiment_title, PFCAT = assay_purpose, PFMETHOD = measurement_technique, 
                          PFGENRI = locus_name, PFALLEL1 = allele_1, PFALLEL2 = allele_2, PFPOPAR = pop_area_name, 
                          PFSPEC = specimen_type, PFSPECSB = specimen_subtype, 
-                         PFELTM = elapsed_time_of_specimen_collection, PFTPTREF = time_point_reference,
+                         VISIT = visit_name, PFELTM = elapsed_time_of_specimen_collection, PFTPTREF = time_point_reference,
                          PFREFID = biosample_accession )
     
         hla_df$DOMAIN <- "PF"
@@ -97,7 +97,7 @@ getGeneticsFindings <- function(data_src, study_id, assay_type="ALL") {
         
         hla_df <- melt(hla_df, 
                                      id = c("STUDYID", "DOMAIN", "USUBJID", "PFSEQ", "PFGRPID", "PFTEST", "PFGENRI",  "PFCAT", "PFMETHOD", 
-                                            "PFSPEC", "PFELTM", "PFTPTREF", "PFREFID", "PFXFN"), 
+                                            "PFSPEC", "VISIT", "PFELTM", "PFTPTREF", "PFREFID", "PFXFN"), 
                                      measure = c("PFALLEL1", "PFALLEL2"), 
                                      variable.name = "PFALLELC", 
                                      value.name = "PFORRES")
@@ -117,7 +117,7 @@ getGeneticsFindings <- function(data_src, study_id, assay_type="ALL") {
       #   array_column_names <- c("study_id", "subject_id", "result_id", "dataset_id", 
       #                           "experiment_title", "assay_purpose", "measurement_technique",
       #                           "biosample_accession", "specimen_type", "specimen_subtype", 
-      #                           "elapsed_time_of_specimen_collection", "time_point_reference")
+      #                           "visit_name", "elapsed_time_of_specimen_collection", "time_point_reference")
   
       arr_df <- getArrayResults(data_src, study_id, "")
       if (nrow(arr_df) > 0) {
@@ -125,7 +125,7 @@ getGeneticsFindings <- function(data_src, study_id, assay_type="ALL") {
           select(STUDYID = study_id, USUBJID = subject_id, PFSEQ = result_id, PFXFN = dataset_id,
                          PFTEST = experiment_title, PFCAT = assay_purpose, PFMETHOD = measurement_technique, 
                          PFSPEC = specimen_type, PFSPECSB = specimen_subtype, 
-                         PFELTM = elapsed_time_of_specimen_collection, PFTPTREF = time_point_reference,
+                         VISIT = visit_name, PFELTM = elapsed_time_of_specimen_collection, PFTPTREF = time_point_reference,
                          PFREFID = biosample_accession )
         arr_df$DOMAIN <- "PF"
         arr_df$PFGRPID <- ""
@@ -225,6 +225,7 @@ getCountOfGeneticsFindings <- function(data_src, study_id, assay_type="ALL") {
 ##'     PFALLELC \tab Allele (Chromosome) Identifier \cr
 ##'     PFSPEC \tab Specimen Type \cr
 ##'     PFREFID \tab Reference ID (Specimen Identifier) \cr
+##'     VISIT \tab Visit Name \cr
 ##'     PFELTM \tab Planned Elapsed Time from Time Point Ref \cr
 ##'     PFTPTREF \tab Time Point Reference
 ##'   }

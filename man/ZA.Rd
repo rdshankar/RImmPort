@@ -19,6 +19,7 @@
     ZAORRESU \tab Original Units \cr
     ZASPEC \tab Specimen Type \cr
     ZASPECSB \tab Specimen Subtype \cr
+    VISIT \tab Visit Name \cr
     ZAELTM \tab Planned Elapsed Time from Time Point Ref \cr
     ZATPTREF \tab Time Point Reference \cr
     ZAREFID \tab Specimen Identifier \cr

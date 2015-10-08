@@ -4,7 +4,7 @@ elisa_cols <- c("study_id", "subject_id", "result_id",
                                 "value", "unit",
                                 "experiment_title", "assay_purpose", "measurement_technique",
                                 "biosample_accession", "specimen_type", "specimen_subtype",
-                                "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
+                                "visit_name", "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
                                 "study_time_t0_event", "study_time_t0_event_specify",
                                 "file_name")
 
@@ -31,6 +31,7 @@ getElisaResults <- function(conn,study_id, measurement_types) {
                     bs.biosample_accession,
                     bs.type,
                     bs.subtype,
+                    pv.visit_name,
                     bs.study_time_collected,
                     bs.study_time_collected_unit,
                     bs.study_time_t0_event,
@@ -42,8 +43,10 @@ getElisaResults <- function(conn,study_id, measurement_types) {
 						          experiment ex ON els.experiment_accession=ex.experiment_accession
 					          INNER JOIN
 						          biosample bs ON els.biosample_accession=bs.biosample_accession
+                    INNER JOIN
+                      planned_visit pv ON bs.planned_visit_accession=pv.planned_visit_accession
                     LEFT OUTER JOIN
-                      expsample_2_file_info es2fi ON els.expsample_accession=es2fi.expsample_accession
+                    expsample_2_file_info es2fi ON els.expsample_accession=es2fi.expsample_accession
                     LEFT OUTER JOIN
                       file_info fi ON es2fi.file_info_id=fi.file_info_id
                     WHERE els.study_accession in (\'", study_id,"\') AND

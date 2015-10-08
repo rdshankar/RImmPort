@@ -23,7 +23,6 @@ The following table enumerates the values in TSPARMCD and TSPARM variables {
     TITLE \tab Trial Title \cr
     DESCR \tab Trial Description \cr
     INDIC \tab Trial Indication \cr
-    OBJPRMSC \tab Trial Objectives \cr
     TRT \tab Investigational Therapy or Treatment \cr
     HYPOTHS \tab Trial Hypotheses \cr
     SSTDTC \tab Study Start Date \cr

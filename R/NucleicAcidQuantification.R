@@ -12,7 +12,8 @@ nq_cols <- c("STUDYID", "DOMAIN", "USUBJID", "ZCSEQ",
                      "ZCTEST", "ZCCAT", "ZCMETHOD", 
                      "ZCENTRZD", "ZCGENNAM", "ZCGENSYM",
                      "ZCTHRESH", "ZCORRES", "ZCORRESU", 
-                     "ZCSPEC", "ZCSPECSB", "ZCREFID", "ZCELTM", "ZCTPTREF")
+                     "ZCSPEC", "ZCSPECSB", "ZCREFID", 
+                     "VISIT", "ZCELTM", "ZCTPTREF")
 
 suppnq_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
 
@@ -21,7 +22,7 @@ suppnq_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "
 globalVariables(c("subject_id", "experiment_title", "assay_purpose", "measurement_technique",
                   "entrez_gene_id", "gene_name", "gene_symbol",
                   "threshold_cycles", "value_reported", "unit_reported", "specimen_type",
-                  "specimen_subtype", "elapsed_time_of_specimen_collection", "time_point_reference",
+                  "specimen_subtype", "visit_name", "elapsed_time_of_specimen_collection", "time_point_reference",
                   "biosample_accession"))
 
 ## Get Nucleic Acid Quantification data of a specific study
@@ -60,14 +61,15 @@ getNucleicAcidQuantification <- function(data_src, study_id, assay_type="ALL") {
                            "ZCTEST", "ZCCAT", "ZCMETHOD", 
                            "ZCENTRZD", "ZCGENNAM", "ZCGENSYM",
                            "ZCTHRESH", "ZCORRES", "ZCORRESU", 
-                           "ZCSPEC", "ZCSPECSB", "ZCELTM", "ZCTPTREF", "ZCREFID")
+                           "ZCSPEC", "ZCSPECSB",
+                           "VISIT","ZCELTM", "ZCTPTREF", "ZCREFID")
       
     #   pcr_column_names <- c("study_id", "subject_id", "result_id",
     #                         "entrez_gene_id", "gene_name", "gene_symbol", 
     #                         "threshold_cycles", "value_reported", "unit_reported",
     #                         "experiment_title", "assay_purpose", "measurement_technique",
     #                         "biosample_accession", "specimen_type", "specimen_subtype",
-    #                         "elapsed_time_of_specimen_collection", "time_point_reference",
+    #                         "visit_name", "elapsed_time_of_specimen_collection", "time_point_reference",
     #                         "study_time_t0_event", "study_time_t0_event_specify")
       
       pcr_df <- getPcrResults(data_src, study_id, "")
@@ -76,7 +78,8 @@ getNucleicAcidQuantification <- function(data_src, study_id, assay_type="ALL") {
                          ZCCAT = assay_purpose, ZCMETHOD = measurement_technique, 
                          ZCENTRZD = entrez_gene_id, ZCGENNAM = gene_name, ZCGENSYM = gene_symbol,
                          ZCTHRESH = threshold_cycles, ZCORRES = value_reported, ZCORRESU = unit_reported,
-                         ZCSPEC = specimen_type, ZCSPECSB = specimen_subtype, ZCELTM = elapsed_time_of_specimen_collection, 
+                         ZCSPEC = specimen_type, ZCSPECSB = specimen_subtype,
+                         VISIT = visit_name, ZCELTM = elapsed_time_of_specimen_collection, 
                          ZCTPTREF = time_point_reference, ZCREFID = biosample_accession) 
         
         pcr_df$DOMAIN <- "ZC"
@@ -85,7 +88,8 @@ getNucleicAcidQuantification <- function(data_src, study_id, assay_type="ALL") {
                              "ZCTEST", "ZCCAT", "ZCMETHOD", 
                              "ZCENTRZD", "ZCGENNAM", "ZCGENSYM",
                              "ZCTHRESH", "ZCORRES", "ZCORRESU", 
-                             "ZCSPEC", "ZCSPECSB", "ZCREFID","ZCELTM", "ZCTPTREF")]
+                             "ZCSPEC", "ZCSPECSB", "ZCREFID", 
+                             "VISIT", "ZCELTM", "ZCTPTREF")]
         nq_df <- rbind(nq_df, pcr_df)
         
       }
@@ -154,6 +158,7 @@ getCountOfNucleicAcidQuantification <- function(data_src, study_id, assay_type="
 ##'     ZCSPEC \tab Specimen Type \cr
 ##'     ZCSPECSB \tab Specimen Subtype \cr
 ##'     ZCREFID \tab Specimen Identifier \cr
+##'     VISIT \tab Visit Name \cr
 ##'     ZCELTM \tab Planned Elapsed Time from Time Point Ref \cr
 ##'     ZCTPTREF \tab Time Point Reference
 ##'   }

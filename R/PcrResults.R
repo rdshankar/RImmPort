@@ -1,11 +1,11 @@
 
 pcr_cols <- c("study_id", "subject_id", "result_id",
-                      "entrez_gene_id", "gene_name", "gene_symbol", 
-                      "threshold_cycles", "value_reported", "unit_reported",
-                      "experiment_title", "assay_purpose", "measurement_technique",
-                      "biosample_accession", "specimen_type", "specimen_subtype",
-                      "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
-                      "study_time_t0_event", "study_time_t0_event_specify")
+              "entrez_gene_id", "gene_name", "gene_symbol", 
+              "threshold_cycles", "value_reported", "unit_reported",
+              "experiment_title", "assay_purpose", "measurement_technique",
+              "biosample_accession", "specimen_type", "specimen_subtype",
+              "visit_name", "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
+              "study_time_t0_event", "study_time_t0_event_specify")
 
 getPcrResults <- function(conn,study_id, measurement_type) {
   cat("loading PCR Results data....")
@@ -27,6 +27,7 @@ getPcrResults <- function(conn,study_id, measurement_type) {
                     bs.biosample_accession, 
                     bs.type,
                     bs.subtype,
+                    pv.visit_name,
                     bs.study_time_collected,
                     bs.study_time_collected_unit,
                     bs.study_time_t0_event,
@@ -37,6 +38,8 @@ getPcrResults <- function(conn,study_id, measurement_type) {
                       experiment ex ON pcr.experiment_accession=ex.experiment_accession
                     INNER JOIN
                       biosample bs ON pcr.biosample_accession=bs.biosample_accession
+                    INNER JOIN
+                      planned_visit pv ON bs.planned_visit_accession=pv.planned_visit_accession
                     WHERE pcr.study_accession in (\'", study_id,"\') 
                     ORDER BY pcr.subject_accession",sep="")
   

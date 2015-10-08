@@ -22,6 +22,7 @@
     ZDSPEC \tab Specimen Type \cr
     ZDSPECSB \tab Specimen Subtype \cr
     ZDREFID \tab Specimen Identifier \cr
+    VISIT \tab Visit Name \cr
     ZDELTM \tab Planned Elapsed Time from Time Point Ref \cr
     ZDTPTREF \tab Time Point Reference \cr
     ZDXFN \tab Raw Data File or Life Science Identifier

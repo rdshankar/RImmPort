@@ -11,14 +11,14 @@ ts_cols  <- c("STUDYID", "DOMAIN","TSSEQ",
                                 "TSPARMCD", "TSPARM", "TSVAL")
 
 ts_col_codes <- c("STUDYID", "DOMAIN", "TSSEQ", "TITLE", "DESCR", "INDIC", 
-                  "OBJPRMSC", "TRT", "HYPOTHS", "SSTDTC", 
+                  "TRT", "HYPOTHS", "SSTDTC", 
                   "SENDTC", "PLANSUB", "ACTSUB", 
                   "AGEMAX", "AGEMIN", "AGEU", 
                   "SEXPOP", "SPONSOR", "PUBRLDAT", "STYPE", 
                   "ISTRIAL","RESFOCUS")
 
 ts_col_labels <- c("Study Identifier", "Domain", "Sequence", "Trial Title", "Trial Description", "Trial Indication", 
-                   "Trial Objectives", "Investigational Therapy or Treatment", "Trial Hypotheses", "Study Start Date", 
+                   "Investigational Therapy or Treatment", "Trial Hypotheses", "Study Start Date", 
                    "Study End Date", "Planned Number of Subjects", "Actual Number of Subjects", 
                    "Planned Maximum Age of Subjects", "Planned Minimum Age of Subjects", "Age Units", 
                    "Sex of Participants", "Clinical Study Sponsor", "Public Release Date", "Study Type", 
@@ -56,7 +56,6 @@ getTrialSummary <- function(data_src,study_id) {
                     st.brief_title,
                     st.brief_description,
                     st.condition_studied,
-                    st.objectives,
                     st.intervention_agent,
                     st.hypothesis,
                     st.actual_start_date,
@@ -98,7 +97,7 @@ getTrialSummary <- function(data_src,study_id) {
   
       ts_df <- reshape2::melt(temp_ts_df, id = c("STUDYID", "DOMAIN", "TSSEQ"), 
                             measure = c("TITLE", "DESCR", "INDIC", 
-                                        "OBJPRMSC", "TRT", "HYPOTHS", "SSTDTC", 
+                                        "TRT", "HYPOTHS", "SSTDTC", 
                                         "SENDTC", "PLANSUB", "ACTSUB", 
                                         "AGEMAX", "AGEMIN", "AGEU", 
                                         "SEXPOP", "SPONSOR", "PUBRLDAT", "STYPE", 
@@ -172,7 +171,6 @@ getCountOfTrialSummary <- function(conn,study_id) {
 ##'     TITLE \tab Trial Title \cr
 ##'     DESCR \tab Trial Description \cr
 ##'     INDIC \tab Trial Indication \cr
-##'     OBJPRMSC \tab Trial Objectives \cr
 ##'     TRT \tab Investigational Therapy or Treatment \cr
 ##'     HYPOTHS \tab Trial Hypotheses \cr
 ##'     SSTDTC \tab Study Start Date \cr

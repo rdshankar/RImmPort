@@ -22,6 +22,7 @@
     ZCSPEC \tab Specimen Type \cr
     ZCSPECSB \tab Specimen Subtype \cr
     ZCREFID \tab Specimen Identifier \cr
+    VISIT \tab Visit Name \cr
     ZCELTM \tab Planned Elapsed Time from Time Point Ref \cr
     ZCTPTREF \tab Time Point Reference
   }

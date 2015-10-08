@@ -8,7 +8,7 @@ NULL
 #> NULL 
 
 lb.cols <- c("STUDYID", "DOMAIN", "USUBJID", "LBSEQ", "LBTEST", "LBCAT", "LBORRES", "LBORRESU", "LBSPEC", "LBSPECSB",
-             "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
+             "VISIT", "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
              "study_time_t0_event", "study_time_t0_event_specify", "LBREFID")
 
 supplb.cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
@@ -47,15 +47,18 @@ getLaboratoryTestResults <- function(data_src, study_id) {
                         lt.result_unit_reported,
                         bs.type,
                         bs.subtype,
+                        pv.visit_name,
                         bs.study_time_collected,
                         bs.study_time_collected_unit,
                         bs.study_time_t0_event,
                         bs.study_time_t0_event_specify,
                         bs.biosample_accession
                       FROM  lab_test lt,
-                            biosample bs
+                            biosample bs,                         
+                            planned_visit pv
                       WHERE lt.study_accession in ('", study_id, "') AND
-                            lt.biosample_accession=bs.biosample_accession
+                            lt.biosample_accession=bs.biosample_accession AND
+                            bs.planned_visit_accession=pv.planned_visit_accession
                       ORDER BY bs.subject_accession", sep = "")
     
     if ((class(data_src)[1] == 'MySQLConnection') || 
@@ -166,6 +169,7 @@ getCountOfLaboratoryTestResults <- function(conn, study_id) {
 ##'     LBORRESU \tab Original Units \cr
 ##'     LBSPEC \tab Specimen Type \cr
 ##'     LBREFID \tab Specimen Identifier \cr
+##'     VISIT \tab Visit Name \cr
 ##'     LBELTM \tab Planned Elapsed Time from Time Point Ref \cr
 ##'     LBTPTREF \tab Time Point Reference
 ##'   }

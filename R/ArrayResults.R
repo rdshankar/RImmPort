@@ -2,7 +2,7 @@
 array_cols <- c("study_id", "subject_id", "result_id", "dataset_id", 
                         "experiment_title", "assay_purpose", "measurement_technique",
                         "biosample_accession", "specimen_type", "specimen_subtype", 
-                        "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
+                        "visit_name", "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
                         "study_time_t0_event", "study_time_t0_event_specify")
 
 # call to globalVariables to prevent from generating NOTE: no visible binding for global variable <variable name>
@@ -24,17 +24,20 @@ getArrayResults <- function(conn, study_id, measurement_type) {
                          bs.biosample_accession, 
                          bs.type,
                          bs.subtype,
+                         pv.visit_name,
                          bs.study_time_collected,
                          bs.study_time_collected_unit,
                          bs.study_time_t0_event,
                          bs.study_time_t0_event_specify
                        FROM experiment ex,
                          biosample bs,
+                         planned_visit pv,
                          biosample_2_expsample be,
                          expsample_public_repository er
                        WHERE ex.study_accession in ('", study_id, "') AND 
                          be.experiment_accession=ex.experiment_accession AND
                          bs.biosample_accession=be.biosample_accession AND
+                         bs.planned_visit_accession=pv.planned_visit_accession AND
                          be.expsample_accession=er.expsample_accession AND
                          er.repository_name='GEO'
                        ORDER BY bs.subject_accession", sep = "")
@@ -55,6 +58,7 @@ getArrayResults <- function(conn, study_id, measurement_type) {
                         bs.biosample_accession, 
                         bs.type,
                         bs.subtype,
+                         pv.visit_name,
                         bs.study_time_collected,
                         bs.study_time_collected_unit,
                         bs.study_time_t0_event,
@@ -62,6 +66,7 @@ getArrayResults <- function(conn, study_id, measurement_type) {
                       FROM 
                         experiment ex,
                         biosample bs,
+                         planned_visit pv,
                         biosample_2_expsample be,
                         expsample_2_file_info es2fi, 
                         file_info fi                      
@@ -69,6 +74,7 @@ getArrayResults <- function(conn, study_id, measurement_type) {
                         ex.study_accession in ('", study_id, "') AND 
                         be.experiment_accession=ex.experiment_accession AND
                         bs.biosample_accession=be.biosample_accession AND
+                        bs.planned_visit_accession=pv.planned_visit_accession AND
                         be.expsample_accession=es2fi.expsample_accession AND
                         es2fi.data_format like \"%Gene_Expression%\" AND
                         es2fi.file_info_id = fi.file_info_id                      
