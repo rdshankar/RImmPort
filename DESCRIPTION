@@ -1,8 +1,8 @@
 Package: RImmPort
 Type: Package
 Title: RImmPort: Enabling ready-for-analysis immunology research data
-Version: 0.9.5.2
-Date: 2015-09-28
+Version: 0.9.5.3
+Date: 2015-10-08
 Author: Ravi Shankar <rshankar@stanford.edu>
 Maintainer: Ravi Shankar <rshankar@stanford.edu>
 URL: http://github.com/rdshankar/RImmPort
