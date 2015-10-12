@@ -51,10 +51,10 @@ library(plyr)
 
 ## Option 1: ImmPort MySQL database
 
-### Download zip files of ImmPort data, in MySQL format, of studies of interest: 'SDY139' and 'SDY208'
-### Load the data in these zip files into a private MySQL database
+### Download zip files of ImmPort study data in MySQL format. e.g.'SDY139' and 'SDY208'
+### Load the data in these zip files into a local MySQL database
 
-### Connect to the private ImmPort MySQL database.
+### Connect to the ImmPort MySQL database.
 ```{r eval=FALSE}
 
 # provide appropriate connection parameters
@@ -71,7 +71,7 @@ setImmPortDataSource(mysql_conn)
 
 ## Option 2: ImmPort SQLite database
 
-### Download zip files of ImmPort data, in Tab format, of studies of interest: 'SDY139' and 'SDY208'
+### Download zip files of ImmPort data, in Tab format. e.g.'SDY139' and 'SDY208'
 ```{r}
 # get the directory where ImmPort sample data is stored in the directory structure of RImmPort package
 studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
@@ -106,7 +106,7 @@ sqlite_conn <- dbConnect(SQLite(), dbname=file.path(db_dir, "ImmPort.sqlite"))
 setImmPortDataSource(sqlite_conn)
 ```
 
-# NOTE: In rest of the script, all RImmPort functions will use the SQLite ImmPort database as the ImmPort data source.
+# NOTE: In rest of the script, all RImmPort functions will use the SQLite ImmPort database as the data source.
 
 # Get all study ids
 ```{r}
@@ -174,12 +174,12 @@ if (length(zb_l) > 0)
 head(zb_l$zb_df)
 ```
 
-# Get the list of assay types that ImmPort studies have data for.
+# Get the list of assay types from ImmPort studies
 ```{r}
 getListOfAssayTypes()
 ```
 
-# Get specific assay data of one or more studies
+# Get specific assay data of one or more Immport studies
 The assay type should be exact to what is found in the list of supported assay types. 
 ```{r}
 
