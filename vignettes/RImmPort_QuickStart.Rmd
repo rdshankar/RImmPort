@@ -28,7 +28,7 @@ ImmPort study data is available for download in two formats currently: MySQL for
        Sets the ImmPort data source to the connection handle. 
        Invokes RImmPort functions.
 
-User downloads study data of interest from the ImmPort website ( http://www.immport.org ) **. Depending on the file format MYSQL or Tab it loads the data into a local MySQL or SQLlite database repectively. The user installs the RImmPort package, loads the RImmPort library, connects to the local ImmPort database, and calls RImmPort methods to load study data from the database into R. Please refer to the RImmPort_Article.pdf for a detailed discussion on RImmPort.
+User downloads study data of interest from the ImmPort website ( http://www.immport.org ) **. Depending on the file format MySQL or Tab the data is loaded into a local MySQL or SQLlite database respectively. The user installs the RImmPort package, loads the RImmPort library, connects to the ImmPort database, and calls RImmPort methods to load study data from the database into R. Please refer to the RImmPort_Article.pdf for a detailed discussion on RImmPort.
 
 ** User need to regsiter to the ImmPort website for downloading the datasets.
 
