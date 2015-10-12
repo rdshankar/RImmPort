@@ -13,7 +13,7 @@ vignette: >
 
 *****
 # Introduction
-ImmPort study data is available for download in two formats currently: MySQL format, and TSV (Tab) format. The RImmPort workflow is as follows: 
+ImmPort study data is available for download in two formats currently: MySQL and TSV (Tab) format. The RImmPort workflow is as follows: 
 1) MySQL formatted study data: 
        User downloads one or more studies in MySQL zip files. 
        Unzips the files. 
