@@ -13,28 +13,30 @@ vignette: >
 
 *****
 # Introduction
-ImmPort study data is available for download in 2 formats currently: MySQL format, and TSV (Tab) format. The RImmPort workflow is as follows: 
+ImmPort study data is available for download in two formats currently: MySQL and TSV (Tab) format. The RImmPort workflow is as follows: 
 1) MySQL formatted study data: 
-       User downloads 1 or  more studies in MySQL zip files. 
+       User downloads one or more studies in MySQL zip files. 
        Unzips the files. 
-       Loads private db instance. 
-       Connects to the db. 
+       Loads local database instance. 
+       Connects to the database. 
        Sets the ImmPort data source to the connection handle. 
        Invokes RImmPort functions.
 2) Tab: 
-       User downloads 1 or more studies in Tab format. 
-       Passes the folder where the zip files are, to an RImmPort function that builds SQLite db. 
-       Connects to the db. 
+       User downloads one or more studies in Tab format. 
+       Passes the folder where the zip files are located to an RImmPort function that builds SQLite database. 
+       Connects to the database. 
        Sets the ImmPort data source to the connection handle. 
        Invokes RImmPort functions.
 
-User downloads study data of interest from the ImmPort website. Depending on the format, loads the data into a private MySQL database The user writes R script that installs the RImmPort package, loads the RImmPort library, connects to the private ImmPort database, and calls RImmPort methods to load sudy data from the database into R. Please refer to the RImmPort_Article.pdf for a detailed discussion on RImmPort.
+User downloads study data of interest from the ImmPort website ( http://www.immport.org ) **. Depending on the file format MySQL or Tab the data is loaded into a local MySQL and SQLite database respectively. The user installs the RImmPort package, loads the RImmPort library, connects to the ImmPort database, and calls RImmPort methods to load study data from the database into R. Please refer to the RImmPort_Article.pdf for a detailed discussion on RImmPort.
+
+** User need to regsiter to the ImmPort website for downloading the datasets.
 
 # Initial Steps
 
-- Download MySQL or Tab formatted data of studies of interest, from the ImmPort website
-- If working with MySQL-format, load the data in to a private MySQL database
-- Install RImmPort package
+- Download MySQL or Tab formatted data of studies of interest from the ImmPort website
+- If working with MySQL-format, load the data in to a local MySQL database
+- Install and load RImmPort package, and other required packages.
 
 # Load the RImmPort library
 
@@ -49,10 +51,10 @@ library(plyr)
 
 ## Option 1: ImmPort MySQL database
 
-### Download zip files of ImmPort data, in MySQL format, of studies of interest: 'SDY139' and 'SDY208'
-### Load the data in these zip files into a private MySQL database
+### Download zip files of ImmPort study data in MySQL format. e.g.'SDY139' and 'SDY208'
+### Load the data into a local MySQL database
 
-### Connect to the private ImmPort MySQL database.
+### Connect to the ImmPort MySQL database.
 ```{r eval=FALSE}
 
 # provide appropriate connection parameters
@@ -69,7 +71,7 @@ setImmPortDataSource(mysql_conn)
 
 ## Option 2: ImmPort SQLite database
 
-### Download zip files of ImmPort data, in Tab format, of studies of interest: 'SDY139' and 'SDY208'
+### Download zip files of ImmPort data, in Tab format. e.g.'SDY139' and 'SDY208'
 ```{r}
 # get the directory where ImmPort sample data is stored in the directory structure of RImmPort package
 studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
@@ -79,7 +81,7 @@ tab_dir <- file.path(studies_dir, "Tab")
 list.files(tab_dir)
 ```
 
-### Build a private SQLite ImmPort database instance. 
+### Build a local SQLite ImmPort database instance. 
 ```{r}
 # set db_dir to the folder where the database file 'ImmPort.sqlite' should be stored
 db_dir <- file.path(studies_dir, "Db")
@@ -104,7 +106,7 @@ sqlite_conn <- dbConnect(SQLite(), dbname=file.path(db_dir, "ImmPort.sqlite"))
 setImmPortDataSource(sqlite_conn)
 ```
 
-# NOTE: In rest of the script, all RImmPort functions will use the SQLite ImmPort database as the ImmPort data source.
+# NOTE: In rest of the script, all RImmPort functions will use the SQLite ImmPort database as the data source.
 
 # Get all study ids
 ```{r}
@@ -112,7 +114,7 @@ getListOfStudies()
 ```
 
 # Get all data of a specific study
-The `getStudyFromDatabase` queries the ImmPort database for the entire dataset of a specifc study, and instantiates the `Study` reference class with that data. 
+The `getStudyFromDatabase` queries the ImmPort database for the entire dataset of a specific study, and instantiates the `Study` reference class with that data. 
 ```{r}
 ?Study
 
@@ -172,12 +174,12 @@ if (length(zb_l) > 0)
 head(zb_l$zb_df)
 ```
 
-# Get the list of assay types that ImmPort studies have data for.
+# Get the list of assay types from ImmPort studies
 ```{r}
 getListOfAssayTypes()
 ```
 
-# Get specific assay data of one or more studies
+# Get specific assay data of one or more Immport studies
 The assay type should be exact to what is found in the list of supported assay types. 
 ```{r}
 
