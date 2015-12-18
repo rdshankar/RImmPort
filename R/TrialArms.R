@@ -7,12 +7,7 @@
 NULL
 #> NULL 
 
-ta_cols <- c("STUDYID", "DOMAIN", "ARMCD", "ARM", "description", "population_selection_rule")
-suppta_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
-
-# call to globalVariables to prevent from generating NOTE: no visible binding for global variable <variable name>
-# this hack is to satisfy CRAN (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
-globalVariables(c("LBSEQ", "QNAM", "QVAL", "LBSPECSB"))
+ta_cols <- c("STUDYID", "DOMAIN", "ARMCD", "ARM", "ARMDESC", "ARMRULE")
 
 # Get Trial Arms data of a specific study
 # 
