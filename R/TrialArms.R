@@ -7,7 +7,12 @@
 NULL
 #> NULL 
 
-ta_cols <- c("STUDYID", "DOMAIN", "ARMCD", "ARM")
+ta_cols <- c("STUDYID", "DOMAIN", "ARMCD", "ARM", "description", "population_selection_rule")
+suppta_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
+
+# call to globalVariables to prevent from generating NOTE: no visible binding for global variable <variable name>
+# this hack is to satisfy CRAN (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
+globalVariables(c("LBSEQ", "QNAM", "QVAL", "LBSPECSB"))
 
 # Get Trial Arms data of a specific study
 # 
@@ -30,7 +35,9 @@ getTrialArms <- function(data_src, study_id) {
                         ac.study_accession,
                         \"TA\" as domain,
                         ac.arm_accession,
-                        ac.name as arm_name
+                        ac.name as arm_name,
+                        ac.description as arm_description,
+                        ac.population_selection_rule as population_selection_rule
                       FROM arm_or_cohort ac
                       WHERE ac.study_accession in ('", study_id, "')
                       ORDER BY ac.sort_order", sep = "")
