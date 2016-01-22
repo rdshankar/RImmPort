@@ -9,7 +9,7 @@ NULL
 #> NULL 
 
 pq_cols <- c("STUDYID", "DOMAIN", "USUBJID", "ZASEQ", "ZATEST", "ZACAT", "ZAMETHOD", "ZAANALYT", "ZAORRES", 
-             "ZAORRESU", "ZASPEC", "VISIT", "ZAELTM", "ZATPTREF", "ZAREFID", "ZAXFN")
+             "ZAORRESU", "ZASPEC", "VISITNUM", "VISIT", "ZAELTM", "ZATPTREF", "ZAREFID", "ZAXFN")
 
 supppq_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
 
@@ -63,18 +63,21 @@ getProteinQuantification <- function(data_src, study_id, assay_type="ALL") {
                 ZATRTAMV = treatment_amount_value, ZATRTAMU = treatment_amount_unit,
                 ZATRTDUV = treatment_duration_value, ZATRTDUU = treatment_duration_unit,
                 ZATRTTMV = treatment_temperature_value, ZATRTTMU = treatment_temperature_unit,
-                VISIT = visit_name, ZAELTM = elapsed_time_of_specimen_collection, ZATPTREF = time_point_reference, 
+                VISIT = visit_name, VISITNUM = visit_order,  VISITMIN = visit_min_start_day, VISITMAX = visit_max_start_day, 
+                ZAELTM = elapsed_time_of_specimen_collection, ZATPTREF = time_point_reference, 
                 ZAREFID = biosample_accession, ZAXFN = file_name)
             
             els.df$DOMAIN <- "ZA"
 
             qnam_values = c("ZASPECSB",
+                            "VISITMIN", "VISITMAX",
                             "ZASPTRT", 
                             "ZATRTAMV", "ZATRTAMU",
                             "ZATRTDUV", "ZATRTDUU",
                             "ZATRTTMV", "ZATRTTMU")
             
             qlabel_values= c("Specimen Subtype",
+                             "Planned Visit Minimum Start Day", "Planned Visit Maximum Start Day",
                              "Specimen Treatment", 
                              "Specimen Treatment Amount Value", "Specimen Treatment Amount Unit",
                              "Specimen Treatment Duration Value", "Specimen Treatment Duration Unit", 
@@ -95,6 +98,7 @@ getProteinQuantification <- function(data_src, study_id, assay_type="ALL") {
             supp_els_df <- subset(supp_els_df,QVAL!="")      
             
             els_df <- subset(els_df, select = -c(ZASPECSB, ZASPTRT, 
+                                                 VISITMIN, VISITMAX,
                                                  ZATRTAMV, ZATRTAMU,
                                                  ZATRTDUV, ZATRTDUU,
                                                  ZATRTTMV, ZATRTTMU))
@@ -126,19 +130,22 @@ getProteinQuantification <- function(data_src, study_id, assay_type="ALL") {
                 ZATRTAMV = treatment_amount_value, ZATRTAMU = treatment_amount_unit,
                 ZATRTDUV = treatment_duration_value, ZATRTDUU = treatment_duration_unit,
                 ZATRTTMV = treatment_temperature_value, ZATRTTMU = treatment_temperature_unit,
-                VISIT = visit_name, ZAELTM = elapsed_time_of_specimen_collection, 
+                VISIT = visit_name, VISITNUM = visit_order,  VISITMIN = visit_min_start_day, VISITMAX = visit_max_start_day, 
+                ZAELTM = elapsed_time_of_specimen_collection, 
                 ZATPTREF = time_point_reference, 
                 ZAREFID = biosample_accession, ZAXFN = file_name, ZAMFI = mfi, ZAMFICRD = mfi_coordinate)
             
             mbaa_df$DOMAIN <- "ZA"
             
             qnam_values = c("ZAMFI", "ZAMFICRD", "ZASPECSB",
+                            "VISITMIN", "VISITMAX",
                             "ZASPTRT", 
                             "ZATRTAMV", "ZATRTAMU",
                             "ZATRTDUV", "ZATRTDUU",
                             "ZATRTTMV", "ZATRTTMU")
             
             qlabel_values= c("MFI", "MFI Coordinate", "Specimen Subtype",
+                             "Planned Visit Minimum Start Day", "Planned Visit Maximum Start Day",
                              "Specimen Treatment", 
                              "Specimen Treatment Amount Value", "Specimen Treatment Amount Unit",
                              "Specimen Treatment Duration Value", "Specimen Treatment Duration Unit", 
@@ -159,6 +166,7 @@ getProteinQuantification <- function(data_src, study_id, assay_type="ALL") {
             supp_mbaa_df <- subset(supp_mbaa_df,QVAL!="")      
             
             mbaa_df <- subset(mbaa_df, select = -c(ZAMFI, ZAMFICRD, ZASPECSB, 
+                                                   VISITMIN, VISITMAX,
                                                    ZASPTRT, 
                                                    ZATRTAMV, ZATRTAMU,
                                                    ZATRTDUV, ZATRTDUU,
@@ -233,6 +241,7 @@ getCountOfProteinQuantification <- function(data_src, study_id, assay_type="ALL"
 ##'     ZAORRES \tab Result or Finding in Original Units \cr
 ##'     ZAORRESU \tab Original Units \cr
 ##'     ZASPEC \tab Specimen Type \cr
+##'     VISITNUM \tab Visit Number \cr
 ##'     VISIT \tab Visit Name \cr
 ##'     ZAELTM \tab Planned Elapsed Time from Time Point Ref \cr
 ##'     ZATPTREF \tab Time Point Reference \cr
@@ -264,6 +273,8 @@ NULL
 ##'     ZAMFI \tab MFI \cr
 ##'     ZAMFICRD \tab MFI Coordinate 
 ##'     ZASPECSB \tab Specimen Subtype \cr
+##'     VISITMIN \tab Planned Visit Minimum Start Day \cr
+##'     VISITMAX \tab Planned Visit Maximum Start Day \cr
 ##'     ZASPTRT \tab Specimen Treatment \cr
 ##'     ZATRTAMV \tab Specimen Treatment Amount Value \cr
 ##'     ZATRTAMU \tab Specimen Treatment Amount Unit \cr

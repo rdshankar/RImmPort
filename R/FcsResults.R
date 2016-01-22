@@ -7,7 +7,8 @@ fcs_cols <- c("study_id", "subject_id", "sequence",
                       "treatment_amount_value", "treatment_amount_unit",
                       "treatment_duration_value", "treatment_duration_unit",
                       "treatment_temperature_value", "treatment_temperature_unit",
-                      "visit_name", "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
+                      "visit_name", "visit_min_start_day", "visit_max_start_day", "visit_order",
+                      "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
                       "study_time_t0_event", "study_time_t0_event_specify",
                       "file_name")
 
@@ -44,6 +45,9 @@ getFcsResults <- function(conn,study_id, measurement_types) {
                       tr.temperature_value,
                       tr.temperature_unit,
                       pv.visit_name,
+                      pv.min_start_day,
+                      pv.max_start_day,
+                      pv.order_number,
                       bs.study_time_collected,
                       bs.study_time_collected_unit,
                       bs.study_time_t0_event,
@@ -92,7 +96,6 @@ getFcsResults <- function(conn,study_id, measurement_types) {
                       far.population_cell_number_unit,
                       far.population_defnition_reported, 
                       far.population_name_reported
-                      
                       FROM  
                       fcs_analyzed_result far
                       WHERE 

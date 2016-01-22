@@ -8,7 +8,8 @@ pcr_cols <- c("study_id", "subject_id", "result_id",
               "treatment_amount_value", "treatment_amount_unit",
               "treatment_duration_value", "treatment_duration_unit",
               "treatment_temperature_value", "treatment_temperature_unit",
-              "visit_name", "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
+              "visit_name", "visit_min_start_day", "visit_max_start_day", "visit_order",
+              "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
               "study_time_t0_event", "study_time_t0_event_specify")
 
 getPcrResults <- function(conn,study_id, measurement_type) {
@@ -40,6 +41,9 @@ getPcrResults <- function(conn,study_id, measurement_type) {
                     tr.temperature_value,
                     tr.temperature_unit,
                     pv.visit_name,
+                    pv.min_start_day,
+                    pv.max_start_day,
+                    pv.order_number,
                     bs.study_time_collected,
                     bs.study_time_collected_unit,
                     bs.study_time_t0_event,

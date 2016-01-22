@@ -8,14 +8,14 @@ NULL
 #> NULL 
 
 lb.cols <- c("STUDYID", "DOMAIN", "USUBJID", "LBSEQ", "LBTEST", "LBCAT", "LBORRES", "LBORRESU", "LBSPEC", "LBSPECSB",
-             "VISIT", "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
+             "VISITNUM", "VISIT", "VISITMIN", "VISITMAX", "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
              "study_time_t0_event", "study_time_t0_event_specify", "LBREFID")
 
 supplb.cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
 
 # call to globalVariables to prevent from generating NOTE: no visible binding for global variable <variable name>
 # this hack is to satisfy CRAN (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
-globalVariables(c("LBSEQ", "QNAM", "QVAL", "LBSPECSB"))
+globalVariables(c("LBSEQ", "QNAM", "QVAL", "LBSPECSB", "VISITMIN", "VISITMAX"))
 
 # Get Laboratory Test Results data of a specific study
 # 
@@ -47,7 +47,10 @@ getLaboratoryTestResults <- function(data_src, study_id) {
                         lt.result_unit_reported,
                         bs.type,
                         bs.subtype,
+                        pv.order_number,
                         pv.visit_name,
+                        pv.min_start_day,
+                        pv.max_start_day,
                         bs.study_time_collected,
                         bs.study_time_collected_unit,
                         bs.study_time_t0_event,
@@ -84,8 +87,8 @@ getLaboratoryTestResults <- function(data_src, study_id) {
           
    
           
-          qnam_values = c("LBSPECSB")
-          qlabel_values= c("Specimen Subtype")
+          qnam_values = c("LBSPECSB", "VISITMIN", "VISITMAX")
+          qlabel_values= c("Specimen Subtype", "Planned Visit Minimum Start Day", "Planned Visit Maximum Start Day")
           
           supplb_df <- reshape2::melt(lb_df, 
                                       id = c("STUDYID", "DOMAIN", "USUBJID", "LBSEQ"), 
@@ -102,7 +105,7 @@ getLaboratoryTestResults <- function(data_src, study_id) {
           # remove rows that have empty QVAL values
           supplb_df <- subset(supplb_df,QVAL!="")      
   
-          lb_df <- subset(lb_df, select = -c(LBSPECSB, study_time_of_specimen_collection, 
+          lb_df <- subset(lb_df, select = -c(LBSPECSB, VISITMIN, VISITMAX, study_time_of_specimen_collection, 
                                              unit_of_study_time_of_specimen_collection,
                                              study_time_t0_event, study_time_t0_event_specify))
           
@@ -169,6 +172,7 @@ getCountOfLaboratoryTestResults <- function(conn, study_id) {
 ##'     LBORRESU \tab Original Units \cr
 ##'     LBSPEC \tab Specimen Type \cr
 ##'     LBREFID \tab Specimen Identifier \cr
+##'     VISITNUM \tab Visit Number \cr
 ##'     VISIT \tab Visit Name \cr
 ##'     LBELTM \tab Planned Elapsed Time from Time Point Ref \cr
 ##'     LBTPTREF \tab Time Point Reference
@@ -196,6 +200,8 @@ NULL
 ##'   \tabular{ll}{
 ##'     \strong{QNAM} \tab \strong{QLABEL} \cr
 ##'     LBSPECSB \tab Specimen Subtype \cr
+##'     VISITMIN \tab Planned Visit Minimum Start Day \cr
+##'     VISITMAX \tab Planned Visit Maximum Start Day
 ##'   }
 ##' }
 NULL

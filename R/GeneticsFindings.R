@@ -9,7 +9,7 @@ NULL
 #> NULL 
 
 gf_cols <- c("STUDYID", "DOMAIN", "USUBJID", "PFSEQ", "PFGRPID", "PFTEST","PFCAT", "PFMETHOD", "PFGENRI", "PFORRES",  
-             "PFALLELC", "PFXFN", "PFSPEC", "PFREFID", "VISIT", "PFELTM", "PFTPTREF")
+             "PFALLELC", "PFXFN", "PFSPEC", "PFREFID", "VISITNUM", "VISIT", "PFELTM", "PFTPTREF")
 
 suppgf_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
 
@@ -72,18 +72,21 @@ getGeneticsFindings <- function(data_src, study_id, assay_type="ALL") {
                          PFTRTAMV = treatment_amount_value, PFTRTAMU = treatment_amount_unit,
                          PFTRTDUV = treatment_duration_value, PFTRTDUU = treatment_duration_unit,
                          PFTRTTMV = treatment_temperature_value, PFTRTTMU = treatment_temperature_unit,
-                         VISIT = visit_name, PFELTM = elapsed_time_of_specimen_collection, PFTPTREF = time_point_reference,
+                         VISIT = visit_name, VISITNUM = visit_order,  VISITMIN = visit_min_start_day, VISITMAX = visit_max_start_day, 
+                         PFELTM = elapsed_time_of_specimen_collection, PFTPTREF = time_point_reference,
                          PFREFID = biosample_accession )
     
         hla_df$DOMAIN <- "PF"
         hla_df$PFXFN <- ""
         
         qnam_values = c("PFSPECSB", "PFPOPAR", 
+                        "VISITMIN", "VISITMAX",
                         "PFSPTRT", 
                         "PFTRTAMV", "PFTRTAMU",
                         "PFTRTDUV", "PFTRTDUU",
                         "PFTRTTMV", "PFTRTTMU")
         qlabel_values= c("Specimen Subtype", "Geographic Area of the Population", 
+                         "Planned Visit Minimum Start Day", "Planned Visit Maximum Start Day",
                          "Specimen Treatment", 
                          "Specimen Treatment Amount Value", "Specimen Treatment Amount Unit",
                          "Specimen Treatment Duration Value", "Specimen Treatment Duration Unit", 
@@ -106,6 +109,7 @@ getGeneticsFindings <- function(data_src, study_id, assay_type="ALL") {
         supphla_df <- subset(supphla_df,QVAL!="")      
         
         hla_df <- subset(hla_df, select = -c(PFSPECSB, PFPOPAR, 
+                                             VISITMIN, VISITMAX,
                                              PFSPTRT, 
                                              PFTRTAMV, PFTRTAMU,
                                              PFTRTDUV, PFTRTDUU,
@@ -113,7 +117,7 @@ getGeneticsFindings <- function(data_src, study_id, assay_type="ALL") {
         
         hla_df <- melt(hla_df, 
                                      id = c("STUDYID", "DOMAIN", "USUBJID", "PFSEQ", "PFGRPID", "PFTEST", "PFGENRI",  "PFCAT", "PFMETHOD", 
-                                            "PFSPEC", "VISIT", "PFELTM", "PFTPTREF", "PFREFID", "PFXFN"), 
+                                            "PFSPEC", "VISITNUM", "VISIT", "PFELTM", "PFTPTREF", "PFREFID", "PFXFN"), 
                                      measure = c("PFALLEL1", "PFALLEL2"), 
                                      variable.name = "PFALLELC", 
                                      value.name = "PFORRES")
@@ -145,7 +149,8 @@ getGeneticsFindings <- function(data_src, study_id, assay_type="ALL") {
                          PFTRTAMV = treatment_amount_value, PFTRTAMU = treatment_amount_unit,
                          PFTRTDUV = treatment_duration_value, PFTRTDUU = treatment_duration_unit,
                          PFTRTTMV = treatment_temperature_value, PFTRTTMU = treatment_temperature_unit,
-                         VISIT = visit_name, PFELTM = elapsed_time_of_specimen_collection, PFTPTREF = time_point_reference,
+                         VISIT = visit_name, VISITNUM = visit_order,  VISITMIN = visit_min_start_day, VISITMAX = visit_max_start_day, 
+                         PFELTM = elapsed_time_of_specimen_collection, PFTPTREF = time_point_reference,
                          PFREFID = biosample_accession )
         arr_df$DOMAIN <- "PF"
         arr_df$PFGRPID <- ""
@@ -154,11 +159,13 @@ getGeneticsFindings <- function(data_src, study_id, assay_type="ALL") {
         arr_df$PFALLELC <- ""
     
         qnam_values = c("PFSPECSB",
+                        "VISITMIN", "VISITMAX",
                         "PFSPTRT", 
                         "PFTRTAMV", "PFTRTAMU",
                         "PFTRTDUV", "PFTRTDUU",
                         "PFTRTTMV", "PFTRTTMU")
         qlabel_values= c("Specimen Subtype",
+                         "Planned Visit Minimum Start Day", "Planned Visit Maximum Start Day",
                          "Specimen Treatment", 
                          "Specimen Treatment Amount Value", "Specimen Treatment Amount Unit",
                          "Specimen Treatment Duration Value", "Specimen Treatment Duration Unit", 
@@ -181,6 +188,7 @@ getGeneticsFindings <- function(data_src, study_id, assay_type="ALL") {
         supparr_df <- subset(supparr_df,QVAL!="")      
         
         arr_df <- subset(arr_df, select = -c(PFSPECSB, PFSPTRT, 
+                                             VISITMIN, VISITMAX,
                                              PFTRTAMV, PFTRTAMU,
                                              PFTRTDUV, PFTRTDUU,
                                              PFTRTTMV, PFTRTTMU))
@@ -256,6 +264,7 @@ getCountOfGeneticsFindings <- function(data_src, study_id, assay_type="ALL") {
 ##'     PFALLELC \tab Allele (Chromosome) Identifier \cr
 ##'     PFSPEC \tab Specimen Type \cr
 ##'     PFREFID \tab Reference ID (Specimen Identifier) \cr
+##'     VISITNUM \tab Visit Number \cr
 ##'     VISIT \tab Visit Name \cr
 ##'     PFELTM \tab Planned Elapsed Time from Time Point Ref \cr
 ##'     PFTPTREF \tab Time Point Reference
@@ -284,6 +293,8 @@ NULL
 ##'     \strong{QNAM} \tab \strong{QLABEL} \cr
 ##'     PFPOPAR \tab Geographic Area of the Population \cr
 ##'     PFSPECSB \tab Specimen Subtype \cr
+##'     VISITMIN \tab Planned Visit Minimum Start Day \cr
+##'     VISITMAX \tab Planned Visit Maximum Start Day \cr
 ##'     PFSPTRT \tab Specimen Treatment \cr
 ##'     PFTRTAMV \tab Specimen Treatment Amount Value \cr
 ##'     PFTRTAMU \tab Specimen Treatment Amount Unit \cr

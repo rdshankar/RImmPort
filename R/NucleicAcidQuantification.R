@@ -13,7 +13,7 @@ nq_cols <- c("STUDYID", "DOMAIN", "USUBJID", "ZCSEQ",
                      "ZCENTRZD", "ZCGENNAM", "ZCGENSYM",
                      "ZCTHRESH", "ZCORRES", "ZCORRESU", 
                      "ZCSPEC", "ZCREFID", 
-                     "VISIT", "ZCELTM", "ZCTPTREF")
+                     "VISITNUM", "VISIT", "ZCELTM", "ZCTPTREF")
 
 suppnq_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
 
@@ -76,17 +76,20 @@ getNucleicAcidQuantification <- function(data_src, study_id, assay_type="ALL") {
                          ZCTRTAMV = treatment_amount_value, ZCTRTAMU = treatment_amount_unit,
                          ZCTRTDUV = treatment_duration_value, ZCTRTDUU = treatment_duration_unit,
                          ZCTRTTMV = treatment_temperature_value, ZCTRTTMU = treatment_temperature_unit,
-                         VISIT = visit_name, ZCELTM = elapsed_time_of_specimen_collection, 
+                         VISIT = visit_name, VISITNUM = visit_order,  VISITMIN = visit_min_start_day, VISITMAX = visit_max_start_day, 
+                         ZCELTM = elapsed_time_of_specimen_collection, 
                          ZCTPTREF = time_point_reference, ZCREFID = biosample_accession) 
         
         pcr_df$DOMAIN <- "ZC"
         
         qnam_values = c("ZCSPECSB",
+                        "VISITMIN", "VISITMAX",
                         "ZCSPTRT", 
                         "ZCTRTAMV", "ZCTRTAMU",
                         "ZCTRTDUV", "ZCTRTDUU",
                         "ZCTRTTMV", "ZCTRTTMU")
         qlabel_values= c("Specimen Subtype",
+                         "Planned Visit Minimum Start Day", "Planned Visit Maximum Start Day",
                          "Specimen Treatment", 
                          "Specimen Treatment Amount Value", "Specimen Treatment Amount Unit",
                          "Specimen Treatment Duration Value", "Specimen Treatment Duration Unit", 
@@ -109,6 +112,7 @@ getNucleicAcidQuantification <- function(data_src, study_id, assay_type="ALL") {
         supppcr_df <- subset(supppcr_df,QVAL!="")      
         
         pcr_df <- subset(pcr_df, select = -c(ZCSPECSB, ZCSPTRT, 
+                                             VISITMIN, VISITMAX,
                                              ZCTRTAMV, ZCTRTAMU,
                                              ZCTRTDUV, ZCTRTDUU,
                                              ZCTRTTMV, ZCTRTTMU))
@@ -183,6 +187,7 @@ getCountOfNucleicAcidQuantification <- function(data_src, study_id, assay_type="
 ##'     ZCBASPOP \tab Base Parent Population \cr
 ##'     ZCSPEC \tab Specimen Type \cr
 ##'     ZCREFID \tab Specimen Identifier \cr
+##'     VISITNUM \tab Visit Number \cr
 ##'     VISIT \tab Visit Name \cr
 ##'     ZCELTM \tab Planned Elapsed Time from Time Point Ref \cr
 ##'     ZCTPTREF \tab Time Point Reference
@@ -210,6 +215,8 @@ NULL
 ##'   \tabular{ll}{
 ##'     \strong{QNAM} \tab \strong{QLABEL} \cr
 ##'     ZCSPECSB \tab Specimen Subtype \cr
+##'     VISITMIN \tab Planned Visit Minimum Start Day \cr
+##'     VISITMAX \tab Planned Visit Maximum Start Day \cr
 ##'     ZCSPTRT \tab Specimen Treatment \cr
 ##'     ZCTRTAMV \tab Specimen Treatment Amount Value \cr
 ##'     ZCTRTAMU \tab Specimen Treatment Amount Unit \cr

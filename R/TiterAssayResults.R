@@ -9,7 +9,7 @@ NULL
 #> NULL 
 
 ta_cols <- c("STUDYID", "DOMAIN", "USUBJID", "ZDSEQ", "ZDTEST", "ZDCAT", "ZDMETHOD", "ZDSTRAIN", "ZDORRES", 
-                     "ZDORRESU",  "ZDSPEC", "ZDREFID", "VISIT", "ZDELTM", "ZDTPTREF")
+                     "ZDORRESU",  "ZDSPEC", "ZDREFID", "VISITNUM", "VISIT", "ZDELTM", "ZDTPTREF")
 
 suppta_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
 
@@ -70,7 +70,8 @@ getTiterAssayResults <- function(data_src, study_id, assay_type="ALL") {
                            ZDTRTAMV = treatment_amount_value, ZDTRTAMU = treatment_amount_unit,
                            ZDTRTDUV = treatment_duration_value, ZDTRTDUU = treatment_duration_unit,
                            ZDTRTTMV = treatment_temperature_value, ZDTRTTMU = treatment_temperature_unit,
-                           VISIT = visit_name, ZDELTM = elapsed_time_of_specimen_collection, ZDTPTREF = time_point_reference, 
+                          VISIT = visit_name, VISITNUM = visit_order,  VISITMIN = visit_min_start_day, VISITMAX = visit_max_start_day, 
+                          ZDELTM = elapsed_time_of_specimen_collection, ZDTPTREF = time_point_reference, 
                           ZDREFID = biosample_accession)
         
 
@@ -78,11 +79,13 @@ getTiterAssayResults <- function(data_src, study_id, assay_type="ALL") {
         hai_df$DOMAIN <- "ZD"
         
         qnam_values = c("ZDSPECSB",
+                        "VISITMIN", "VISITMAX",
                         "ZDSPTRT", 
                         "ZDTRTAMV", "ZDTRTAMU",
                         "ZDTRTDUV", "ZDTRTDUU",
                         "ZDTRTTMV", "ZDTRTTMU")
         qlabel_values= c("Specimen Subtype",
+                         "Planned Visit Minimum Start Day", "Planned Visit Maximum Start Day",
                          "Specimen Treatment", 
                          "Specimen Treatment Amount Value", "Specimen Treatment Amount Unit",
                          "Specimen Treatment Duration Value", "Specimen Treatment Duration Unit", 
@@ -104,7 +107,9 @@ getTiterAssayResults <- function(data_src, study_id, assay_type="ALL") {
         # remove rows that have empty QVAL values
         supphai_df <- subset(supphai_df,QVAL!="")      
         
-        hai_df <- subset(hai_df, select = -c(ZDSPECSB, ZDSPTRT, 
+        hai_df <- subset(hai_df, select = -c(ZDSPECSB, 
+                                             VISITMIN, VISITMAX,
+                                             ZDSPTRT, 
                                              ZDTRTAMV, ZDTRTAMU,
                                              ZDTRTDUV, ZDTRTDUU,
                                              ZDTRTTMV, ZDTRTTMU))
@@ -130,17 +135,20 @@ getTiterAssayResults <- function(data_src, study_id, assay_type="ALL") {
                          ZDTRTAMV = treatment_amount_value, ZDTRTAMU = treatment_amount_unit,
                          ZDTRTDUV = treatment_duration_value, ZDTRTDUU = treatment_duration_unit,
                          ZDTRTTMV = treatment_temperature_value, ZDTRTTMU = treatment_temperature_unit,
-                         VISIT = visit_name, ZDELTM = elapsed_time_of_specimen_collection, ZDTPTREF = time_point_reference, 
+                         VISIT = visit_name, VISITNUM = visit_order,  VISITMIN = visit_min_start_day, VISITMAX = visit_max_start_day, 
+                         ZDELTM = elapsed_time_of_specimen_collection, ZDTPTREF = time_point_reference, 
                         ZDREFID = biosample_accession)
         
         nat_df$DOMAIN <- "ZD"
 
         qnam_values = c("ZDSPECSB",
+                        "VISITMIN", "VISITMAX",
                         "ZDSPTRT", 
                         "ZDTRTAMV", "ZDTRTAMU",
                         "ZDTRTDUV", "ZDTRTDUU",
                         "ZDTRTTMV", "ZDTRTTMU")
         qlabel_values= c("Specimen Subtype",
+                         "Planned Visit Minimum Start Day", "Planned Visit Maximum Start Day",
                          "Specimen Treatment", 
                          "Specimen Treatment Amount Value", "Specimen Treatment Amount Unit",
                          "Specimen Treatment Duration Value", "Specimen Treatment Duration Unit", 
@@ -162,7 +170,9 @@ getTiterAssayResults <- function(data_src, study_id, assay_type="ALL") {
         # remove rows that have empty QVAL values
         suppnat_df <- subset(suppnat_df,QVAL!="")      
         
-        nat_df <- subset(nat_df, select = -c(ZDSPECSB, ZDSPTRT, 
+        nat_df <- subset(nat_df, select = -c(ZDSPECSB, 
+                                             VISITMIN, VISITMAX,
+                                             ZDSPTRT, 
                                              ZDTRTAMV, ZDTRTAMU,
                                              ZDTRTDUV, ZDTRTDUU,
                                              ZDTRTTMV, ZDTRTTMU))
@@ -241,6 +251,7 @@ getCountOfTiterAssayResults <- function(data_src, study_id, assay_type="ALL") {
 ##'     ZDBASPOP \tab Base Parent Population \cr
 ##'     ZDSPEC \tab Specimen Type \cr
 ##'     ZDREFID \tab Specimen Identifier \cr
+##'     VISITNUM \tab Visit Number \cr
 ##'     VISIT \tab Visit Name \cr
 ##'     ZDELTM \tab Planned Elapsed Time from Time Point Ref \cr
 ##'     ZDTPTREF \tab Time Point Reference \cr
@@ -269,6 +280,8 @@ NULL
 ##'   \tabular{ll}{
 ##'     \strong{QNAM} \tab \strong{QLABEL} \cr
 ##'     ZDSPECSB \tab Specimen Subtype \cr
+##'     VISITMIN \tab Planned Visit Minimum Start Day \cr
+##'     VISITMAX \tab Planned Visit Maximum Start Day \cr
 ##'     ZDSPTRT \tab Specimen Treatment \cr
 ##'     ZDTRTAMV \tab Specimen Treatment Amount Value \cr
 ##'     ZDTRTAMU \tab Specimen Treatment Amount Unit \cr
