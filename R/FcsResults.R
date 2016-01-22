@@ -2,7 +2,11 @@
 fcs_cols <- c("study_id", "subject_id", "sequence",
                       "experiment_title", "assay_purpose", "measurement_technique",
                       "experiment_sample_accession",
-                      "biosample_accession", "specimen_type", "specimen_subtype",
+                      "biosample_accession", "specimen_type", "specimen_subtype", 
+                      "specimen_treatment", 
+                      "treatment_amount_value", "treatment_amount_unit",
+                      "treatment_duration_value", "treatment_duration_unit",
+                      "treatment_temperature_value", "treatment_temperature_unit",
                       "visit_name", "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
                       "study_time_t0_event", "study_time_t0_event_specify",
                       "file_name")
@@ -32,6 +36,13 @@ getFcsResults <- function(conn,study_id, measurement_types) {
                       bs.biosample_accession,
                       bs.type,
                       bs.subtype,
+                      tr.name,
+                      tr.amount_value,
+                      tr.amount_unit,
+                      tr.duration_value,
+                      tr.duration_unit,
+                      tr.temperature_value,
+                      tr.temperature_unit,
                       pv.visit_name,
                       bs.study_time_collected,
                       bs.study_time_collected_unit,
@@ -47,6 +58,10 @@ getFcsResults <- function(conn,study_id, measurement_types) {
                       planned_visit pv ON bs.planned_visit_accession=pv.planned_visit_accession
                     INNER JOIN
                       experiment ex ON bs2es.experiment_accession=ex.experiment_accession
+                    LEFT OUTER JOIN
+                      expsample_2_treatment es2tr ON bs2es.expsample_accession=es2tr.expsample_accession
+                    LEFT OUTER JOIN
+                      treatment tr ON es2tr.treatment_accession=tr.treatment_accession
                     INNER JOIN
                       expsample_2_file_info es2fi ON bs2es.expsample_accession=es2fi.expsample_accession
                     INNER JOIN

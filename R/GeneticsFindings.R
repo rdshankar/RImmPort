@@ -68,14 +68,26 @@ getGeneticsFindings <- function(data_src, study_id, assay_type="ALL") {
                          PFTEST = experiment_title, PFCAT = assay_purpose, PFMETHOD = measurement_technique, 
                          PFGENRI = locus_name, PFALLEL1 = allele_1, PFALLEL2 = allele_2, PFPOPAR = pop_area_name, 
                          PFSPEC = specimen_type, PFSPECSB = specimen_subtype, 
+                         PFSPTRT = specimen_treatment, 
+                         PFTRTAMV = treatment_amount_value, PFTRTAMU = treatment_amount_unit,
+                         PFTRTDUV = treatment_duration_value, PFTRTDUU = treatment_duration_unit,
+                         PFTRTTMV = treatment_temperature_value, PFTRTTMU = treatment_temperature_unit,
                          VISIT = visit_name, PFELTM = elapsed_time_of_specimen_collection, PFTPTREF = time_point_reference,
                          PFREFID = biosample_accession )
     
         hla_df$DOMAIN <- "PF"
         hla_df$PFXFN <- ""
         
-        qnam_values = c("PFSPECSB", "PFPOPAR")
-        qlabel_values= c("Specimen Subtype", "Geographic Area of the Population")
+        qnam_values = c("PFSPECSB", "PFPOPAR", 
+                        "PFSPTRT", 
+                        "PFTRTAMV", "PFTRTAMU",
+                        "PFTRTDUV", "PFTRTDUU",
+                        "PFTRTTMV", "PFTRTTMU")
+        qlabel_values= c("Specimen Subtype", "Geographic Area of the Population", 
+                         "Specimen Treatment", 
+                         "Specimen Treatment Amount Value", "Specimen Treatment Amount Unit",
+                         "Specimen Treatment Duration Value", "Specimen Treatment Duration Unit", 
+                         "Specimen Treatment Temperature Value", "Specimen Treatment Temperature Unit")
         
         supphla_df <- melt(hla_df, 
                                     id = c("STUDYID", "DOMAIN", "USUBJID", "PFSEQ"), 
@@ -93,7 +105,11 @@ getGeneticsFindings <- function(data_src, study_id, assay_type="ALL") {
         # remove rows that have empty QVAL values
         supphla_df <- subset(supphla_df,QVAL!="")      
         
-        hla_df <- subset(hla_df, select = -c(PFSPECSB, PFPOPAR))
+        hla_df <- subset(hla_df, select = -c(PFSPECSB, PFPOPAR, 
+                                             PFSPTRT, 
+                                             PFTRTAMV, PFTRTAMU,
+                                             PFTRTDUV, PFTRTDUU,
+                                             PFTRTTMV, PFTRTTMU))
         
         hla_df <- melt(hla_df, 
                                      id = c("STUDYID", "DOMAIN", "USUBJID", "PFSEQ", "PFGRPID", "PFTEST", "PFGENRI",  "PFCAT", "PFMETHOD", 
@@ -125,6 +141,10 @@ getGeneticsFindings <- function(data_src, study_id, assay_type="ALL") {
           select(STUDYID = study_id, USUBJID = subject_id, PFSEQ = result_id, PFXFN = dataset_id,
                          PFTEST = experiment_title, PFCAT = assay_purpose, PFMETHOD = measurement_technique, 
                          PFSPEC = specimen_type, PFSPECSB = specimen_subtype, 
+                         PFSPTRT = specimen_treatment, 
+                         PFTRTAMV = treatment_amount_value, PFTRTAMU = treatment_amount_unit,
+                         PFTRTDUV = treatment_duration_value, PFTRTDUU = treatment_duration_unit,
+                         PFTRTTMV = treatment_temperature_value, PFTRTTMU = treatment_temperature_unit,
                          VISIT = visit_name, PFELTM = elapsed_time_of_specimen_collection, PFTPTREF = time_point_reference,
                          PFREFID = biosample_accession )
         arr_df$DOMAIN <- "PF"
@@ -133,8 +153,16 @@ getGeneticsFindings <- function(data_src, study_id, assay_type="ALL") {
         arr_df$PFORRES <- ""
         arr_df$PFALLELC <- ""
     
-        qnam_values = c("PFSPECSB")
-        qlabel_values= c("Units of Study Day of Specimen Collection", "Specimen Subtype")
+        qnam_values = c("PFSPECSB",
+                        "PFSPTRT", 
+                        "PFTRTAMV", "PFTRTAMU",
+                        "PFTRTDUV", "PFTRTDUU",
+                        "PFTRTTMV", "PFTRTTMU")
+        qlabel_values= c("Specimen Subtype",
+                         "Specimen Treatment", 
+                         "Specimen Treatment Amount Value", "Specimen Treatment Amount Unit",
+                         "Specimen Treatment Duration Value", "Specimen Treatment Duration Unit", 
+                         "Specimen Treatment Temperature Value", "Specimen Treatment Temperature Unit")
         
         supparr_df <- melt(arr_df, 
                                      id = c("STUDYID", "DOMAIN", "USUBJID", "PFSEQ"), 
@@ -152,7 +180,10 @@ getGeneticsFindings <- function(data_src, study_id, assay_type="ALL") {
         # remove rows that have empty QVAL values
         supparr_df <- subset(supparr_df,QVAL!="")      
         
-        arr_df <- subset(arr_df, select = -c(PFSPECSB))
+        arr_df <- subset(arr_df, select = -c(PFSPECSB, PFSPTRT, 
+                                             PFTRTAMV, PFTRTAMU,
+                                             PFTRTDUV, PFTRTDUU,
+                                             PFTRTTMV, PFTRTTMU))
         
         arr_df <- arr_df[, gf_cols]
     
@@ -252,7 +283,14 @@ NULL
 ##'   \tabular{ll}{
 ##'     \strong{QNAM} \tab \strong{QLABEL} \cr
 ##'     PFPOPAR \tab Geographic Area of the Population \cr
-##'     PFSPECSB \tab Specimen Subtype
+##'     PFSPECSB \tab Specimen Subtype \cr
+##'     PFSPTRT \tab Specimen Treatment \cr
+##'     PFTRTAMV \tab Specimen Treatment Amount Value \cr
+##'     PFTRTAMU \tab Specimen Treatment Amount Unit \cr
+##'     PFTRTDUV \tab Specimen Treatment Duration Value \cr
+##'     PFTRTDUU \tab Specimen Treatment Duration Unit \cr
+##'     PFTRTTMV \tab Specimen Treatment Temperature Value \cr
+##'     PFTRTTMU \tab Specimen Treatment Temperature Unit
 ##'   }
 ##' }
 NULL

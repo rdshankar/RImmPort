@@ -9,7 +9,7 @@ NULL
 #> NULL 
 
 cq_cols <- c("STUDYID", "DOMAIN", "USUBJID", "ZBSEQ", "ZBTEST", "ZBCAT", "ZBMETHOD", "ZBPOPDEF", "ZBPOPNAM", "ZBORRES", 
-    "ZBORRESU", "ZBBASPOP", "ZBSPEC", "ZBSPECSB", "VISIT", "ZBELTM", "ZBTPTREF", "ZBREFID", 
+    "ZBORRESU", "ZBBASPOP", "ZBSPEC", "VISIT", "ZBELTM", "ZBTPTREF", "ZBREFID", 
     "ZBXFN")
 
 suppcq_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
@@ -60,18 +60,60 @@ getCellularQuantification <- function(data_src, study_id, assay_type="ALL") {
                 ZBCAT = assay_purpose, ZBMETHOD = measurement_technique, ZBBASPOP = base_parent_population, ZBORRES = population_cell_number, 
                 ZBORRESU = population_cell_number_unit, ZBPOPDEF = population_defnition_reported, ZBPOPNAM = population_name_reported, 
                 ZBSPEC = specimen_type, ZBSPECSB = specimen_subtype, 
+                ZBSPTRT = specimen_treatment, 
+                ZBTRTAMV = treatment_amount_value, ZBTRTAMU = treatment_amount_unit,
+                ZBTRTDUV = treatment_duration_value, ZBTRTDUU = treatment_duration_unit,
+                ZBTRTTMV = treatment_temperature_value, ZBTRTTMU = treatment_temperature_unit,
                 VISIT = visit_name, ZBELTM = elapsed_time_of_specimen_collection, ZBTPTREF = time_point_reference, 
                 ZBREFID = biosample_accession, ZBXFN = file_name)
             
             flow_df$DOMAIN <- "ZB"
-            flow_df <- flow_df[, c("STUDYID", "DOMAIN", "USUBJID", "ZBSEQ", "ZBTEST", "ZBCAT", "ZBMETHOD", "ZBPOPDEF", "ZBPOPNAM", "ZBORRES", 
-                                   "ZBORRESU", "ZBBASPOP", "ZBSPEC", "ZBSPECSB", "VISIT", "ZBELTM", "ZBTPTREF", "ZBREFID", 
-                                   "ZBXFN")]
+            
+            qnam_values = c("ZBSPECSB",
+                            "ZBSPTRT", 
+                            "ZBTRTAMV", "ZBTRTAMU",
+                            "ZBTRTDUV", "ZBTRTDUU",
+                            "ZBTRTTMV", "ZBTRTTMU")
+            qlabel_values= c("Specimen Subtype",
+                             "Specimen Treatment", 
+                             "Specimen Treatment Amount Value", "Specimen Treatment Amount Unit",
+                             "Specimen Treatment Duration Value", "Specimen Treatment Duration Unit", 
+                             "Specimen Treatment Temperature Value", "Specimen Treatment Temperature Unit")
+            
+            
+#             flow_df <- flow_df[, c("STUDYID", "DOMAIN", "USUBJID", "ZBSEQ", "ZBTEST", "ZBCAT", "ZBMETHOD", "ZBPOPDEF", "ZBPOPNAM", "ZBORRES", 
+#                                    "ZBORRESU", "ZBBASPOP", "ZBSPEC", "ZBSPECSB", "VISIT", "ZBELTM", "ZBTPTREF", "ZBREFID", 
+#                                    "ZBXFN")]
             flow_df <- transform(flow_df, ZBSEQ = as.integer(ZBSEQ))
             setDT(flow_df)[, `:=`(ZBSEQ, seq_len(.N)), by = "USUBJID"]
             flow_df <- as.data.frame(flow_df)
             
+            suppflow_df <- melt(flow_df, 
+                               id = c("STUDYID", "DOMAIN", "USUBJID", "ZBSEQ"), 
+                               measure = qnam_values, 
+                               variable.name = "QNAM", 
+                               value.name = "QVAL")
+            
+            suppflow_df <- transform(suppflow_df, QLABEL = unlist(qlabel_values[QNAM]))
+            suppflow_df <- rename(suppflow_df, c("DOMAIN" = "RDOMAIN", "ZBSEQ" = "IDVARVAL"))
+            suppflow_df$IDVAR <- "ZBSEQ"
+            
+            
+            suppflow_df <- suppflow_df[suppcq_cols]
+            
+            # remove rows that have empty QVAL values
+            suppflow_df <- subset(suppflow_df,QVAL!="")      
+            
+            flow_df <- subset(flow_df, select = -c(ZBSPECSB, ZBSPTRT, 
+                                                 ZBTRTAMV, ZBTRTAMU,
+                                                 ZBTRTDUV, ZBTRTDUU,
+                                                 ZBTRTTMV, ZBTRTTMU))
+            
+            flow_df <- flow_df[, cq_cols]
+            
             cq_df <- rbind(cq_df, flow_df)
+            suppcq_df <- rbind(suppcq_df, suppflow_df)
+            
         }
       }
 
@@ -91,7 +133,11 @@ getCellularQuantification <- function(data_src, study_id, assay_type="ALL") {
             select(STUDYID = study_id, USUBJID = subject_id, ZBSEQ = result_id, ZBTEST = experiment_title, 
                                       ZBCAT = assay_purpose, ZBMETHOD = measurement_technique, ZBBASPOP=cell_type, ZBORRES = spot_number, 
                                       ZBPOPDEF = analyte, cell_number, 
-                                       ZBSPEC = specimen_type, ZBSPECSB = specimen_subtype,
+                                      ZBSPEC = specimen_type, ZBSPECSB = specimen_subtype,
+                                      ZBSPTRT = specimen_treatment, 
+                                      ZBTRTAMV = treatment_amount_value, ZBTRTAMU = treatment_amount_unit,
+                                      ZBTRTDUV = treatment_duration_value, ZBTRTDUU = treatment_duration_unit,
+                                      ZBTRTTMV = treatment_temperature_value, ZBTRTTMU = treatment_temperature_unit,
                                       VISIT = visit_name, ZBELTM = elapsed_time_of_specimen_collection, 
                                       ZBTPTREF = time_point_reference,  
                                       ZBREFID = biosample_accession, ZBXFN = file_name) %>% 
@@ -99,11 +145,48 @@ getCellularQuantification <- function(data_src, study_id, assay_type="ALL") {
             mutate(ZBPOPNAM = ZBPOPDEF) 
             
           elp_df$DOMAIN <- "ZB"
+
+          qnam_values = c("ZBSPECSB",
+                          "ZBSPTRT", 
+                          "ZBTRTAMV", "ZBTRTAMU",
+                          "ZBTRTDUV", "ZBTRTDUU",
+                          "ZBTRTTMV", "ZBTRTTMU")
+          qlabel_values= c("Specimen Subtype",
+                           "Specimen Treatment", 
+                           "Specimen Treatment Amount Value", "Specimen Treatment Amount Unit",
+                           "Specimen Treatment Duration Value", "Specimen Treatment Duration Unit", 
+                           "Specimen Treatment Temperature Value", "Specimen Treatment Temperature Unit")
           
-          elp_df <- elp_df[, c("STUDYID", "DOMAIN", "USUBJID", "ZBSEQ", "ZBTEST", "ZBCAT", "ZBMETHOD", "ZBPOPDEF", "ZBPOPNAM", "ZBORRES", 
-                               "ZBORRESU", "ZBBASPOP", "ZBSPEC", "ZBSPECSB", "VISIT", "ZBELTM", "ZBTPTREF", "ZBREFID", 
-                               "ZBXFN")]
+          
+#           elp_df <- elp_df[, c("STUDYID", "DOMAIN", "USUBJID", "ZBSEQ", "ZBTEST", "ZBCAT", "ZBMETHOD", "ZBPOPDEF", "ZBPOPNAM", "ZBORRES", 
+#                                "ZBORRESU", "ZBBASPOP", "ZBSPEC", "VISIT", "ZBELTM", "ZBTPTREF", "ZBREFID", 
+#                                "ZBXFN")]
+
+          suppelp_df <- melt(elp_df, 
+                              id = c("STUDYID", "DOMAIN", "USUBJID", "ZBSEQ"), 
+                              measure = qnam_values, 
+                              variable.name = "QNAM", 
+                              value.name = "QVAL")
+          
+          suppelp_df <- transform(suppelp_df, QLABEL = unlist(qlabel_values[QNAM]))
+          suppelp_df <- rename(suppelp_df, c("DOMAIN" = "RDOMAIN", "ZBSEQ" = "IDVARVAL"))
+          suppelp_df$IDVAR <- "ZBSEQ"
+          
+          
+          suppelp_df <- suppelp_df[suppcq_cols]
+          
+          # remove rows that have empty QVAL values
+          suppelp_df <- subset(suppelp_df,QVAL!="")      
+          
+          elp_df <- subset(elp_df, select = -c(ZBSPECSB, ZBSPTRT, 
+                                                 ZBTRTAMV, ZBTRTAMU,
+                                                 ZBTRTDUV, ZBTRTDUU,
+                                                 ZBTRTTMV, ZBTRTTMU))
+          
+          elp_df <- elp_df[, cq_cols]
+          
           cq_df <- rbind(cq_df, elp_df)
+          suppcq_df <- rbind(suppcq_df, suppelp_df)
           
         }
       }
@@ -173,7 +256,6 @@ getCountOfCellularQuantification <- function(data_src, study_id, assay_type="ALL
 ##'     ZBORRESU \tab Original Units \cr
 ##'     ZBBASPOP \tab Base Parent Population \cr
 ##'     ZBSPEC \tab Specimen Type \cr
-##'     ZBSPECSB \tab Specimen Subtype \cr
 ##'     VISIT \tab Visit Name \cr
 ##'     ZBELTM \tab Planned Elapsed Time from Time Point Ref \cr
 ##'     ZBTPTREF \tab Time Point Reference \cr
@@ -183,4 +265,35 @@ getCountOfCellularQuantification <- function(data_src, study_id, assay_type="ALL
 ##' }
 NULL
 #> NULL 
+
+##' Cellular Quantification Domain Supplemental Variables
+##' @name SUPPZB
+##' @description {
+##'   \tabular{ll}{
+##'     \strong{Variable Name} \tab \strong{Variable Label} \cr
+##'     STUDYID \tab Study Identifier \cr
+##'     RDOMAIN  \tab Related Domain Abbreviation \cr
+##'     USUBJID \tab Unique Subject Identifier \cr
+##'     IDVAR \tab Identifying Variable \cr
+##'     IDVARVAL \tab Identifying Variable Value \cr
+##'     QNAM \tab Qualifier Variable Name \cr
+##'     QLABEL \tab Qualifier Variable Label \cr
+##'     QVAL \tab Data Value
+##'   }
+##' }
+##' @note The following table enumerates the values in QNAM and QLABEL variables {
+##'   \tabular{ll}{
+##'     \strong{QNAM} \tab \strong{QLABEL} \cr
+##'     ZBSPECSB \tab Specimen Subtype \cr
+##'     ZBSPTRT \tab Specimen Treatment \cr
+##'     ZBTRTAMV \tab Specimen Treatment Amount Value \cr
+##'     ZBTRTAMU \tab Specimen Treatment Amount Unit \cr
+##'     ZBTRTDUV \tab Specimen Treatment Duration Value \cr
+##'     ZBTRTDUU \tab Specimen Treatment Duration Unit \cr
+##'     ZBTRTTMV \tab Specimen Treatment Temperature Value \cr
+##'     ZBTRTTMU \tab Specimen Treatment Temperature Unit
+##'   }
+##' }
+NULL
+#> NULL
 

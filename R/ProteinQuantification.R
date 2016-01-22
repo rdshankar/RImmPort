@@ -9,7 +9,7 @@ NULL
 #> NULL 
 
 pq_cols <- c("STUDYID", "DOMAIN", "USUBJID", "ZASEQ", "ZATEST", "ZACAT", "ZAMETHOD", "ZAANALYT", "ZAORRES", 
-    "ZAORRESU", "ZASPEC", "ZASPECSB", "VISIT", "ZAELTM", "ZATPTREF", "ZATPT0", "ZATPT0SP", "ZAREFID", "ZAXFN")
+             "ZAORRESU", "ZASPEC", "VISIT", "ZAELTM", "ZATPTREF", "ZAREFID", "ZAXFN")
 
 supppq_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
 
@@ -59,15 +59,50 @@ getProteinQuantification <- function(data_src, study_id, assay_type="ALL") {
             els.df <- select(els.df, STUDYID = study_id, USUBJID = subject_id, ZASEQ = result_id, ZATEST = experiment_title, 
                 ZACAT = assay_purpose, ZAMETHOD = measurement_technique, ZAANALYT = analyte, ZAORRES = value, ZAORRESU = unit, 
                 ZASPEC = specimen_type, ZASPECSB = specimen_subtype, 
+                ZASPTRT = specimen_treatment, 
+                ZATRTAMV = treatment_amount_value, ZATRTAMU = treatment_amount_unit,
+                ZATRTDUV = treatment_duration_value, ZATRTDUU = treatment_duration_unit,
+                ZATRTTMV = treatment_temperature_value, ZATRTTMU = treatment_temperature_unit,
                 VISIT = visit_name, ZAELTM = elapsed_time_of_specimen_collection, ZATPTREF = time_point_reference, 
                 ZAREFID = biosample_accession, ZAXFN = file_name)
             
             els.df$DOMAIN <- "ZA"
+
+            qnam_values = c("ZASPECSB",
+                            "ZASPTRT", 
+                            "ZATRTAMV", "ZATRTAMU",
+                            "ZATRTDUV", "ZATRTDUU",
+                            "ZATRTTMV", "ZATRTTMU")
             
-            els.df <- els.df[, c("STUDYID", "DOMAIN", "USUBJID", "ZASEQ", "ZATEST", "ZACAT", "ZAMETHOD", "ZAANALYT", "ZAORRES", 
-                "ZAORRESU", "ZASPEC", "ZASPECSB", "VISIT", "ZAELTM", "ZATPTREF", "ZAREFID", "ZAXFN")]
+            qlabel_values= c("Specimen Subtype",
+                             "Specimen Treatment", 
+                             "Specimen Treatment Amount Value", "Specimen Treatment Amount Unit",
+                             "Specimen Treatment Duration Value", "Specimen Treatment Duration Unit", 
+                             "Specimen Treatment Temperature Value", "Specimen Treatment Temperature Unit")
+            
+            supp_els_df <- melt(els_df, 
+                                 id = c("STUDYID", "DOMAIN", "USUBJID", "ZASEQ"), 
+                                 measure = qnam_values, 
+                                 variable.name = "QNAM", 
+                                 value.name = "QVAL")
+            supp_els_df <- transform(supp_els_df, QLABEL = unlist(qlabel_values[QNAM]))
+            supp_els_df <- rename(supp_els_df, c("DOMAIN" = "RDOMAIN", "ZASEQ" = "IDVARVAL"))
+            supp_els_df$IDVAR <- "ZASEQ"
+            
+            supp_els_df <- supp_els_df[supppq_cols]
+            
+            # remove rows that have empty QVAL values
+            supp_els_df <- subset(supp_els_df,QVAL!="")      
+            
+            els_df <- subset(els_df, select = -c(ZASPECSB, ZASPTRT, 
+                                                 ZATRTAMV, ZATRTAMU,
+                                                 ZATRTDUV, ZATRTDUU,
+                                                 ZATRTTMV, ZATRTTMU))
+            
+            els.df <- els.df[, pq_cols]
   
             pq_df <- rbind(pq_df, els.df)
+            supppq_df <- rbind(supppq_df, supp_els_df)
             
         }
       }
@@ -87,18 +122,27 @@ getProteinQuantification <- function(data_src, study_id, assay_type="ALL") {
               select(STUDYID = study_id, USUBJID = subject_id, ZASEQ = result_id, ZATEST = experiment_title, 
                 ZACAT = assay_purpose, ZAMETHOD = measurement_technique, ZAANALYT = analyte, ZAORRES = concentration_value, 
                 ZAORRESU = concentration_unit, ZASPEC = specimen_type, ZASPECSB = specimen_subtype, 
+                ZASPTRT = specimen_treatment, 
+                ZATRTAMV = treatment_amount_value, ZATRTAMU = treatment_amount_unit,
+                ZATRTDUV = treatment_duration_value, ZATRTDUU = treatment_duration_unit,
+                ZATRTTMV = treatment_temperature_value, ZATRTTMU = treatment_temperature_unit,
                 VISIT = visit_name, ZAELTM = elapsed_time_of_specimen_collection, 
                 ZATPTREF = time_point_reference, 
                 ZAREFID = biosample_accession, ZAXFN = file_name, ZAMFI = mfi, ZAMFICRD = mfi_coordinate)
             
             mbaa_df$DOMAIN <- "ZA"
             
-            mbaa_df <- mbaa_df[, c("STUDYID", "DOMAIN", "USUBJID", "ZASEQ", "ZATEST", "ZACAT", "ZAMETHOD", "ZAANALYT", 
-                "ZAORRES", "ZAORRESU", "ZASPEC", "ZASPECSB", "VISIT", "ZAELTM", "ZATPTREF", "ZAREFID", "ZAXFN", 
-                "ZAMFI", "ZAMFICRD")]
-    
-            qnam_values = c("ZAMFI", "ZAMFICRD")
-            qlabel_values= c("MFI", "MFI Coordinate")
+            qnam_values = c("ZAMFI", "ZAMFICRD", "ZASPECSB",
+                            "ZASPTRT", 
+                            "ZATRTAMV", "ZATRTAMU",
+                            "ZATRTDUV", "ZATRTDUU",
+                            "ZATRTTMV", "ZATRTTMU")
+            
+            qlabel_values= c("MFI", "MFI Coordinate", "Specimen Subtype",
+                             "Specimen Treatment", 
+                             "Specimen Treatment Amount Value", "Specimen Treatment Amount Unit",
+                             "Specimen Treatment Duration Value", "Specimen Treatment Duration Unit", 
+                             "Specimen Treatment Temperature Value", "Specimen Treatment Temperature Unit")
             
             supp_mbaa_df <- melt(mbaa_df, 
                                            id = c("STUDYID", "DOMAIN", "USUBJID", "ZASEQ"), 
@@ -114,8 +158,14 @@ getProteinQuantification <- function(data_src, study_id, assay_type="ALL") {
             # remove rows that have empty QVAL values
             supp_mbaa_df <- subset(supp_mbaa_df,QVAL!="")      
             
-            mbaa_df <- subset(mbaa_df, select = -c(ZAMFI, ZAMFICRD))
-    
+            mbaa_df <- subset(mbaa_df, select = -c(ZAMFI, ZAMFICRD, ZASPECSB, 
+                                                   ZASPTRT, 
+                                                   ZATRTAMV, ZATRTAMU,
+                                                   ZATRTDUV, ZATRTDUU,
+                                                   ZATRTTMV, ZATRTTMU))
+            
+            mbaa_df <- mbaa_df[, pq_cols]
+            
             pq_df <- rbind(pq_df, mbaa_df)
             supppq_df <- rbind(supppq_df, supp_mbaa_df)
             
@@ -183,7 +233,6 @@ getCountOfProteinQuantification <- function(data_src, study_id, assay_type="ALL"
 ##'     ZAORRES \tab Result or Finding in Original Units \cr
 ##'     ZAORRESU \tab Original Units \cr
 ##'     ZASPEC \tab Specimen Type \cr
-##'     ZASPECSB \tab Specimen Subtype \cr
 ##'     VISIT \tab Visit Name \cr
 ##'     ZAELTM \tab Planned Elapsed Time from Time Point Ref \cr
 ##'     ZATPTREF \tab Time Point Reference \cr
@@ -214,6 +263,14 @@ NULL
 ##'     \strong{QNAM} \tab \strong{QLABEL} \cr
 ##'     ZAMFI \tab MFI \cr
 ##'     ZAMFICRD \tab MFI Coordinate 
+##'     ZASPECSB \tab Specimen Subtype \cr
+##'     ZASPTRT \tab Specimen Treatment \cr
+##'     ZATRTAMV \tab Specimen Treatment Amount Value \cr
+##'     ZATRTAMU \tab Specimen Treatment Amount Unit \cr
+##'     ZATRTDUV \tab Specimen Treatment Duration Value \cr
+##'     ZATRTDUU \tab Specimen Treatment Duration Unit \cr
+##'     ZATRTTMV \tab Specimen Treatment Temperature Value \cr
+##'     ZATRTTMU \tab Specimen Treatment Temperature Unit
 ##'   }
 ##' }
 NULL

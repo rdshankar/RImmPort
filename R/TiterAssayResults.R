@@ -9,7 +9,7 @@ NULL
 #> NULL 
 
 ta_cols <- c("STUDYID", "DOMAIN", "USUBJID", "ZDSEQ", "ZDTEST", "ZDCAT", "ZDMETHOD", "ZDSTRAIN", "ZDORRES", 
-                     "ZDORRESU",  "ZDSPEC", "ZDSPECSB", "ZDREFID", "VISIT", "ZDELTM", "ZDTPTREF")
+                     "ZDORRESU",  "ZDSPEC", "ZDREFID", "VISIT", "ZDELTM", "ZDTPTREF")
 
 suppta_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
 
@@ -60,21 +60,59 @@ getTiterAssayResults <- function(data_src, study_id, assay_type="ALL") {
       #                               "study_time_t0_event", "study_time_t0_event_specify",
       #                               "virus_strain")  
   
-      hai.df <- getHaiResults(data_src, study_id, "")
-      if (nrow(hai.df) > 0) {
-        hai.df <- select(hai.df, STUDYID = study_id, USUBJID = subject_id, ZDSEQ = result_id, ZDTEST = experiment_title, 
+      hai_df <- getHaiResults(data_src, study_id, "")
+      if (nrow(hai_df) > 0) {
+        hai_df <- select(hai_df, STUDYID = study_id, USUBJID = subject_id, ZDSEQ = result_id, ZDTEST = experiment_title, 
                           ZDCAT = assay_purpose, ZDMETHOD = measurement_technique, ZDSTRAIN = virus_strain, 
                           ZDORRES = result_in_original_units, ZDORRESU = original_units,  
                           ZDSPEC = specimen_type, ZDSPECSB = specimen_subtype, 
-                          VISIT = visit_name, ZDELTM = elapsed_time_of_specimen_collection, ZDTPTREF = time_point_reference, 
+                           ZDSPTRT = specimen_treatment, 
+                           ZDTRTAMV = treatment_amount_value, ZDTRTAMU = treatment_amount_unit,
+                           ZDTRTDUV = treatment_duration_value, ZDTRTDUU = treatment_duration_unit,
+                           ZDTRTTMV = treatment_temperature_value, ZDTRTTMU = treatment_temperature_unit,
+                           VISIT = visit_name, ZDELTM = elapsed_time_of_specimen_collection, ZDTPTREF = time_point_reference, 
                           ZDREFID = biosample_accession)
         
-        hai.df$DOMAIN <- "ZD"
+
         
-        hai.df <- hai.df[, c("STUDYID", "DOMAIN", "USUBJID", "ZDSEQ", "ZDTEST", "ZDCAT", "ZDMETHOD", "ZDSTRAIN", "ZDORRES", 
-                               "ZDORRESU",  "ZDSPEC", "ZDSPECSB", "ZDREFID", "VISIT", "ZDELTM", "ZDTPTREF" )]
+        hai_df$DOMAIN <- "ZD"
+        
+        qnam_values = c("ZDSPECSB",
+                        "ZDSPTRT", 
+                        "ZDTRTAMV", "ZDTRTAMU",
+                        "ZDTRTDUV", "ZDTRTDUU",
+                        "ZDTRTTMV", "ZDTRTTMU")
+        qlabel_values= c("Specimen Subtype",
+                         "Specimen Treatment", 
+                         "Specimen Treatment Amount Value", "Specimen Treatment Amount Unit",
+                         "Specimen Treatment Duration Value", "Specimen Treatment Duration Unit", 
+                         "Specimen Treatment Temperature Value", "Specimen Treatment Temperature Unit")
+        
+        supphai_df <- melt(hai_df, 
+                           id = c("STUDYID", "DOMAIN", "USUBJID", "ZDSEQ"), 
+                           measure = qnam_values, 
+                           variable.name = "QNAM", 
+                           value.name = "QVAL")
+        
+        supphai_df <- transform(supphai_df, QLABEL = unlist(qlabel_values[QNAM]))
+        supphai_df <- rename(supphai_df, c("DOMAIN" = "RDOMAIN", "ZDSEQ" = "IDVARVAL"))
+        supphai_df$IDVAR <- "ZDSEQ"
+        
+        
+        supphai_df <- supphai_df[suppcq_cols]
+        
+        # remove rows that have empty QVAL values
+        supphai_df <- subset(supphai_df,QVAL!="")      
+        
+        hai_df <- subset(hai_df, select = -c(ZDSPECSB, ZDSPTRT, 
+                                             ZDTRTAMV, ZDTRTAMU,
+                                             ZDTRTDUV, ZDTRTDUU,
+                                             ZDTRTTMV, ZDTRTTMU))
+                
+        hai_df <- hai_df[, ta_cols]
     
-        ta_df <- rbind(ta_df, hai.df)
+        ta_df <- rbind(ta_df, hai_df)
+        suppta_df <- rbind(suppta_df, supphai_df)
         
       }
     }
@@ -82,22 +120,57 @@ getTiterAssayResults <- function(data_src, study_id, assay_type="ALL") {
     if ((assay_type == "ALL") || (assay_type =="Neut Ab Titer")) {
       # get Neut Ab Titer results
       
-      nat.df <- getNeutAbTiterResults(data_src, study_id, "")
-      if (nrow(nat.df) > 0) {
-        nat.df <- select(nat.df, STUDYID = study_id, USUBJID = subject_id, ZDSEQ = result_id, ZDTEST = experiment_title, 
+      nat_df <- getNeutAbTiterResults(data_src, study_id, "")
+      if (nrow(nat_df) > 0) {
+        nat_df <- select(nat_df, STUDYID = study_id, USUBJID = subject_id, ZDSEQ = result_id, ZDTEST = experiment_title, 
                          ZDCAT = assay_purpose, ZDMETHOD = measurement_technique, ZDSTRAIN = virus_strain, 
                          ZDORRES = result_in_original_units, ZDORRESU = original_units,  
                          ZDSPEC = specimen_type, ZDSPECSB = specimen_subtype, 
+                         ZDSPTRT = specimen_treatment, 
+                         ZDTRTAMV = treatment_amount_value, ZDTRTAMU = treatment_amount_unit,
+                         ZDTRTDUV = treatment_duration_value, ZDTRTDUU = treatment_duration_unit,
+                         ZDTRTTMV = treatment_temperature_value, ZDTRTTMU = treatment_temperature_unit,
                          VISIT = visit_name, ZDELTM = elapsed_time_of_specimen_collection, ZDTPTREF = time_point_reference, 
                         ZDREFID = biosample_accession)
         
-        nat.df$DOMAIN <- "ZD"
+        nat_df$DOMAIN <- "ZD"
+
+        qnam_values = c("ZDSPECSB",
+                        "ZDSPTRT", 
+                        "ZDTRTAMV", "ZDTRTAMU",
+                        "ZDTRTDUV", "ZDTRTDUU",
+                        "ZDTRTTMV", "ZDTRTTMU")
+        qlabel_values= c("Specimen Subtype",
+                         "Specimen Treatment", 
+                         "Specimen Treatment Amount Value", "Specimen Treatment Amount Unit",
+                         "Specimen Treatment Duration Value", "Specimen Treatment Duration Unit", 
+                         "Specimen Treatment Temperature Value", "Specimen Treatment Temperature Unit")
         
-        nat.df <- nat.df[, c("STUDYID", "DOMAIN", "USUBJID", "ZDSEQ", "ZDTEST", "ZDCAT", "ZDMETHOD", "ZDSTRAIN", "ZDORRES", 
-                             "ZDORRESU",  "ZDSPEC", "ZDSPECSB", "ZDREFID", "VISIT", "ZDELTM", "ZDTPTREF")]
+        suppnat_df <- melt(nat_df, 
+                           id = c("STUDYID", "DOMAIN", "USUBJID", "ZDSEQ"), 
+                           measure = qnam_values, 
+                           variable.name = "QNAM", 
+                           value.name = "QVAL")
         
-        ta_df <- rbind(ta_df, nat.df)
+        suppnat_df <- transform(suppnat_df, QLABEL = unlist(qlabel_values[QNAM]))
+        suppnat_df <- rename(suppnat_df, c("DOMAIN" = "RDOMAIN", "ZDSEQ" = "IDVARVAL"))
+        suppnat_df$IDVAR <- "ZDSEQ"
         
+        
+        suppnat_df <- suppnat_df[suppcq_cols]
+        
+        # remove rows that have empty QVAL values
+        suppnat_df <- subset(suppnat_df,QVAL!="")      
+        
+        nat_df <- subset(nat_df, select = -c(ZDSPECSB, ZDSPTRT, 
+                                             ZDTRTAMV, ZDTRTAMU,
+                                             ZDTRTDUV, ZDTRTDUU,
+                                             ZDTRTTMV, ZDTRTTMU))
+        
+        nat_df <- nat_df[, ta_cols]
+        
+        ta_df <- rbind(ta_df, nat_df)
+        suppta_df <- rbind(suppta_df, suppnat_df)
         
       }
     }
@@ -167,7 +240,6 @@ getCountOfTiterAssayResults <- function(data_src, study_id, assay_type="ALL") {
 ##'     ZDORRESU \tab Original Units \cr
 ##'     ZDBASPOP \tab Base Parent Population \cr
 ##'     ZDSPEC \tab Specimen Type \cr
-##'     ZDSPECSB \tab Specimen Subtype \cr
 ##'     ZDREFID \tab Specimen Identifier \cr
 ##'     VISIT \tab Visit Name \cr
 ##'     ZDELTM \tab Planned Elapsed Time from Time Point Ref \cr
@@ -177,4 +249,36 @@ getCountOfTiterAssayResults <- function(data_src, study_id, assay_type="ALL") {
 ##' }
 NULL
 #> NULL 
+
+##' Nucleic Acid Quantification Domain Supplemental Variables
+##' @name SUPPZD
+##' @description {
+##'   \tabular{ll}{
+##'     \strong{Variable Name} \tab \strong{Variable Label} \cr
+##'     STUDYID \tab Study Identifier \cr
+##'     RDOMAIN  \tab Related Domain Abbreviation \cr
+##'     USUBJID \tab Unique Subject Identifier \cr
+##'     IDVAR \tab Identifying Variable \cr
+##'     IDVARVAL \tab Identifying Variable Value \cr
+##'     QNAM \tab Qualifier Variable Name \cr
+##'     QLABEL \tab Qualifier Variable Label \cr
+##'     QVAL \tab Data Value
+##'   }
+##' }
+##' @note The following table enumerates the values in QNAM and QLABEL variables {
+##'   \tabular{ll}{
+##'     \strong{QNAM} \tab \strong{QLABEL} \cr
+##'     ZDSPECSB \tab Specimen Subtype \cr
+##'     ZDSPTRT \tab Specimen Treatment \cr
+##'     ZDTRTAMV \tab Specimen Treatment Amount Value \cr
+##'     ZDTRTAMU \tab Specimen Treatment Amount Unit \cr
+##'     ZDTRTDUV \tab Specimen Treatment Duration Value \cr
+##'     ZDTRTDUU \tab Specimen Treatment Duration Unit \cr
+##'     ZDTRTTMV \tab Specimen Treatment Temperature Value \cr
+##'     ZDTRTTMU \tab Specimen Treatment Temperature Unit
+##'   }
+##' }
+NULL
+#> NULL
+
 

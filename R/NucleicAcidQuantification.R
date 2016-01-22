@@ -12,7 +12,7 @@ nq_cols <- c("STUDYID", "DOMAIN", "USUBJID", "ZCSEQ",
                      "ZCTEST", "ZCCAT", "ZCMETHOD", 
                      "ZCENTRZD", "ZCGENNAM", "ZCGENSYM",
                      "ZCTHRESH", "ZCORRES", "ZCORRESU", 
-                     "ZCSPEC", "ZCSPECSB", "ZCREFID", 
+                     "ZCSPEC", "ZCREFID", 
                      "VISIT", "ZCELTM", "ZCTPTREF")
 
 suppnq_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
@@ -41,7 +41,7 @@ globalVariables(c("subject_id", "experiment_title", "assay_purpose", "measuremen
 ##   # get all of study SDY1's Nucleic Acid Quantification data
 ##   nq_l <- getNucleicAcidQuantification(data_src, "SDY1")
 ##   
-##   # get study SDY1's Nucleic Acid Quantification data that was generated using Array technnology
+##   # get study SDY1's Nucleic Acid Quantification data that was generated using PCR technnology
 ##   nq_l <- getNucleicAcidQuantification(data_src, "SDY1", "PCR")
 ## }
 ##' @importFrom dplyr select
@@ -56,14 +56,7 @@ getNucleicAcidQuantification <- function(data_src, study_id, assay_type="ALL") {
     if ((assay_type == "ALL") || (assay_type =="PCR")) {
       
       # get PCR results
-      
-      nq_cols <- c("STUDYID", "DOMAIN", "USUBJID", "ZCSEQ", 
-                           "ZCTEST", "ZCCAT", "ZCMETHOD", 
-                           "ZCENTRZD", "ZCGENNAM", "ZCGENSYM",
-                           "ZCTHRESH", "ZCORRES", "ZCORRESU", 
-                           "ZCSPEC", "ZCSPECSB",
-                           "VISIT","ZCELTM", "ZCTPTREF", "ZCREFID")
-      
+
     #   pcr_column_names <- c("study_id", "subject_id", "result_id",
     #                         "entrez_gene_id", "gene_name", "gene_symbol", 
     #                         "threshold_cycles", "value_reported", "unit_reported",
@@ -79,18 +72,51 @@ getNucleicAcidQuantification <- function(data_src, study_id, assay_type="ALL") {
                          ZCENTRZD = entrez_gene_id, ZCGENNAM = gene_name, ZCGENSYM = gene_symbol,
                          ZCTHRESH = threshold_cycles, ZCORRES = value_reported, ZCORRESU = unit_reported,
                          ZCSPEC = specimen_type, ZCSPECSB = specimen_subtype,
+                         ZCSPTRT = specimen_treatment, 
+                         ZCTRTAMV = treatment_amount_value, ZCTRTAMU = treatment_amount_unit,
+                         ZCTRTDUV = treatment_duration_value, ZCTRTDUU = treatment_duration_unit,
+                         ZCTRTTMV = treatment_temperature_value, ZCTRTTMU = treatment_temperature_unit,
                          VISIT = visit_name, ZCELTM = elapsed_time_of_specimen_collection, 
                          ZCTPTREF = time_point_reference, ZCREFID = biosample_accession) 
         
         pcr_df$DOMAIN <- "ZC"
         
-        pcr_df <- pcr_df[, c("STUDYID", "DOMAIN", "USUBJID", "ZCSEQ", 
-                             "ZCTEST", "ZCCAT", "ZCMETHOD", 
-                             "ZCENTRZD", "ZCGENNAM", "ZCGENSYM",
-                             "ZCTHRESH", "ZCORRES", "ZCORRESU", 
-                             "ZCSPEC", "ZCSPECSB", "ZCREFID", 
-                             "VISIT", "ZCELTM", "ZCTPTREF")]
+        qnam_values = c("ZCSPECSB",
+                        "ZCSPTRT", 
+                        "ZCTRTAMV", "ZCTRTAMU",
+                        "ZCTRTDUV", "ZCTRTDUU",
+                        "ZCTRTTMV", "ZCTRTTMU")
+        qlabel_values= c("Specimen Subtype",
+                         "Specimen Treatment", 
+                         "Specimen Treatment Amount Value", "Specimen Treatment Amount Unit",
+                         "Specimen Treatment Duration Value", "Specimen Treatment Duration Unit", 
+                         "Specimen Treatment Temperature Value", "Specimen Treatment Temperature Unit")
+
+        supppcr_df <- melt(pcr_df, 
+                           id = c("STUDYID", "DOMAIN", "USUBJID", "ZCSEQ"), 
+                           measure = qnam_values, 
+                           variable.name = "QNAM", 
+                           value.name = "QVAL")
+        
+        supppcr_df <- transform(supppcr_df, QLABEL = unlist(qlabel_values[QNAM]))
+        supppcr_df <- rename(supppcr_df, c("DOMAIN" = "RDOMAIN", "ZCSEQ" = "IDVARVAL"))
+        supppcr_df$IDVAR <- "ZCSEQ"
+        
+        
+        supppcr_df <- supppcr_df[suppcq_cols]
+        
+        # remove rows that have empty QVAL values
+        supppcr_df <- subset(supppcr_df,QVAL!="")      
+        
+        pcr_df <- subset(pcr_df, select = -c(ZCSPECSB, ZCSPTRT, 
+                                             ZCTRTAMV, ZCTRTAMU,
+                                             ZCTRTDUV, ZCTRTDUU,
+                                             ZCTRTTMV, ZCTRTTMU))
+        
+        pcr_df <- pcr_df[, nq_cols]
+        
         nq_df <- rbind(nq_df, pcr_df)
+        suppnq_df <- rbind(suppnq_df, supppcr_df)
         
       }
     }
@@ -156,7 +182,6 @@ getCountOfNucleicAcidQuantification <- function(data_src, study_id, assay_type="
 ##'     ZCORRESU \tab Original Units \cr
 ##'     ZCBASPOP \tab Base Parent Population \cr
 ##'     ZCSPEC \tab Specimen Type \cr
-##'     ZCSPECSB \tab Specimen Subtype \cr
 ##'     ZCREFID \tab Specimen Identifier \cr
 ##'     VISIT \tab Visit Name \cr
 ##'     ZCELTM \tab Planned Elapsed Time from Time Point Ref \cr
@@ -165,4 +190,35 @@ getCountOfNucleicAcidQuantification <- function(data_src, study_id, assay_type="
 ##' }
 NULL
 #> NULL 
+
+##' Nucleic Acid Quantification Domain Supplemental Variables
+##' @name SUPPZC
+##' @description {
+##'   \tabular{ll}{
+##'     \strong{Variable Name} \tab \strong{Variable Label} \cr
+##'     STUDYID \tab Study Identifier \cr
+##'     RDOMAIN  \tab Related Domain Abbreviation \cr
+##'     USUBJID \tab Unique Subject Identifier \cr
+##'     IDVAR \tab Identifying Variable \cr
+##'     IDVARVAL \tab Identifying Variable Value \cr
+##'     QNAM \tab Qualifier Variable Name \cr
+##'     QLABEL \tab Qualifier Variable Label \cr
+##'     QVAL \tab Data Value
+##'   }
+##' }
+##' @note The following table enumerates the values in QNAM and QLABEL variables {
+##'   \tabular{ll}{
+##'     \strong{QNAM} \tab \strong{QLABEL} \cr
+##'     ZCSPECSB \tab Specimen Subtype \cr
+##'     ZCSPTRT \tab Specimen Treatment \cr
+##'     ZCTRTAMV \tab Specimen Treatment Amount Value \cr
+##'     ZCTRTAMU \tab Specimen Treatment Amount Unit \cr
+##'     ZCTRTDUV \tab Specimen Treatment Duration Value \cr
+##'     ZCTRTDUU \tab Specimen Treatment Duration Unit \cr
+##'     ZCTRTTMV \tab Specimen Treatment Temperature Value \cr
+##'     ZCTRTTMU \tab Specimen Treatment Temperature Unit
+##'   }
+##' }
+NULL
+#> NULL
 
