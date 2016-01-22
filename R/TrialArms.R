@@ -94,7 +94,9 @@ getCountOfTrialArms <- function(conn, study_id) {
 ##'     STUDYID \tab Study Identifier \cr
 ##'     DOMAIN  \tab Domain Abbreviation \cr
 ##'     ARMCD \tab Planned Arm Code \cr
-##'     ARM \tab Description of Planned Arm
+##'     ARM \tab Name of Planned Arm \cr
+##'     ARMDESC \tab Description of Planned Arm \cr
+##'     ARMRULE \tab Population Selection Rule
 ##'   }
 ##' }
 NULL

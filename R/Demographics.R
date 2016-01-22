@@ -61,11 +61,9 @@ getDemographics <- function(data_src,study_id) {
     if (nrow(dm_df) > 0) {
     
       if ('Homo sapiens' %in% dm_df$SPECIES) {
-        cat("Human data \n")
         #remove "SPECIES", "STRAIN", "SBSTRAIN" columns
         dm_df[,c("SPECIES", "STRAIN", "SBSTRAIN")] <- list(NULL)
       } else {
-        cat("Non-human data \n")
         #remove "RACE", "ETHNIC" columns
         dm_df[,c("RACE", "ETHNIC")] <- list(NULL)    
       }
