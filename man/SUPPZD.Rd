@@ -2,7 +2,7 @@
 % Please edit documentation in R/TiterAssayResults.R
 \name{SUPPZD}
 \alias{SUPPZD}
-\title{Nucleic Acid Quantification Domain Supplemental Variables}
+\title{Titer Assay Results Domain Supplemental Variables}
 \description{
 {
   \tabular{ll}{

@@ -6,7 +6,7 @@
 \description{
 The ImmPort study data generated from assays of types: HAI and Neut Ab Titer are grouped into the 
 Titer Assay Results Domain. The data is reformated to a custom Titer Assay Results domain model in 
-CDISC SDTM standards, and is a list of 2 data frames containing 1) Cellular Quantification data \code{\link{ZD}} 
-and 2) any supplemental Cellular Quantification data \code{\link{SUPP}}
+CDISC SDTM standards, and is a list of 2 data frames containing 1) Titer Assay Results data \code{\link{ZD}} 
+and 2) any supplemental Titer Assay Results data \code{\link{SUPP}}
 }
 
