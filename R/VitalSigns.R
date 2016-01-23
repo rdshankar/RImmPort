@@ -7,7 +7,7 @@
 NULL
 #> NULL 
 
-vs_cols <- c("STUDYID", "DOMAIN", "USUBJID", "VSSEQ", "VSTEST", "VSCAT", "VSORRES", "VSORRESU", "VSLOC", "VSTOD", "VSDY")
+vs_cols <- c("STUDYID", "DOMAIN", "USUBJID", "VSSEQ", "VSTEST", "VSCAT", "VSORRES", "VSORRESU", "VSLOC", "VSTOD", "VISITNUM", "VISIT", "VSDY")
 
 suppfa_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
 
@@ -45,8 +45,10 @@ getVitalSigns <- function(data_src, study_id) {
                         asm.result_unit_reported,
                         asm.location_of_finding_reported,
                         asm.time_of_day,
+                        pv.order_number,
+                        pv.visit_name,
                         asm.study_day                    
-                      FROM  assessment asm
+                      FROM  assessment asm, planned_visit pv
                       WHERE (asm.study_accession in ('", study_id, "')) AND 
                         (asm.assessment_type='Physical Exam') AND
                         ((asm.component_name_reported='Heart Rate') OR 
@@ -55,7 +57,8 @@ getVitalSigns <- function(data_src, study_id) {
                          (asm.component_name_reported='Height') OR
                          (asm.component_name_reported='Weight') OR
                          (asm.component_name_reported='Respiration Rate') OR
-                         (asm.component_name_reported='Temperature'))
+                         (asm.component_name_reported='Temperature')) AND
+                        (asm.planned_visit_accession = pv.planned_visit_accession)
                       ORDER BY asm.subject_accession", sep = "")
     
     if ((class(data_src)[1] == 'MySQLConnection') || 
@@ -150,6 +153,8 @@ getCountOfVitalSigns <- function(conn, study_id) {
 ##'     VSORRES \tab Result or Finding in Original Units \cr
 ##'     VSORRESU \tab Original Units \cr
 ##'     VSLOC \tab Location of Vital Signs Measurement \cr
+##'     VISITNUM \tab Visit Number \cr
+##'     VISIT \tab Visit Name \cr
 ##'     VSDY \tab Study Day of Vital Signs
 ##'   }
 ##' }

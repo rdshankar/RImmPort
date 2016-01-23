@@ -8,7 +8,7 @@ NULL
 #> NULL 
 
 pe_cols <- c("STUDYID", "DOMAIN", "USUBJID", "PESEQ", "PETEST", "PECAT", "PEBODSYS", "PEORRES", "PEORRESU", "PELOC",
-    "PETOD", "PEDY")
+    "PETOD", "VISITNUM", "VISIT", "PEDY")
 supppe_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
 
 # call to globalVariables to prevent from generating NOTE: no visible binding for global variable <variable name>
@@ -47,8 +47,10 @@ getPhysicalExamination <- function(data_src, study_id) {
                         asm.result_unit_reported,
                         asm.location_of_finding_reported,
                         asm.time_of_day,
+                        pv.order_number,
+                        pv.visit_name,
                         asm.study_day                    
-                      FROM  assessment asm
+                      FROM  assessment asm, planned_visit pv
                       WHERE (asm.study_accession in ('", study_id, "')) AND 
                         (asm.assessment_type='Physical Exam') AND
                         ((asm.component_name_reported!='Heart Rate') AND
@@ -57,7 +59,8 @@ getPhysicalExamination <- function(data_src, study_id) {
                         (asm.component_name_reported!='Height') AND
                         (asm.component_name_reported!='Weight') AND
                         (asm.component_name_reported!='Respiration Rate') AND
-                        (asm.component_name_reported!='Temperature'))
+                        (asm.component_name_reported!='Temperature')) AND 
+                        (asm.planned_visit_accession = pv.planned_visit_accession)
                       ORDER BY asm.subject_accession", sep = "")
     
     if ((class(data_src)[1] == 'MySQLConnection') || 
@@ -152,7 +155,8 @@ getCountOfPhysicalExamination <- function(conn, study_id) {
 ##'     PEORRES \tab Verbatim Examination Finding \cr
 ##'     PEORRESU \tab Original Units \cr
 ##'     PELOC \tab Location of Physical Exam Finding \cr
-##'     PEDTC \tab Date/Time of Examination \cr
+##'     VISITNUM \tab Visit Number \cr
+##'     VISIT \tab Visit Name \cr
 ##'     PEDY \tab Study Day of Examination
 ##'   }
 ##' }

@@ -8,7 +8,7 @@ NULL
 #> NULL 
 
 sr_cols <- c("STUDYID", "DOMAIN", "USUBJID", "SRSEQ", "SRTEST", "SRCAT", "SROBJ", 
-             "SRORRES", "SRORRESU", "SRLOC", "SRDY")
+             "SRORRES", "SRORRESU", "SRLOC", "VISITNUM", "VISIT", "SRDY")
 
 # call to globalVariables to prevent from generating NOTE: no visible binding for global variable <variable name>
 # this hack is to satisfy CRAN (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
@@ -44,10 +44,13 @@ getSkinResponse <- function(data_src, study_id) {
                     asm.result_value_reported,
                     asm.result_unit_reported,
                     asm.location_of_finding_reported,
+                    pv.order_number,
+                    pv.visit_name,
                     asm.study_day                    
-                    FROM  assessment asm
-                    WHERE asm.study_accession in ('", study_id, "') AND 
-                      asm.assessment_type='Skin Assessment'
+                    FROM  assessment asm, planned_visit pv
+                    WHERE (asm.study_accession in ('", study_id, "')) AND 
+                        (asm.assessment_type='Skin Assessment') AND
+                        (asm.planned_visit_accession = pv.planned_visit_accession)
                     ORDER BY asm.subject_accession", sep = "")
   
   if ((class(data_src)[1] == 'MySQLConnection') || 
@@ -117,6 +120,8 @@ getCountOfSkinResponse <- function(conn, study_id) {
 ##'     SRORRES \tab Results or Findings in Original Units \cr
 ##'     SRORRESU \tab Original Units \cr
 ##'     SRLOC \tab Location used for Measurement \cr
+##'     VISITNUM \tab Visit Number \cr
+##'     VISIT \tab Visit Name \cr
 ##'     SRDY \tab Study Day of Visit/Collection/Exam
 ##'   }
 ##' }

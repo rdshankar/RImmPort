@@ -8,7 +8,7 @@ NULL
 #> NULL 
 
 fa_cols <- c("STUDYID", "DOMAIN", "USUBJID", "FASEQ", "FATEST", "FAOBJ", "FACAT", 
-             "FAORRES", "FAORRESU", "FALOC", "FATOD", "FADY")
+             "FAORRES", "FAORRESU", "FALOC", "FATOD", "VISITNUM", "VISIT", "FADY")
 
 suppfa_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
 
@@ -47,10 +47,13 @@ getFindingsAbout <- function(data_src, study_id) {
                         asm.result_unit_reported,
                         asm.location_of_finding_reported,
                         asm.time_of_day,
-                        asm.study_day                    
-                      FROM  assessment asm
-                      WHERE asm.study_accession in ('", study_id, "') AND 
-                        asm.assessment_type='Other'
+                        pv.order_number,
+                        pv.visit_name,
+                      asm.study_day                    
+                      FROM  assessment asm, planned_visit pv
+                      WHERE (asm.study_accession in ('", study_id, "')) AND 
+                        (asm.assessment_type='Other') AND
+                        (asm.planned_visit_accession = pv.planned_visit_accession)
                       ORDER BY asm.subject_accession", sep = "")
     if ((class(data_src)[1] == 'MySQLConnection') || 
         (class(data_src)[1] == 'SQLiteConnection')) {
@@ -135,6 +138,8 @@ getCountOfFindingsAbout <- function(conn, study_id) {
 ##'     FAORRES \tab Results or Findings in Original Units \cr
 ##'     FAORRESU \tab Original Units \cr
 ##'     FALOC \tab Location of the Finding About \cr
+##'     VISITNUM \tab Visit Number \cr
+##'     VISIT \tab Visit Name \cr
 ##'     FADY \tab Study Day of Collection
 ##'   }
 ##' }
