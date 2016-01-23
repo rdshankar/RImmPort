@@ -7,7 +7,7 @@
 NULL
 #> NULL 
 
-sv_cols <- c("STUDYID", "DOMAIN", "USUBJID", "VISITNUM", "VISIT")
+sv_cols <- c("STUDYID", "DOMAIN", "USUBJID", "VISITNUM", "VISIT", "SVSTDY")
 
 # Get Subject Visits data of a specific study
 # 
@@ -30,8 +30,9 @@ getSubjectVisits <- function(data_src, study_id) {
                                 av.study_accession,
                                 \"SV\" as domain,
                                 av.subject_accession,
-                                av.study_day_visit_starts,
-                                pv.visit_name
+                                pv.order_number,
+                                pv.visit_name,
+                                av.study_day_visit_starts
                               FROM actual_visit av,
                                 planned_visit pv
                               WHERE av.planned_visit_accession = pv.planned_visit_accession AND 
@@ -94,7 +95,8 @@ getCountOfSubjectVisits <- function(conn, study_id) {
 ##'     DOMAIN  \tab Domain Abbreviation \cr
 ##'     USUBJID \tab Unique Subject Identifier \cr
 ##'     VISITNUM \tab Visit Number \cr
-##'     VISIT \tab Visit Name
+##'     VISIT \tab Visit Name \cr
+##'     SVSTDY \tab Study Day of Start of Visit
 ##'   }
 ##' }
 NULL
