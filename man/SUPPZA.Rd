@@ -23,7 +23,7 @@ The following table enumerates the values in QNAM and QLABEL variables {
   \tabular{ll}{
     \strong{QNAM} \tab \strong{QLABEL} \cr
     ZAMFI \tab MFI \cr
-    ZAMFICRD \tab MFI Coordinate 
+    ZAMFICRD \tab MFI Coordinate \cr
     ZASPECSB \tab Specimen Subtype \cr
     VISITMIN \tab Planned Visit Minimum Start Day \cr
     VISITMAX \tab Planned Visit Maximum Start Day \cr

@@ -3,8 +3,8 @@
 #' @name Titer Assay Results Domain
 #' @description The ImmPort study data generated from assays of types: HAI and Neut Ab Titer are grouped into the 
 #' Titer Assay Results Domain. The data is reformated to a custom Titer Assay Results domain model in 
-#' CDISC SDTM standards, and is a list of 2 data frames containing 1) Cellular Quantification data \code{\link{ZD}} 
-#' and 2) any supplemental Cellular Quantification data \code{\link{SUPP}}
+#' CDISC SDTM standards, and is a list of 2 data frames containing 1) Titer Assay Results data \code{\link{ZD}} 
+#' and 2) any supplemental Titer Assay Results data \code{\link{SUPP}}
 NULL
 #> NULL 
 
@@ -260,7 +260,7 @@ getCountOfTiterAssayResults <- function(data_src, study_id, assay_type="ALL") {
 NULL
 #> NULL 
 
-##' Nucleic Acid Quantification Domain Supplemental Variables
+##' Titer Assay Results Domain Supplemental Variables
 ##' @name SUPPZD
 ##' @description {
 ##'   \tabular{ll}{
