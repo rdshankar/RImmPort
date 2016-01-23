@@ -7,9 +7,6 @@
 NULL
 #> NULL 
 
-ex_cols <- c("STUDYID", "DOMAIN", "USUBJID", "EXSEQ", "EXTRT", "EXCAT", "EXDOSE", "EXDOSTXT", "EXDOSU", "EXDOSFRQ", 
-    "EXROUTE", "EXSTDTC", "EXENDTC", "EXSTDY", "EXENDY")
-
 # call to globalVariables to prevent from generating NOTE: no visible binding for global variable <variable name>
 # this hack is to satisfy CRAN (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
 globalVariables(c("EXSEQ"))
@@ -33,6 +30,10 @@ globalVariables(c("EXSEQ"))
 getExposure <- function(data_src, study_id) {
     cat("loading Exposure data....")
     
+    ex_cols <- c("STUDYID", "DOMAIN", "USUBJID", "EXSEQ", "EXTRT", "EXCAT", "EXDOSE", "EXDOSTXT", "EXDOSU", "EXDOSFRQ", 
+               "EXROUTE", "EXSTDTC", "EXENDTC", "EXSTDY", "EXENDY")
+  
+  
     sql_stmt <- paste("SELECT distinct
                         sub.study_accession,
                         \"EX\" as domain,

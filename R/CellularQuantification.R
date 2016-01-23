@@ -8,12 +8,6 @@
 NULL
 #> NULL 
 
-cq_cols <- c("STUDYID", "DOMAIN", "USUBJID", "ZBSEQ", "ZBTEST", "ZBCAT", "ZBMETHOD", "ZBPOPDEF", "ZBPOPNAM", "ZBORRES", 
-    "ZBORRESU", "ZBBASPOP", "ZBSPEC", "VISITNUM", "VISIT", "ZBELTM", "ZBTPTREF", "ZBREFID", 
-    "ZBXFN")
-
-suppcq_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
-
 # call to globalVariables to prevent from generating NOTE: no visible binding for global variable <variable name>
 # this hack is to satisfy CRAN (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
 globalVariables(c("subject_id", "experiment_title", "assay_purpose", "measurement_technique",
@@ -46,7 +40,14 @@ globalVariables(c("subject_id", "experiment_title", "assay_purpose", "measuremen
 ##' @importFrom data.table as.data.table is.data.table setDT := .N 
 getCellularQuantification <- function(data_src, study_id, assay_type="ALL") {
     cat("loading Cellular Quantification data....")
-    
+  
+    cq_cols <- c("STUDYID", "DOMAIN", "USUBJID", "ZBSEQ", "ZBTEST", "ZBCAT", "ZBMETHOD", "ZBPOPDEF", "ZBPOPNAM", "ZBORRES", 
+               "ZBORRESU", "ZBBASPOP", "ZBSPEC", "VISITNUM", "VISIT", "ZBELTM", "ZBTPTREF", "ZBREFID", 
+               "ZBXFN")
+  
+    suppcq_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
+  
+  
     cq_df = data.frame()
     suppcq_df = data.frame()
     

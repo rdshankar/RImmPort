@@ -7,11 +7,6 @@
 NULL
 #> NULL 
 
-dv_cols <- c("STUDYID", "DOMAIN", "USUBJID", "DVSEQ", "DVTERM", "DVRELAE", "DVREASON", "DVRESOL", 
-    "DVCONT", "DVSTDY", "DVENDY")
-
-suppdv_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
-
 # call to globalVariables to prevent from generating NOTE: no visible binding for global variable <variable name>
 # this hack is to satisfy CRAN (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
 globalVariables(c("DVSEQ", "QNAM", "QVAL", "DVRELAE", "DVREASON", "DVRESOL", 
@@ -36,6 +31,12 @@ globalVariables(c("DVSEQ", "QNAM", "QVAL", "DVRELAE", "DVREASON", "DVRESOL",
 getProtocolDeviations <- function(data_src, study_id) {
     cat("loading Protocol Deviations data....")
     
+    dv_cols <- c("STUDYID", "DOMAIN", "USUBJID", "DVSEQ", "DVTERM", "DVRELAE", "DVREASON", "DVRESOL", 
+               "DVCONT", "DVSTDY", "DVENDY")
+  
+    suppdv_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
+  
+  
     sql_stmt <- paste("SELECT distinct
                         pd.study_accession,
                         \"DV\" as domain,

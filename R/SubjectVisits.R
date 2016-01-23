@@ -7,8 +7,6 @@
 NULL
 #> NULL 
 
-sv_cols <- c("STUDYID", "DOMAIN", "USUBJID", "VISITNUM", "VISIT", "SVSTDY")
-
 # Get Subject Visits data of a specific study
 # 
 # The function \code{getSubjectVisits} queries the ImmPort database for Subject Visits data and 
@@ -25,7 +23,9 @@ sv_cols <- c("STUDYID", "DOMAIN", "USUBJID", "VISITNUM", "VISIT", "SVSTDY")
 # }
 getSubjectVisits <- function(data_src, study_id) {
     cat("loading Subject Visits data....")
-    
+
+    sv_cols <- c("STUDYID", "DOMAIN", "USUBJID", "VISITNUM", "VISIT", "SVSTDY")
+  
     subjectVisitsSQL <- paste("SELECT distinct
                                 av.study_accession,
                                 \"SV\" as domain,

@@ -8,9 +8,6 @@
 NULL
 #> NULL 
 
-cm_cols <- c("STUDYID", "DOMAIN", "USUBJID", "CMSEQ", "CMTRT", "CMCAT", "CMDOSE", "CMDOSTXT", 
-    "CMDOSU", "CMDOSFREQ", "CMROUTE", "CMSTDTC", "CMENDTC", "CMSTDY", "CMENDY")
-
 # call to globalVariables to prevent from generating NOTE: no visible binding for global variable <variable name>
 # this hack is to satisfy CRAN (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
 globalVariables(c("CMSEQ"))
@@ -34,6 +31,10 @@ globalVariables(c("CMSEQ"))
 getConcomitantMedications <- function(data_src, study_id) {
     cat("loading Concomitant Medications data....")
     
+    cm_cols <- c("STUDYID", "DOMAIN", "USUBJID", "CMSEQ", "CMTRT", "CMCAT", "CMDOSE", "CMDOSTXT", 
+               "CMDOSU", "CMDOSFREQ", "CMROUTE", "CMSTDTC", "CMENDTC", "CMSTDY", "CMENDY")
+ 
+  
     sql_stmt <- paste("SELECT distinct
                         sub.study_accession,
                         \"CM\" as domain,

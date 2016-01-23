@@ -7,25 +7,6 @@
 NULL
 #> NULL 
 
-ts_cols  <- c("STUDYID", "DOMAIN","TSSEQ",
-                                "TSPARMCD", "TSPARM", "TSVAL")
-
-ts_col_codes <- c("STUDYID", "DOMAIN", "TSSEQ", "TITLE", "DESCR", "INDIC", 
-                  "TRT", "HYPOTHS", "SSTDTC", 
-                  "SENDTC", "PLANSUB", "ACTSUB", 
-                  "AGEMAX", "AGEMIN", "AGEU", 
-                  "SEXPOP", "SPONSOR", "PUBRLDAT", "STYPE", 
-                  "ISTRIAL","RESFOCUS")
-
-ts_col_labels <- c("Study Identifier", "Domain", "Sequence", "Trial Title", "Trial Description", "Trial Indication", 
-                   "Investigational Therapy or Treatment", "Trial Hypotheses", "Study Start Date", 
-                   "Study End Date", "Planned Number of Subjects", "Actual Number of Subjects", 
-                   "Planned Maximum Age of Subjects", "Planned Minimum Age of Subjects", "Age Units", 
-                   "Sex of Participants", "Clinical Study Sponsor", "Public Release Date", "Study Type", 
-                   "Is Clinical Trial?", "Trial Research Focus")
-code_label.l <- as.list(ts_col_labels)
-names(code_label.l) <- ts_col_codes
-
 
 # call to globalVariables to prevent from generating NOTE: no visible binding for global variable <variable name>
 # this hack is to satisfy CRAN (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
@@ -47,6 +28,25 @@ globalVariables(c("TSPARMCD"))
 # }
 getTrialSummary <- function(data_src,study_id) {
   cat("loading TrialSummary data....", study_id, " ")
+
+  ts_cols  <- c("STUDYID", "DOMAIN","TSSEQ",
+                "TSPARMCD", "TSPARM", "TSVAL")
+  
+  ts_col_codes <- c("STUDYID", "DOMAIN", "TSSEQ", "TITLE", "DESCR", "INDIC", 
+                    "TRT", "HYPOTHS", "SSTDTC", 
+                    "SENDTC", "PLANSUB", "ACTSUB", 
+                    "AGEMAX", "AGEMIN", "AGEU", 
+                    "SEXPOP", "SPONSOR", "PUBRLDAT", "STYPE", 
+                    "ISTRIAL","RESFOCUS")
+  
+  ts_col_labels <- c("Study Identifier", "Domain", "Sequence", "Trial Title", "Trial Description", "Trial Indication", 
+                     "Investigational Therapy or Treatment", "Trial Hypotheses", "Study Start Date", 
+                     "Study End Date", "Planned Number of Subjects", "Actual Number of Subjects", 
+                     "Planned Maximum Age of Subjects", "Planned Minimum Age of Subjects", "Age Units", 
+                     "Sex of Participants", "Clinical Study Sponsor", "Public Release Date", "Study Type", 
+                     "Is Clinical Trial?", "Trial Research Focus")
+  code_label.l <- as.list(ts_col_labels)
+  names(code_label.l) <- ts_col_codes
   
   sql_stmt <- paste("
                     SELECT distinct

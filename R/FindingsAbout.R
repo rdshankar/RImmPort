@@ -7,11 +7,6 @@
 NULL
 #> NULL 
 
-fa_cols <- c("STUDYID", "DOMAIN", "USUBJID", "FASEQ", "FATEST", "FAOBJ", "FACAT", 
-             "FAORRES", "FAORRESU", "FALOC", "FATOD", "VISITNUM", "VISIT", "FADY")
-
-suppfa_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
-
 # call to globalVariables to prevent from generating NOTE: no visible binding for global variable <variable name>
 # this hack is to satisfy CRAN (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
 globalVariables(c("FASEQ", "QNAM", "QVAL", "FATOD"))
@@ -34,7 +29,13 @@ globalVariables(c("FASEQ", "QNAM", "QVAL", "FATOD"))
 #' @importFrom data.table as.data.table is.data.table .N :=
 getFindingsAbout <- function(data_src, study_id) {
     cat("loading Findings About data....")
-    
+  
+    fa_cols <- c("STUDYID", "DOMAIN", "USUBJID", "FASEQ", "FATEST", "FAOBJ", "FACAT", 
+                "FAORRES", "FAORRESU", "FALOC", "FATOD", "VISITNUM", "VISIT", "FADY")
+  
+    suppfa_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
+  
+  
     sql_stmt <- paste("SELECT distinct
                         asm.study_accession,
                         \"FA\" as domain,
@@ -77,7 +78,7 @@ getFindingsAbout <- function(data_src, study_id) {
         suppfa_df <- plyr::rename(suppfa_df, c("DOMAIN" = "RDOMAIN", "FASEQ" = "IDVARVAL"))
         suppfa_df$IDVAR <- "FASEQ"
         
-        suppfa_df <- suppfa_df[supppe_cols]
+        suppfa_df <- suppfa_df[suppfa_cols]
         
         # remove rows that have empty QVAL values
         suppfa_df <- subset(suppfa_df,QVAL!="")      

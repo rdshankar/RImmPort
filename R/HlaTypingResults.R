@@ -1,20 +1,20 @@
 
 
-hla_cols <- c("study_id", "subject_id", "result_id", "result_set_id",
-                            "allele_1", "allele_2", 
-                            "locus_name", "pop_area_name", 
-                            "experiment_title", "assay_purpose", "measurement_technique",
-                            "experiment_sample_accession", "biosample_accession", "specimen_type", "specimen_subtype",
-                            "specimen_treatment", 
-                            "treatment_amount_value", "treatment_amount_unit",
-                            "treatment_duration_value", "treatment_duration_unit",
-                            "treatment_temperature_value", "treatment_temperature_unit",
-                            "visit_name", "visit_min_start_day", "visit_max_start_day", "visit_order",
-                            "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
-                            "study_time_t0_event", "study_time_t0_event_specify")
-
 getHlaTypingResults <- function(conn,study_id, measurement_type) {
   cat("loading HLA Typing Results data....")
+  
+  hla_cols <- c("study_id", "subject_id", "result_id", "result_set_id",
+                "allele_1", "allele_2", 
+                "locus_name", "pop_area_name", 
+                "experiment_title", "assay_purpose", "measurement_technique",
+                "experiment_sample_accession", "biosample_accession", "specimen_type", "specimen_subtype",
+                "specimen_treatment", 
+                "treatment_amount_value", "treatment_amount_unit",
+                "treatment_duration_value", "treatment_duration_unit",
+                "treatment_temperature_value", "treatment_temperature_unit",
+                "visit_name", "visit_min_start_day", "visit_max_start_day", "visit_order",
+                "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
+                "study_time_t0_event", "study_time_t0_event_specify")
   
   sql_stmt <- paste("
                     SELECT distinct

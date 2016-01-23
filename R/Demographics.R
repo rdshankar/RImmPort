@@ -7,11 +7,6 @@
 NULL
 #> NULL 
 
-dm_cols <- c("STUDYID", "DOMAIN","USUBJID", 
-                               "AGE", "AGEU", "SEX",
-                               "RACE", "ETHNIC",
-                               "SPECIES", "STRAIN", "SBSTRAIN",
-                               "ARMCD", "ARM")
 # Get Demographics data of a specific study
 # 
 # The function \code{getDemographics} queries the ImmPort database for Demographics data and 
@@ -28,6 +23,12 @@ dm_cols <- c("STUDYID", "DOMAIN","USUBJID",
 # }
 getDemographics <- function(data_src,study_id) {
   cat("loading Demographics data....")
+
+  dm_cols <- c("STUDYID", "DOMAIN","USUBJID", 
+               "AGE", "AGEU", "SEX",
+               "RACE", "ETHNIC",
+               "SPECIES", "STRAIN", "SBSTRAIN",
+               "ARMCD", "ARM")
   
   sql_stmt <- paste("
                                   SELECT distinct

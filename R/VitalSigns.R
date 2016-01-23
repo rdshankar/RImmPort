@@ -7,10 +7,6 @@
 NULL
 #> NULL 
 
-vs_cols <- c("STUDYID", "DOMAIN", "USUBJID", "VSSEQ", "VSTEST", "VSCAT", "VSORRES", "VSORRESU", "VSLOC", "VSTOD", "VISITNUM", "VISIT", "VSDY")
-
-suppfa_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
-
 # call to globalVariables to prevent from generating NOTE: no visible binding for global variable <variable name>
 # this hack is to satisfy CRAN (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
 globalVariables(c("VSSEQ", "QNAM", "QVAL", "VSTOD"))
@@ -33,7 +29,11 @@ globalVariables(c("VSSEQ", "QNAM", "QVAL", "VSTOD"))
 #' @importFrom data.table as.data.table is.data.table .N :=
 getVitalSigns <- function(data_src, study_id) {
     cat("loading Vital Signs data....")
-    
+
+    vs_cols <- c("STUDYID", "DOMAIN", "USUBJID", "VSSEQ", "VSTEST", "VSCAT", "VSORRES", "VSORRESU", "VSLOC", "VSTOD", "VISITNUM", "VISIT", "VSDY")
+  
+    suppvs_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
+  
     sql_stmt <- paste("SELECT distinct
                         asm.study_accession,
                         \"VS\" as domain,
@@ -86,7 +86,7 @@ getVitalSigns <- function(data_src, study_id) {
         suppvs_df <- plyr::rename(suppvs_df, c("DOMAIN" = "RDOMAIN", "VSSEQ" = "IDVARVAL"))
         suppvs_df$IDVAR <- "VSSEQ"
         
-        suppvs_df <- suppvs_df[supppe_cols]
+        suppvs_df <- suppvs_df[suppvs_cols]
         
         # remove rows that have empty QVAL values
         suppvs_df <- subset(suppvs_df,QVAL!="")      

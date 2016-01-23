@@ -7,8 +7,6 @@
 NULL
 #> NULL 
 
-ae_cols <- c("STUDYID", "DOMAIN", "USUBJID", "AESEQ", "AESPID", "AETERM", "AEMODIFY", "AEBODYSYS", "AELOC", "AESEV", 
-    "AESER", "AEACN", "AEACNOTH", "AEREL", "AERELNST", "AEOUT", "AESTDY", "AEENDY")
 
 # call to globalVariables to prevent from generating NOTE: no visible binding for global variable <variable name>
 # this hack is to satisfy CRAN (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
@@ -32,7 +30,10 @@ globalVariables(c("AESEQ"))
 #' @importFrom data.table as.data.table is.data.table .N :=
 getAdverseEvents <- function(data_src, study_id) {
     cat("loading Adverse Events data....")
-    
+
+    ae_cols <- c("STUDYID", "DOMAIN", "USUBJID", "AESEQ", "AESPID", "AETERM", "AEMODIFY", "AEBODYSYS", "AELOC", "AESEV", 
+               "AESER", "AEACN", "AEACNOTH", "AEREL", "AERELNST", "AEOUT", "AESTDY", "AEENDY")
+  
     sql_stmt <- paste("SELECT distinct ae.study_accession,
                         \"AE\" as domain,                    
                         ae.subject_accession,                    

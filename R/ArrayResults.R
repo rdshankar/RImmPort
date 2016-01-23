@@ -1,14 +1,4 @@
 
-array_cols <- c("study_id", "subject_id", "result_id", "dataset_id", 
-                        "experiment_title", "assay_purpose", "measurement_technique",
-                        "experiment_sample_accession", "biosample_accession", "specimen_type", "specimen_subtype", 
-                        "specimen_treatment", 
-                        "treatment_amount_value", "treatment_amount_unit",
-                        "treatment_duration_value", "treatment_duration_unit",
-                        "treatment_temperature_value", "treatment_temperature_unit",
-                        "visit_name", "visit_min_start_day", "visit_max_start_day", "visit_order",
-                        "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
-                        "study_time_t0_event", "study_time_t0_event_specify")
 
 # call to globalVariables to prevent from generating NOTE: no visible binding for global variable <variable name>
 # this hack is to satisfy CRAN (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
@@ -18,6 +8,17 @@ globalVariables(c("result_id"))
 getArrayResults <- function(conn, study_id, measurement_type) {
     cat("loading Array Results data....")
 
+  array_cols <- c("study_id", "subject_id", "result_id", "dataset_id", 
+                  "experiment_title", "assay_purpose", "measurement_technique",
+                  "experiment_sample_accession", "biosample_accession", "specimen_type", "specimen_subtype", 
+                  "specimen_treatment", 
+                  "treatment_amount_value", "treatment_amount_unit",
+                  "treatment_duration_value", "treatment_duration_unit",
+                  "treatment_temperature_value", "treatment_temperature_unit",
+                  "visit_name", "visit_min_start_day", "visit_max_start_day", "visit_order",
+                  "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
+                  "study_time_t0_event", "study_time_t0_event_specify")
+  
   sql_stmt <- paste("SELECT distinct
                         bs.study_accession,
                     bs.subject_accession,

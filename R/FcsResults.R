@@ -1,21 +1,4 @@
 
-fcs_cols <- c("study_id", "subject_id", "sequence",
-                      "experiment_title", "assay_purpose", "measurement_technique",
-                      "experiment_sample_accession",
-                      "biosample_accession", "specimen_type", "specimen_subtype", 
-                      "specimen_treatment", 
-                      "treatment_amount_value", "treatment_amount_unit",
-                      "treatment_duration_value", "treatment_duration_unit",
-                      "treatment_temperature_value", "treatment_temperature_unit",
-                      "visit_name", "visit_min_start_day", "visit_max_start_day", "visit_order",
-                      "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
-                      "study_time_t0_event", "study_time_t0_event_specify",
-                      "file_name")
-
-far_cols <- c("experiment_sample_accession",
-                      "base_parent_population", 
-                      "population_cell_number", "population_cell_number_unit",
-                      "population_defnition_reported", "population_name_reported")
 
 getFcsResults <- function(conn,study_id, measurement_types) {
   cat("loading FCS Results data....")
@@ -24,6 +7,24 @@ getFcsResults <- function(conn,study_id, measurement_types) {
 #   on.exit(options(old), add = TRUE)
 #   options(useFancyQuotes = FALSE)
 #   measurement_types <- paste(mapply(sQuote, measurement_types), collapse=", ")
+  
+  fcs_cols <- c("study_id", "subject_id", "sequence",
+                "experiment_title", "assay_purpose", "measurement_technique",
+                "experiment_sample_accession",
+                "biosample_accession", "specimen_type", "specimen_subtype", 
+                "specimen_treatment", 
+                "treatment_amount_value", "treatment_amount_unit",
+                "treatment_duration_value", "treatment_duration_unit",
+                "treatment_temperature_value", "treatment_temperature_unit",
+                "visit_name", "visit_min_start_day", "visit_max_start_day", "visit_order",
+                "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
+                "study_time_t0_event", "study_time_t0_event_specify",
+                "file_name")
+  
+  far_cols <- c("experiment_sample_accession",
+                "base_parent_population", 
+                "population_cell_number", "population_cell_number_unit",
+                "population_defnition_reported", "population_name_reported")
   
   sql_stmt <- paste("
                     SELECT distinct

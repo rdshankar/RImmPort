@@ -7,9 +7,6 @@
 NULL
 #> NULL 
 
-qs_cols <- c("STUDYID", "DOMAIN", "USUBJID", "QSSEQ", "QSTEST", "QSCAT", 
-             "QSORRES", "QSORRESU", "VISITNUM", "VISIT", "QSDY")
-
 # call to globalVariables to prevent from generating NOTE: no visible binding for global variable <variable name>
 # this hack is to satisfy CRAN (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
 globalVariables(c("QSSEQ"))
@@ -32,6 +29,10 @@ globalVariables(c("QSSEQ"))
 #' @importFrom data.table as.data.table is.data.table .N :=
 getQuestionnaires <- function(data_src, study_id) {
   cat("loading Questionnaires data....")
+  
+  qs_cols <- c("STUDYID", "DOMAIN", "USUBJID", "QSSEQ", "QSTEST", "QSCAT", 
+               "QSORRES", "QSORRESU", "VISITNUM", "VISIT", "QSDY")
+  
   
   sql_stmt <- paste("SELECT distinct
                     asm.study_accession,

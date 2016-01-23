@@ -7,12 +7,6 @@
 NULL
 #> NULL 
 
-lb.cols <- c("STUDYID", "DOMAIN", "USUBJID", "LBSEQ", "LBTEST", "LBCAT", "LBORRES", "LBORRESU", "LBSPEC", "LBSPECSB",
-             "VISITNUM", "VISIT", "VISITMIN", "VISITMAX", "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
-             "study_time_t0_event", "study_time_t0_event_specify", "LBREFID")
-
-supplb.cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
-
 # call to globalVariables to prevent from generating NOTE: no visible binding for global variable <variable name>
 # this hack is to satisfy CRAN (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
 globalVariables(c("LBSEQ", "QNAM", "QVAL", "LBSPECSB", "VISITMIN", "VISITMAX"))
@@ -33,8 +27,17 @@ globalVariables(c("LBSEQ", "QNAM", "QVAL", "LBSPECSB", "VISITMIN", "VISITMAX"))
 # }
 #' @importFrom DBI dbGetQuery
 #' @importFrom data.table as.data.table is.data.table .N :=
+#' @importFrom plyr ddply
 getLaboratoryTestResults <- function(data_src, study_id) {
     cat("loading Laboratory Test Results data....")
+  
+    lb.cols <- c("STUDYID", "DOMAIN", "USUBJID", "LBSEQ", "LBTEST", "LBCAT", "LBORRES", "LBORRESU", "LBSPEC", "LBSPECSB",
+                "VISITNUM", "VISIT", "VISITMIN", "VISITMAX", "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
+                "study_time_t0_event", "study_time_t0_event_specify", "LBREFID")
+  
+    supplb.cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
+  
+  
     
     sql_stmt <- paste("SELECT distinct
                         lt.study_accession,

@@ -7,12 +7,7 @@
 NULL
 #> NULL 
 
-mh_cols <- c("STUDYID", "DOMAIN", "USUBJID","MHSEQ", "MHTERM", "MHCAT", "MHBODSYS", "MHAGE", "MHAGEU", 
-    "MHTOD", "MHDY")
 
-suppmh_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
-
-# Note these cols should go to suppmh: MHAGE, MHAGEU and MHTOD
 
 # call to globalVariables to prevent from generating NOTE: no visible binding for global variable <variable name>
 # this hack is to satisfy CRAN (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
@@ -36,7 +31,13 @@ globalVariables(c("MHSEQ", "QNAM", "QVAL", "MHAGE", "MHAGEU", "MHTOD"))
 #' @importFrom data.table as.data.table is.data.table .N :=
 getMedicalHistory <- function(data_src, study_id) {
     cat("loading Medical History data....")
-    
+
+    mh_cols <- c("STUDYID", "DOMAIN", "USUBJID","MHSEQ", "MHTERM", "MHCAT", "MHBODSYS", "MHAGE", "MHAGEU", 
+               "MHTOD", "MHDY")
+  
+    suppmh_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
+    # Note these cols should go to suppmh: MHAGE, MHAGEU and MHTOD
+      
     sql_stmt <- paste("SELECT distinct
                         asm.study_accession,
                         \"MH\" as domain,

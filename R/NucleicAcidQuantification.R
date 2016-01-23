@@ -8,15 +8,6 @@
 NULL
 #> NULL 
 
-nq_cols <- c("STUDYID", "DOMAIN", "USUBJID", "ZCSEQ", 
-                     "ZCTEST", "ZCCAT", "ZCMETHOD", 
-                     "ZCENTRZD", "ZCGENNAM", "ZCGENSYM",
-                     "ZCTHRESH", "ZCORRES", "ZCORRESU", 
-                     "ZCSPEC", "ZCREFID", 
-                     "VISITNUM", "VISIT", "ZCELTM", "ZCTPTREF")
-
-suppnq_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
-
 # call to globalVariables to prevent from generating NOTE: no visible binding for global variable <variable name>
 # this hack is to satisfy CRAN (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
 globalVariables(c("subject_id", "experiment_title", "assay_purpose", "measurement_technique",
@@ -47,6 +38,15 @@ globalVariables(c("subject_id", "experiment_title", "assay_purpose", "measuremen
 ##' @importFrom dplyr select
 getNucleicAcidQuantification <- function(data_src, study_id, assay_type="ALL") {
   cat("loading Nucleic Acid Quantification data....")
+
+  nq_cols <- c("STUDYID", "DOMAIN", "USUBJID", "ZCSEQ", 
+               "ZCTEST", "ZCCAT", "ZCMETHOD", 
+               "ZCENTRZD", "ZCGENNAM", "ZCGENSYM",
+               "ZCTHRESH", "ZCORRES", "ZCORRESU", 
+               "ZCSPEC", "ZCREFID", 
+               "VISITNUM", "VISIT", "ZCELTM", "ZCTPTREF")
+  
+  suppnq_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
   
   nq_df = data.frame()
   suppnq_df = data.frame()
@@ -106,7 +106,7 @@ getNucleicAcidQuantification <- function(data_src, study_id, assay_type="ALL") {
         supppcr_df$IDVAR <- "ZCSEQ"
         
         
-        supppcr_df <- supppcr_df[suppcq_cols]
+        supppcr_df <- supppcr_df[suppnq_cols]
         
         # remove rows that have empty QVAL values
         supppcr_df <- subset(supppcr_df,QVAL!="")      

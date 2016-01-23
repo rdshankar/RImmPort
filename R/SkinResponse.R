@@ -7,9 +7,6 @@
 NULL
 #> NULL 
 
-sr_cols <- c("STUDYID", "DOMAIN", "USUBJID", "SRSEQ", "SRTEST", "SRCAT", "SROBJ", 
-             "SRORRES", "SRORRESU", "SRLOC", "VISITNUM", "VISIT", "SRDY")
-
 # call to globalVariables to prevent from generating NOTE: no visible binding for global variable <variable name>
 # this hack is to satisfy CRAN (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
 globalVariables(c("SRSEQ"))
@@ -32,6 +29,9 @@ globalVariables(c("SRSEQ"))
 #' @importFrom data.table as.data.table is.data.table .N :=
 getSkinResponse <- function(data_src, study_id) {
   cat("loading Skin Response data....")
+
+  sr_cols <- c("STUDYID", "DOMAIN", "USUBJID", "SRSEQ", "SRTEST", "SRCAT", "SROBJ", 
+               "SRORRES", "SRORRESU", "SRLOC", "VISITNUM", "VISIT", "SRDY")
   
   sql_stmt <- paste("SELECT distinct
                     asm.study_accession,

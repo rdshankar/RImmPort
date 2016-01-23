@@ -7,8 +7,6 @@
 NULL
 #> NULL 
 
-ta_cols <- c("STUDYID", "DOMAIN", "ARMCD", "ARM", "ARMDESC", "ARMRULE")
-
 # Get Trial Arms data of a specific study
 # 
 # The function \code{getTrialArms} queries the ImmPort database for Trial Arms data and 
@@ -25,7 +23,9 @@ ta_cols <- c("STUDYID", "DOMAIN", "ARMCD", "ARM", "ARMDESC", "ARMRULE")
 # }
 getTrialArms <- function(data_src, study_id) {
     cat("loading TrialArms data....")
-    
+
+    ta_cols <- c("STUDYID", "DOMAIN", "ARMCD", "ARM", "ARMDESC", "ARMRULE")
+  
     sql_stmt <- paste("SELECT distinct
                         ac.study_accession,
                         \"TA\" as domain,

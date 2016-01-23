@@ -1,10 +1,11 @@
 
-subject_basic_analyses_column_names <- c("study_id", "subject_id", "visit_num", "parameter", "parameter_code", "parameter_id", 
-    "analysis_value", "analysis_timepoint", "outcome_type")
 
 getSubjectBasicAnalyses <- function(conn, study_id) {
     cat("loading Subject Basic Analyses data....")
-    
+
+  subject_basic_analyses_column_names <- c("study_id", "subject_id", "visit_num", "parameter", "parameter_code", "parameter_id", 
+                                           "analysis_value", "analysis_timepoint", "outcome_type")
+  
     sql_stmt <- paste("SELECT distinct
                         smr.study_accession,
                         smr.subject_accession,

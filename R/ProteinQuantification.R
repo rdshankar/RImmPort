@@ -8,11 +8,6 @@
 NULL
 #> NULL 
 
-pq_cols <- c("STUDYID", "DOMAIN", "USUBJID", "ZASEQ", "ZATEST", "ZACAT", "ZAMETHOD", "ZAANALYT", "ZAORRES", 
-             "ZAORRESU", "ZASPEC", "VISITNUM", "VISIT", "ZAELTM", "ZATPTREF", "ZAREFID", "ZAXFN")
-
-supppq_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
-
 # call to globalVariables to prevent from generating NOTE: no visible binding for global variable <variable name>
 # this hack is to satisfy CRAN (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
 globalVariables(c("subject_id", "result_id", "experiment_title", "assay_purpose", "measurement_technique",
@@ -45,6 +40,12 @@ globalVariables(c("subject_id", "result_id", "experiment_title", "assay_purpose"
 #' @importFrom plyr rename
 getProteinQuantification <- function(data_src, study_id, assay_type="ALL") {
     cat("loading Protein Quantification data....")
+  
+    pq_cols <- c("STUDYID", "DOMAIN", "USUBJID", "ZASEQ", "ZATEST", "ZACAT", "ZAMETHOD", "ZAANALYT", "ZAORRES", 
+                "ZAORRESU", "ZASPEC", "VISITNUM", "VISIT", "ZAELTM", "ZATPTREF", "ZAREFID", "ZAXFN")
+  
+    supppq_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
+  
     
     pq_df = data.frame()
     supppq_df = data.frame()
@@ -54,9 +55,9 @@ getProteinQuantification <- function(data_src, study_id, assay_type="ALL") {
       if ((assay_type == "ALL") || (assay_type =="ELISA")) {
         # get ELISA results
         measurement_types <- list("Protein_Quantification", "Cytokine_Quantification")
-        els.df <- getElisaResults(data_src, study_id, "")
-        if (nrow(els.df) > 0) {
-            els.df <- select(els.df, STUDYID = study_id, USUBJID = subject_id, ZASEQ = result_id, ZATEST = experiment_title, 
+        els_df <- getElisaResults(data_src, study_id, "")
+        if (nrow(els_df) > 0) {
+            els_df <- select(els_df, STUDYID = study_id, USUBJID = subject_id, ZASEQ = result_id, ZATEST = experiment_title, 
                 ZACAT = assay_purpose, ZAMETHOD = measurement_technique, ZAANALYT = analyte, ZAORRES = value, ZAORRESU = unit, 
                 ZASPEC = specimen_type, ZASPECSB = specimen_subtype, 
                 ZASPTRT = specimen_treatment, 
@@ -67,7 +68,7 @@ getProteinQuantification <- function(data_src, study_id, assay_type="ALL") {
                 ZAELTM = elapsed_time_of_specimen_collection, ZATPTREF = time_point_reference, 
                 ZAREFID = biosample_accession, ZAXFN = file_name)
             
-            els.df$DOMAIN <- "ZA"
+            els_df$DOMAIN <- "ZA"
 
             qnam_values = c("ZASPECSB",
                             "VISITMIN", "VISITMAX",
@@ -103,9 +104,9 @@ getProteinQuantification <- function(data_src, study_id, assay_type="ALL") {
                                                  ZATRTDUV, ZATRTDUU,
                                                  ZATRTTMV, ZATRTTMU))
             
-            els.df <- els.df[, pq_cols]
+            els_df <- els_df[, pq_cols]
   
-            pq_df <- rbind(pq_df, els.df)
+            pq_df <- rbind(pq_df, els_df)
             supppq_df <- rbind(supppq_df, supp_els_df)
             
         }

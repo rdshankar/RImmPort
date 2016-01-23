@@ -7,9 +7,6 @@
 NULL
 #> NULL 
 
-su_cols <- c("STUDYID", "DOMAIN", "USUBJID", "SUSEQ", "SUTRT", "SUCAT", "SUDOSE", "SUDOSTXT", "SUDOSU", 
-    "SUDOSFREQ", "SUROUTE", "SUSTDTC", "SUENDTC", "SUSTDY", "SUENDY")
-
 # call to globalVariables to prevent from generating NOTE: no visible binding for global variable <variable name>
 # this hack is to satisfy CRAN (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
 globalVariables(c("SUSEQ"))
@@ -32,7 +29,11 @@ globalVariables(c("SUSEQ"))
 #' @importFrom data.table as.data.table is.data.table .N :=
 getSubstanceUse <- function(data_src, study_id) {
     cat("loading Substance Use data....")
-    
+
+    su_cols <- c("STUDYID", "DOMAIN", "USUBJID", "SUSEQ", "SUTRT", "SUCAT", "SUDOSE", "SUDOSTXT", "SUDOSU", 
+                "SUDOSFREQ", "SUROUTE", "SUSTDTC", "SUENDTC", "SUSTDY", "SUENDY")
+  
+  
     sql_stmt <- paste("SELECT distinct
                         sub.study_accession,
                         \"SU\" as domain,

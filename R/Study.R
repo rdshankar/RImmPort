@@ -76,11 +76,11 @@ setImmPortDataSource <- function(data_src){
 
 #' Special Purpose class
 #' 
-#'  @field dm_l Demographics data \code{\link{DM}} and supplemental Demographics data \code{\link{SUPP}}
-#'  @field sv_l Subject Visits data \code{\link{SV}} and supplemental Subject Visits data \code{\link{SUPP}}
-#'  @importFrom methods  setRefClass
-#'  @export SpecialPurpose
-#'  @exportClass SpecialPurpose
+#' @field dm_l Demographics data \code{\link{DM}} and supplemental Demographics data \code{\link{SUPP}}
+#' @field sv_l Subject Visits data \code{\link{SV}} and supplemental Subject Visits data \code{\link{SUPP}}
+#' @importFrom methods  setRefClass
+#' @export SpecialPurpose
+#' @exportClass SpecialPurpose
 SpecialPurpose <- setRefClass("SpecialPurpose", 
                               fields = list( 
                                 dm_l="list",
@@ -94,11 +94,11 @@ SpecialPurpose <- setRefClass("SpecialPurpose",
                               ))
 #' Interventions class
 #' 
-#'  @field cm_l Concomitant Medications data \code{\link{CM}} and supplemental Concomitant Medications data \code{\link{SUPP}}
-#'  @field ex_l Exposure data \code{\link{EX}} and supplemental Exposure data \code{\link{SUPP}}
-#'  @field su_l Substance Use data \code{\link{SU}} and supplemental Substance Use data \code{\link{SUPP}}
-#'  @export Interventions
-#'  @exportClass Interventions
+#' @field cm_l Concomitant Medications data \code{\link{CM}} and supplemental Concomitant Medications data \code{\link{SUPP}}
+#' @field ex_l Exposure data \code{\link{EX}} and supplemental Exposure data \code{\link{SUPP}}
+#' @field su_l Substance Use data \code{\link{SU}} and supplemental Substance Use data \code{\link{SUPP}}
+#' @export Interventions
+#' @exportClass Interventions
 Interventions <- setRefClass("Interventions", 
                              fields = list(
                                cm_l="list",
@@ -114,12 +114,12 @@ Interventions <- setRefClass("Interventions",
                              ))
 #' Events class
 #' 
-#'  @field ae_l Adverse Events data \code{\link{AE}} and supplemental Adverse Events data \code{\link{SUPP}}
-#'  @field dv_l Protocol Deviations data \code{\link{DV}} and supplemental Protocol Deviations data \code{\link{SUPPDV}}
-#'  @field mh_l Medical History data \code{\link{MH}} and supplemental Medical History data \code{\link{SUPPMH}}
-#'  @field apmh_l Associated Persons Medical History data \code{\link{APMH}} and supplemental Associated Persons Medical History data \code{\link{SUPP}}
-#'  @export Events
-#'  @exportClass Events
+#' @field ae_l Adverse Events data \code{\link{AE}} and supplemental Adverse Events data \code{\link{SUPP}}
+#' @field dv_l Protocol Deviations data \code{\link{DV}} and supplemental Protocol Deviations data \code{\link{SUPPDV}}
+#' @field mh_l Medical History data \code{\link{MH}} and supplemental Medical History data \code{\link{SUPPMH}}
+#' @field apmh_l Associated Persons Medical History data \code{\link{APMH}} and supplemental Associated Persons Medical History data \code{\link{SUPP}}
+#' @export Events
+#' @exportClass Events
 Events <- setRefClass("Events", fields = list(
   ae_l="list",
   dv_l="list",
@@ -136,19 +136,19 @@ methods = list(
 ))
 #' Findings class
 #' 
-#'  @field lb_l Laboratory Test Results data \code{\link{LB}} and supplemental Laboratory Test Results data \code{\link{SUPPLB}}
-#'  @field pe_l Physical Examination data \code{\link{PE}} and supplemental Physical Examination data \code{\link{SUPPPE}}
-#'  @field vs_l Vital Signs data \code{\link{VS}} and supplemental Vital Signs data \code{\link{SUPPVS}}
-#'  @field qs_l Questionnaires data \code{\link{QS}} and supplemental Questionnaires data \code{\link{SUPP}}
-#'  @field fa_l Findings About data \code{\link{FA}} and supplemental Findings About data \code{\link{SUPPFA}}
-#'  @field sr_l Skin Response data \code{\link{SR}} and supplemental Skin Response data \code{\link{SUPP}}
-#'  @field pf_l Genetics Findings data \code{\link{PF}} and supplemental Genetics Findings data \code{\link{SUPPPF}}
-#'  @field za_l Protein Quantification data \code{\link{ZA}} and supplemental Protein Quantification data \code{\link{SUPPZA}}
-#'  @field zb_l Cellular Quantification data \code{\link{ZB}} and supplemental Cellular Quantification data \code{\link{SUPP}}
-#'  @field zc_l Nucleic Acid Quantification data \code{\link{ZC}} and supplemental Nucleic Acid Quantification data \code{\link{SUPP}}
-#'  @field zd_l Titer Assay Results data \code{\link{ZD}} and supplemental Titer Assay Results data \code{\link{SUPP}}
-#'  @export Findings
-#'  @exportClass Findings
+#' @field lb_l Laboratory Test Results data \code{\link{LB}} and supplemental Laboratory Test Results data \code{\link{SUPPLB}}
+#' @field pe_l Physical Examination data \code{\link{PE}} and supplemental Physical Examination data \code{\link{SUPPPE}}
+#' @field vs_l Vital Signs data \code{\link{VS}} and supplemental Vital Signs data \code{\link{SUPPVS}}
+#' @field qs_l Questionnaires data \code{\link{QS}} and supplemental Questionnaires data \code{\link{SUPP}}
+#' @field fa_l Findings About data \code{\link{FA}} and supplemental Findings About data \code{\link{SUPPFA}}
+#' @field sr_l Skin Response data \code{\link{SR}} and supplemental Skin Response data \code{\link{SUPP}}
+#' @field pf_l Genetics Findings data \code{\link{PF}} and supplemental Genetics Findings data \code{\link{SUPPPF}}
+#' @field za_l Protein Quantification data \code{\link{ZA}} and supplemental Protein Quantification data \code{\link{SUPPZA}}
+#' @field zb_l Cellular Quantification data \code{\link{ZB}} and supplemental Cellular Quantification data \code{\link{SUPP}}
+#' @field zc_l Nucleic Acid Quantification data \code{\link{ZC}} and supplemental Nucleic Acid Quantification data \code{\link{SUPP}}
+#' @field zd_l Titer Assay Results data \code{\link{ZD}} and supplemental Titer Assay Results data \code{\link{SUPP}}
+#' @export Findings
+#' @exportClass Findings
 Findings <- setRefClass("Findings", 
                         fields = list(
                           lb_l="list",
@@ -180,11 +180,11 @@ Findings <- setRefClass("Findings",
                         ))
 #' Trial Design class
 #' 
-#'  @field ta_l Trial Arms data \code{\link{TA}} and supplemental Trial Arms data \code{\link{SUPP}}
-#'  @field ti_l Trial Inclusion Exclusion Criteria data \code{\link{TI}} and supplemental Trial Inclusion Exclusion Criteria data \code{\link{SUPP}}
-#'  @field ts_l Trial Summary data \code{\link{TS}} and supplemental Trial Summary data \code{\link{SUPP}}
-#'  @export TrialDesign
-#'  @exportClass TrialDesign
+#' @field ta_l Trial Arms data \code{\link{TA}} and supplemental Trial Arms data \code{\link{SUPP}}
+#' @field ti_l Trial Inclusion Exclusion Criteria data \code{\link{TI}} and supplemental Trial Inclusion Exclusion Criteria data \code{\link{SUPP}}
+#' @field ts_l Trial Summary data \code{\link{TS}} and supplemental Trial Summary data \code{\link{SUPP}}
+#' @export TrialDesign
+#' @exportClass TrialDesign
 TrialDesign <- setRefClass("TrialDesign", 
                            fields = list(
                              ta_l="list",
@@ -201,14 +201,14 @@ TrialDesign <- setRefClass("TrialDesign",
 
 #' Study class
 #' 
-#'  @field special_purpose \code{\link{SpecialPurpose}} 
-#'  @field interventions \code{\link{Interventions}} 
-#'  @field events \code{\link{Events}} 
-#'  @field findings \code{\link{Findings}} 
-#'  @field trial_design \code{\link{TrialDesign}} 
-#'  @importFrom plyr ldply
-#'  @export Study
-#'  @exportClass Study
+#' @field special_purpose \code{\link{SpecialPurpose}} 
+#' @field interventions \code{\link{Interventions}} 
+#' @field events \code{\link{Events}} 
+#' @field findings \code{\link{Findings}} 
+#' @field trial_design \code{\link{TrialDesign}} 
+#' @importFrom plyr ldply
+#' @export Study
+#' @exportClass Study
 Study <- setRefClass("Study", fields = list(
   special_purpose="SpecialPurpose",
   interventions="Interventions",
@@ -1437,7 +1437,9 @@ getListOfStudies <- function() {
 #'  l <- getDomainDataOfStudies("Genetics Findings", "SDY208")
 #'  df <- mergeDomainAndSupplemental(l)
 #' }
-##' @export
+#' @importFrom reshape2 dcast 
+#' @importFrom dplyr full_join 
+#' @export
 mergeDomainAndSupplemental <- function(data_list) {
   merged_df <- data.frame()
   

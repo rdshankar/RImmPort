@@ -8,10 +8,6 @@
 NULL
 #> NULL 
 
-ta_cols <- c("STUDYID", "DOMAIN", "USUBJID", "ZDSEQ", "ZDTEST", "ZDCAT", "ZDMETHOD", "ZDSTRAIN", "ZDORRES", 
-                     "ZDORRESU",  "ZDSPEC", "ZDREFID", "VISITNUM", "VISIT", "ZDELTM", "ZDTPTREF")
-
-suppta_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
 
 # call to globalVariables to prevent from generating NOTE: no visible binding for global variable <variable name>
 # this hack is to satisfy CRAN (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
@@ -45,7 +41,12 @@ getTiterAssayResults <- function(data_src, study_id, assay_type="ALL") {
   
   ta_df = data.frame()
   suppta_df = data.frame()
-
+  
+  ta_cols <- c("STUDYID", "DOMAIN", "USUBJID", "ZDSEQ", "ZDTEST", "ZDCAT", "ZDMETHOD", "ZDSTRAIN", "ZDORRES", 
+               "ZDORRESU",  "ZDSPEC", "ZDREFID", "VISITNUM", "VISIT", "ZDELTM", "ZDTPTREF")
+  
+  suppta_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
+  
   
   if ((class(data_src)[1] == 'MySQLConnection') || 
       (class(data_src)[1] == 'SQLiteConnection')) {
@@ -74,8 +75,6 @@ getTiterAssayResults <- function(data_src, study_id, assay_type="ALL") {
                           ZDELTM = elapsed_time_of_specimen_collection, ZDTPTREF = time_point_reference, 
                           ZDREFID = biosample_accession)
         
-
-        
         hai_df$DOMAIN <- "ZD"
         
         qnam_values = c("ZDSPECSB",
@@ -98,11 +97,11 @@ getTiterAssayResults <- function(data_src, study_id, assay_type="ALL") {
                            value.name = "QVAL")
         
         supphai_df <- transform(supphai_df, QLABEL = unlist(qlabel_values[QNAM]))
-        supphai_df <- rename(supphai_df, c("DOMAIN" = "RDOMAIN", "ZDSEQ" = "IDVARVAL"))
+        supphai_df <- plyr::rename(supphai_df, c("DOMAIN" = "RDOMAIN", "ZDSEQ" = "IDVARVAL"))
         supphai_df$IDVAR <- "ZDSEQ"
         
         
-        supphai_df <- supphai_df[suppcq_cols]
+        supphai_df <- supphai_df[suppta_cols]
         
         # remove rows that have empty QVAL values
         supphai_df <- subset(supphai_df,QVAL!="")      
@@ -161,11 +160,11 @@ getTiterAssayResults <- function(data_src, study_id, assay_type="ALL") {
                            value.name = "QVAL")
         
         suppnat_df <- transform(suppnat_df, QLABEL = unlist(qlabel_values[QNAM]))
-        suppnat_df <- rename(suppnat_df, c("DOMAIN" = "RDOMAIN", "ZDSEQ" = "IDVARVAL"))
+        suppnat_df <- plyr::rename(suppnat_df, c("DOMAIN" = "RDOMAIN", "ZDSEQ" = "IDVARVAL"))
         suppnat_df$IDVAR <- "ZDSEQ"
         
         
-        suppnat_df <- suppnat_df[suppcq_cols]
+        suppnat_df <- suppnat_df[suppta_cols]
         
         # remove rows that have empty QVAL values
         suppnat_df <- subset(suppnat_df,QVAL!="")      

@@ -8,11 +8,6 @@
 NULL
 #> NULL 
 
-gf_cols <- c("STUDYID", "DOMAIN", "USUBJID", "PFSEQ", "PFGRPID", "PFTEST","PFCAT", "PFMETHOD", "PFGENRI", "PFORRES",  
-             "PFALLELC", "PFXFN", "PFSPEC", "PFREFID", "VISITNUM", "VISIT", "PFELTM", "PFTPTREF")
-
-suppgf_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
-
 # call to globalVariables to prevent from generating NOTE: no visible binding for global variable <variable name>
 # this hack is to satisfy CRAN (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
 globalVariables(c("subject_id", "result_id", "result_set_id", "experiment_title", "assay_purpose", "measurement_technique",
@@ -46,6 +41,12 @@ globalVariables(c("subject_id", "result_id", "result_set_id", "experiment_title"
 #' @importFrom dplyr %>% mutate
 getGeneticsFindings <- function(data_src, study_id, assay_type="ALL") {
   cat("loading Genetics Findings data....")
+
+  gf_cols <- c("STUDYID", "DOMAIN", "USUBJID", "PFSEQ", "PFGRPID", "PFTEST","PFCAT", "PFMETHOD", "PFGENRI", "PFORRES",  
+               "PFALLELC", "PFXFN", "PFSPEC", "PFREFID", "VISITNUM", "VISIT", "PFELTM", "PFTPTREF")
+  
+  suppgf_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
+  
   
   gf_df = data.frame()
   suppgf_df = data.frame()

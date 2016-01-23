@@ -8,8 +8,6 @@
 NULL
 #> NULL 
 
-ti_cols <- c("STUDYID", "DOMAIN", "IETEST", "IECAT")
-
 # Get Trial Inclusion Exclusion Criteria data of a specific study
 # 
 # The function \code{getTrialInclusionExclusionCriteria} queries the ImmPort database for Trial Inclusion Exclusion Criteria  data and 
@@ -27,6 +25,8 @@ ti_cols <- c("STUDYID", "DOMAIN", "IETEST", "IECAT")
 getTrialInclusionExclusionCriteria <- function(data_src, study_id) {
     cat("loading  TrialInclusionExclusionCriteria data....")
     
+    ti_cols <- c("STUDYID", "DOMAIN", "IETEST", "IECAT")
+  
     sql_stmt <- paste("SELECT distinct
                          ie.study_accession,
                          \"TI\" as domain,

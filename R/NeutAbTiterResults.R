@@ -1,19 +1,20 @@
 
-nat_cols <- c("study_id", "subject_id", "result_id",
-                      "result_in_original_units", "original_units", 
-                      "experiment_title", "assay_purpose", "measurement_technique",
-                      "experiment_sample_accession", "biosample_accession", "specimen_type", "specimen_subtype",
-                      "specimen_treatment", 
-                      "treatment_amount_value", "treatment_amount_unit",
-                      "treatment_duration_value", "treatment_duration_unit",
-                      "treatment_temperature_value", "treatment_temperature_unit",
-                      "visit_name", "visit_min_start_day", "visit_max_start_day", "visit_order",
-                      "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
-                      "study_time_t0_event", "study_time_t0_event_specify",
-                      "virus_strain")
 
 getNeutAbTiterResults <- function(conn,study_id, measurement_type) {
   cat("loading Neut. Ab Titer Results data....")
+
+  nat_cols <- c("study_id", "subject_id", "result_id",
+                "result_in_original_units", "original_units", 
+                "experiment_title", "assay_purpose", "measurement_technique",
+                "experiment_sample_accession", "biosample_accession", "specimen_type", "specimen_subtype",
+                "specimen_treatment", 
+                "treatment_amount_value", "treatment_amount_unit",
+                "treatment_duration_value", "treatment_duration_unit",
+                "treatment_temperature_value", "treatment_temperature_unit",
+                "visit_name", "visit_min_start_day", "visit_max_start_day", "visit_order",
+                "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
+                "study_time_t0_event", "study_time_t0_event_specify",
+                "virus_strain")
   
   sql_stmt <- paste("
                     SELECT distinct
