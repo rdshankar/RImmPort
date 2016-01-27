@@ -39,11 +39,11 @@ The [Open ImmPort](http://www.immport.org/) provides interface to explore metada
 # Overview of RImmPort 
 
 `RImmPort` package simplifies access to ImmPort data for analysis, as the name implies, in the R statistical environment. Essentially,it provides a standards-based interface to the proprietary MySQL-formatted or Tab-formatted ImmPort data. It comprises of four main components: 1) an RImmPort data model that encapsulates ImmPort study data. The model leverages of study data standards from the Clinical Data Interchange Standards Consortium (CDISC), and incorporates terms and semantics found in these standards, 2) foundational methods to query and load different types of data of a specific study in ImmPort, 3) methods to search and integrate specific types of study data of multiple studies, and 4) utility methods to export and import study data in RImmPort format. 
-![RImmPort Components](/Users/user/Pictures/RImmPort_Components.png)
+![RImmPort Components](RImmPort_Components.png)
 
 The RImmPort workflow is illustrated in the following figure. User creates a private MySQL database instance, downloads study data of interest from ImmPort website, and loads the data into the private database. In R, user connects to the private ImmPort database, and calls the methods in the RImmPort library, to load a specific study from the database into R.
 
-![RImmPort Data Workflow](/Users/user/Pictures/RImmPort_Process.png)
+![RImmPort Data Workflow](RImmPort_Process.png)
 
 Using RImmPort, an entire study can be loaded into R with a single command. For example, a researcher interested in analyzing a specific study ImmPort Identifier:SDY1, can use RImmPort to easily access different types of individual-level data -subject demographics, clinical assessments, adverse events, results of flow cytometry and ELISA experiments on 4211 biosamples collected at different time points over 12 weeks from 159 subjects. 
 
