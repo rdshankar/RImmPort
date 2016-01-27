@@ -13,9 +13,19 @@ NULL
 globalVariables(c("subject_id", "experiment_title", "assay_purpose", "measurement_technique",
                   "base_parent_population", "population_cell_number", "population_cell_number_unit",
                   "population_defnition_reported", "population_name_reported", "specimen_type",
-                  "specimen_subtype", "visit_name", "elapsed_time_of_specimen_collection", "time_point_reference",
+                  "specimen_subtype", "specimen_treatment", 
+                  "treatment_amount_value", "treatment_amount_unit",
+                  "treatment_duration_value", "treatment_duration_unit",
+                  "treatment_temperature_value", "treatment_temperature_unit",
+                  "visit_name", "visit_min_start_day", "visit_max_start_day", "visit_order",
+                  "elapsed_time_of_specimen_collection", "time_point_reference",
                   "biosample_accession", "file_name", "ZBSEQ", "result_id", "cell_type", "spot_number",
-                  "analyte", "cell_number", "ZBBASPOP", "ZBPOPDEF"))
+                  "analyte", "cell_number", "ZBBASPOP", "ZBPOPDEF", "ZBSPECSB",
+                  "VISITMIN", "VISITMAX",
+                  "ZBSPTRT", 
+                  "ZBTRTAMV", "ZBTRTAMU",
+                  "ZBTRTDUV", "ZBTRTDUU",
+                  "ZBTRTTMV", "ZBTRTTMU"))
 
 ## Get Cellular Quantification data of a specific study
 ## 

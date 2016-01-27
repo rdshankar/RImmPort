@@ -9,7 +9,9 @@ NULL
 
 # call to globalVariables to prevent from generating NOTE: no visible binding for global variable <variable name>
 # this hack is to satisfy CRAN (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
-globalVariables(c("LBSEQ", "QNAM", "QVAL", "LBSPECSB", "VISITMIN", "VISITMAX"))
+globalVariables(c("LBSEQ", "QNAM", "QVAL", "LBSPECSB", "VISITMIN", "VISITMAX", "STUDYID", "DOMAIN", "USUBJID",
+                  "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
+                  "study_time_t0_event", "study_time_t0_event_specify"))
 
 # Get Laboratory Test Results data of a specific study
 # 

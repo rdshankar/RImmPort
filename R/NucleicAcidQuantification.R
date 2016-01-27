@@ -13,8 +13,18 @@ NULL
 globalVariables(c("subject_id", "experiment_title", "assay_purpose", "measurement_technique",
                   "entrez_gene_id", "gene_name", "gene_symbol",
                   "threshold_cycles", "value_reported", "unit_reported", "specimen_type",
-                  "specimen_subtype", "visit_name", "elapsed_time_of_specimen_collection", "time_point_reference",
-                  "biosample_accession"))
+                  "specimen_subtype", "specimen_treatment", 
+                  "treatment_amount_value", "treatment_amount_unit",
+                  "treatment_duration_value", "treatment_duration_unit",
+                  "treatment_temperature_value", "treatment_temperature_unit",
+                  "visit_name", "visit_min_start_day", "visit_max_start_day", "visit_order",
+                  "elapsed_time_of_specimen_collection", "time_point_reference",
+                  "biosample_accession", "ZCSPECSB",
+                  "VISITMIN", "VISITMAX",
+                  "ZCSPTRT", 
+                  "ZCTRTAMV", "ZCTRTAMU",
+                  "ZCTRTDUV", "ZCTRTDUU",
+                  "ZCTRTTMV", "ZCTRTTMU"))
 
 ## Get Nucleic Acid Quantification data of a specific study
 ## 

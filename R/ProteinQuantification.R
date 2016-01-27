@@ -12,9 +12,19 @@ NULL
 # this hack is to satisfy CRAN (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
 globalVariables(c("subject_id", "result_id", "experiment_title", "assay_purpose", "measurement_technique",
                   "analyte", "value", "unit", "specimen_type",
-                  "specimen_subtype", "visit_name", "elapsed_time_of_specimen_collection", "time_point_reference",
+                  "specimen_subtype", "specimen_treatment", 
+                  "treatment_amount_value", "treatment_amount_unit",
+                  "treatment_duration_value", "treatment_duration_unit",
+                  "treatment_temperature_value", "treatment_temperature_unit",
+                  "visit_name", "visit_min_start_day", "visit_max_start_day", "visit_order",
+                  "elapsed_time_of_specimen_collection", "time_point_reference",
                   "biosample_accession", "file_name", "concentration_value", "concentration_unit", 
-                  "mfi", "mfi_coordinate", "QNAM", "QVAL", "ZAMFI", "ZAMFICRD"))
+                  "mfi", "mfi_coordinate", "QNAM", "QVAL", "ZAMFI", "ZAMFICRD", "ZASPECSB",
+                  "VISITMIN", "VISITMAX",
+                  "ZASPTRT", 
+                  "ZATRTAMV", "ZATRTAMU",
+                  "ZATRTDUV", "ZATRTDUU",
+                  "ZATRTTMV", "ZATRTTMU"))
 
 # Get Protein Quantification data of a specific study
 # 

@@ -13,9 +13,19 @@ NULL
 globalVariables(c("subject_id", "result_id", "result_set_id", "experiment_title", "assay_purpose", "measurement_technique",
                   "locus_name", "allele_1", "allele_2",
                   "pop_area_name", "specimen_type", "specimen_subtype",
-                  "visit_name", "elapsed_time_of_specimen_collection", "time_point_reference",
+                  "specimen_treatment", 
+                  "treatment_amount_value", "treatment_amount_unit",
+                  "treatment_duration_value", "treatment_duration_unit",
+                  "treatment_temperature_value", "treatment_temperature_unit",
+                  "visit_name", "visit_min_start_day", "visit_max_start_day", "visit_order", 
+                  "elapsed_time_of_specimen_collection", "time_point_reference",
                   "biosample_accession", "repository_id", 
-                  "QNAM", "QVAL", "PFSPECSB", "PFPOPAR"))
+                  "QNAM", "QVAL", "PFSPECSB", "PFPOPAR", 
+                  "VISITMIN", "VISITMAX",
+                  "PFSPTRT", 
+                  "PFTRTAMV", "PFTRTAMU",
+                  "PFTRTDUV", "PFTRTDUU",
+                  "PFTRTTMV", "PFTRTTMU"))
 
 # Get Genetics Findings data of a specific study
 # 

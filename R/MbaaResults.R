@@ -1,3 +1,7 @@
+# call to globalVariables to prevent from generating NOTE: no visible binding for global variable <variable name>
+# this hack is to satisfy CRAN (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
+globalVariables(c("study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
+                  "study_time_t0_event", "study_time_t0_event_specify"))
 
 
 getMbaaResults <- function(conn,study_id, measurement_types) {

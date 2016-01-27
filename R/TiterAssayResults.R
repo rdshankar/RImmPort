@@ -13,9 +13,18 @@ NULL
 # this hack is to satisfy CRAN (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
 globalVariables(c("subject_id", "result_id", "experiment_title", "assay_purpose", "measurement_technique",
                   "virus_strain", "result_in_original_units", "original_units",
-                  "specimen_type", "specimen_subtype", 
+                  "specimen_type", "specimen_subtype", "specimen_treatment", 
+                  "treatment_amount_value", "treatment_amount_unit",
+                  "treatment_duration_value", "treatment_duration_unit",
+                  "treatment_temperature_value", "treatment_temperature_unit",
+                  "visit_name", "visit_min_start_day", "visit_max_start_day", "visit_order",
                   "elapsed_time_of_specimen_collection", "time_point_reference",
-                  "biosample_accession"))
+                  "biosample_accession", "ZDSPECSB",
+                  "VISITMIN", "VISITMAX",
+                  "ZDSPTRT", 
+                  "ZDTRTAMV", "ZDTRTAMU",
+                  "ZDTRTDUV", "ZDTRTDUU",
+                  "ZDTRTTMV", "ZDTRTTMU"))
 
 # Get Titer Assay Results data of a specific study
 # 
