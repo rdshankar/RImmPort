@@ -174,9 +174,13 @@ db_idx_stmts <- c(
 ##' @param data_dir File directory where the study TSV files are stored
 ##' @param db_dir File directory where the sqlite database will be stored
 ##' @examples
-##' \dontrun{
-##'   buildNewSqliteDb(data_dir, db_dir)
-##' }
+##' studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+##' # set tab_dir to the folder where the zip files are located
+##' tab_dir <- file.path(studies_dir, "Tab")
+##' # set db_dir to the folder where the database file 'ImmPort.sqlite' should be stored
+##' db_dir <- file.path(studies_dir, "Db")
+##' # build a new ImmPort SQLite database with the data in the downloaded zip files
+##' # buildNewSqliteDb(tab_dir, db_dir) 
 ##' @importFrom DBI dbGetQuery dbConnect
 ##' @importFrom RSQLite SQLite
 ##' @importFrom RSQLite dbWriteTable
@@ -184,6 +188,7 @@ db_idx_stmts <- c(
 ##' @importFrom tools file_path_sans_ext
 ##' @importFrom data.table setnames
 ##' @export
+##' 
 buildNewSqliteDb <- function(data_dir, db_dir) {
   dbname="ImmPort.sqlite"
   
@@ -192,8 +197,8 @@ buildNewSqliteDb <- function(data_dir, db_dir) {
   
   setwd(db_dir)
   if (file.exists(dbname)) {
-    stop(paste("ImmPort.sqlite database already exists. Please remove the file ImmPort.sqlite in ", 
-               db_dir, " before building a new ImmPort database"))
+     stop(paste("ImmPort.sqlite database already exists. Please remove the file ImmPort.sqlite in ", 
+                db_dir, " before building a new ImmPort database"))
   }
   
   sqldf(paste("attach \'", dbname, "\' as new", sep=""), drv = "SQLite") 
@@ -205,10 +210,10 @@ buildNewSqliteDb <- function(data_dir, db_dir) {
   # unzip study files into data directory
   zipfiles <- list.files(pattern = "Tab\\.zip$")
   for (zf in zipfiles) {
-     zipname <- file_path_sans_ext(zf)
-     study_dir <- file.path(data_dir, zipname)
-     dir.create(study_dir)
-     unzip(zf, exdir = study_dir)
+#      zipname <- file_path_sans_ext(zf)
+#      study_dir <- file.path(data_dir, zipname)
+#      dir.create(study_dir)
+    unzip(zf)
   }
      
   # process each study dir and load data into SQLite db
