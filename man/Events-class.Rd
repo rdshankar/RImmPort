@@ -19,4 +19,14 @@ Events class
 
 \item{\code{apmh_l}}{Associated Persons Medical History data \code{\link{APMH}} and supplemental Associated Persons Medical History data \code{\link{SUPP}}}
 }}
+\examples{
+library(DBI)
+library(sqldf)
+studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+db_dir <- file.path(studies_dir, "Db")
+sqlite_conn <- dbConnect(SQLite(), dbname=file.path(db_dir, "ImmPort.sqlite"))
+setImmPortDataSource(sqlite_conn)
+sdy139 <- getStudy("SDY139")
+ae_df <- sdy139$events$ae_l$ae_df
+}
 

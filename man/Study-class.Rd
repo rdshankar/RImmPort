@@ -21,4 +21,13 @@ Study class
 
 \item{\code{trial_design}}{\code{\link{TrialDesign}}}
 }}
+\examples{
+library(DBI)
+library(sqldf)
+studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+db_dir <- file.path(studies_dir, "Db")
+sqlite_conn <- dbConnect(SQLite(), dbname=file.path(db_dir, "ImmPort.sqlite"))
+setImmPortDataSource(sqlite_conn)
+sdy139 <- getStudy("SDY139")
+}
 

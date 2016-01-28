@@ -18,9 +18,13 @@ dataframe that is in long form. The function \code{mergeDomainAndSupplemental} t
 dataframe into a wide form, and merges it with the Domain dataframe.
 }
 \examples{
-\dontrun{ 
- l <- getDomainDataOfStudies("Genetics Findings", "SDY208")
- df <- mergeDomainAndSupplemental(l)
-}
+library(DBI)
+library(sqldf)
+studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+db_dir <- file.path(studies_dir, "Db")
+sqlite_conn <- dbConnect(SQLite(), dbname=file.path(db_dir, "ImmPort.sqlite"))
+setImmPortDataSource(sqlite_conn)
+l <- getDomainDataOfStudies("Cellular Quantification", "SDY208")
+df <- mergeDomainAndSupplemental(l)
 }
 

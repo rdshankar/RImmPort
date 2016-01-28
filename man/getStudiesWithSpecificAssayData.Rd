@@ -18,9 +18,12 @@ List of study indentifiers
 Get a list of studies that have specific assay type data
 }
 \examples{
-\dontrun{ 
-   study_ids <- getStudiesWithSpecificAssayData("ELISA")
-   study_ids <- getStudiesWithSpecificAssayData("Flow")
-}
+library(DBI)
+library(sqldf)
+studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+db_dir <- file.path(studies_dir, "Db")
+sqlite_conn <- dbConnect(SQLite(), dbname=file.path(db_dir, "ImmPort.sqlite"))
+setImmPortDataSource(sqlite_conn)
+study_ids <- getStudiesWithSpecificAssayData("ELISPOT")
 }
 

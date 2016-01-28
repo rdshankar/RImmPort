@@ -17,8 +17,12 @@ The function \code{getStudy} queries the ImmPort data source for data of a speci
 all domains. The data is then structured into \code{Study} as classes, domains, variables and values.
 }
 \examples{
-\dontrun{
-  sdy1 <- getStudy("SDY1")
-}
+library(DBI)
+library(sqldf)
+studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+db_dir <- file.path(studies_dir, "Db")
+sqlite_conn <- dbConnect(SQLite(), dbname=file.path(db_dir, "ImmPort.sqlite"))
+setImmPortDataSource(sqlite_conn)
+sdy139 <- getStudy("SDY139")
 }
 

@@ -16,23 +16,11 @@ to the connection handle to the MySQL or SQLite database, or to the file directo
 pre-created RImmPort-formatted files are stored.
 }
 \examples{
-\dontrun{
-  # example 1: ImmPort data source is MySQL database
-  # set approriate values for dbUser, dbPassword, dbDatabase, dbHost, and dbPort in the 
-  # connection statement
-  conn <- dbConnect(dbDriver('MySQL'), user=dbUser, password=dbPassword,
-                    dbname=dbDatabase, host=dbHost, port=dbPort)
-  setImmPortDataSource(conn)
-  
-  # example 2: ImmPort data source is SQLite database
-  db_dir <- "~/ImmPortStudies/Db/" # directory where the SQLite database file is stored
-  conn <- dbConnect(SQLite(), dbname=file.path(db_dir, "ImmPort.sqlite"))
-  setImmPortDataSource(conn)
-  
-  # example 3: ImmPort data source is RImmPort-formatted(.rds) data
-  rds_dir <- "~/ImmPortStudies/Rds/" # directory where RImmPort-formatted(.rds) studyfiles 
-  are stored
-  setImmPortDataSource(rds_dir)
-}
+library(DBI)
+library(sqldf)
+studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+db_dir <- file.path(studies_dir, "Db")
+sqlite_conn <- dbConnect(SQLite(), dbname=file.path(db_dir, "ImmPort.sqlite"))
+setImmPortDataSource(sqlite_conn)
 }
 

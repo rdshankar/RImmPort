@@ -28,7 +28,7 @@ RImmPort.env <- new.env()
 .datatable.aware=TRUE
 
 domain_info <- structure(data.frame(
-  matrix(unlist(domain_names_codes),length(domain_names_codes)/2,2,T), stringsAsFactors = FALSE),
+  matrix(unlist(domain_names_codes),length(domain_names_codes)/2,2,TRUE), stringsAsFactors = FALSE),
   names=c("Domain Name","Domain Code"))
 
 ##' Set ImmPort data ource
@@ -40,24 +40,12 @@ domain_info <- structure(data.frame(
 ##' @param data_src A connection handle to ImmPort (MySQL or SQLite) database instance or 
 ##' a directory handle to folder where study RImmPort-formatted (.rds) files located
 ##' @examples
-##' \dontrun{
-##'   # example 1: ImmPort data source is MySQL database
-##'   # set approriate values for dbUser, dbPassword, dbDatabase, dbHost, and dbPort in the 
-##'   # connection statement
-##'   conn <- dbConnect(dbDriver('MySQL'), user=dbUser, password=dbPassword,
-##'                     dbname=dbDatabase, host=dbHost, port=dbPort)
-##'   setImmPortDataSource(conn)
-##'   
-##'   # example 2: ImmPort data source is SQLite database
-##'   db_dir <- "~/ImmPortStudies/Db/" # directory where the SQLite database file is stored
-##'   conn <- dbConnect(SQLite(), dbname=file.path(db_dir, "ImmPort.sqlite"))
-##'   setImmPortDataSource(conn)
-##'   
-##'   # example 3: ImmPort data source is RImmPort-formatted(.rds) data
-##'   rds_dir <- "~/ImmPortStudies/Rds/" # directory where RImmPort-formatted(.rds) studyfiles 
-##'   are stored
-##'   setImmPortDataSource(rds_dir)
-##' }
+##' library(DBI)
+##' library(sqldf)
+##' studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+##' db_dir <- file.path(studies_dir, "Db")
+##' sqlite_conn <- dbConnect(SQLite(), dbname=file.path(db_dir, "ImmPort.sqlite"))
+##' setImmPortDataSource(sqlite_conn)
 ##' @export
 setImmPortDataSource <- function(data_src){
   RImmPort.env$data_src <- data_src
@@ -74,13 +62,23 @@ setImmPortDataSource <- function(data_src){
   }
 }
 
-#' Special Purpose class
-#' 
-#' @field dm_l Demographics data \code{\link{DM}} and supplemental Demographics data \code{\link{SUPP}}
-#' @field sv_l Subject Visits data \code{\link{SV}} and supplemental Subject Visits data \code{\link{SUPP}}
-#' @importFrom methods  setRefClass
-#' @export SpecialPurpose
-#' @exportClass SpecialPurpose
+##' Special Purpose class
+##' 
+##' @field dm_l Demographics data \code{\link{DM}} and supplemental Demographics data \code{\link{SUPP}}
+##' @field sv_l Subject Visits data \code{\link{SV}} and supplemental Subject Visits data \code{\link{SUPP}}
+##' @examples
+##' library(DBI)
+##' library(sqldf)
+##' studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+##' db_dir <- file.path(studies_dir, "Db")
+##' sqlite_conn <- dbConnect(SQLite(), dbname=file.path(db_dir, "ImmPort.sqlite"))
+##' setImmPortDataSource(sqlite_conn)
+##' sdy139 <- getStudy("SDY139")
+##' dm_df <- sdy139$special_purpose$dm_l$dm_df
+##' @importFrom methods  setRefClass
+##' @importFrom methods  new
+##' @export SpecialPurpose
+##' @exportClass SpecialPurpose
 SpecialPurpose <- setRefClass("SpecialPurpose", 
                               fields = list( 
                                 dm_l="list",
@@ -92,13 +90,22 @@ SpecialPurpose <- setRefClass("SpecialPurpose",
                                   sv_l <<- getSubjectVisits(data_src, study_id)
                                 }
                               ))
-#' Interventions class
-#' 
-#' @field cm_l Concomitant Medications data \code{\link{CM}} and supplemental Concomitant Medications data \code{\link{SUPP}}
-#' @field ex_l Exposure data \code{\link{EX}} and supplemental Exposure data \code{\link{SUPP}}
-#' @field su_l Substance Use data \code{\link{SU}} and supplemental Substance Use data \code{\link{SUPP}}
-#' @export Interventions
-#' @exportClass Interventions
+##' Interventions class
+##' 
+##' @field cm_l Concomitant Medications data \code{\link{CM}} and supplemental Concomitant Medications data \code{\link{SUPP}}
+##' @field ex_l Exposure data \code{\link{EX}} and supplemental Exposure data \code{\link{SUPP}}
+##' @field su_l Substance Use data \code{\link{SU}} and supplemental Substance Use data \code{\link{SUPP}}
+##' @examples
+##' library(DBI)
+##' library(sqldf)
+##' studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+##' db_dir <- file.path(studies_dir, "Db")
+##' sqlite_conn <- dbConnect(SQLite(), dbname=file.path(db_dir, "ImmPort.sqlite"))
+##' setImmPortDataSource(sqlite_conn)
+##' sdy139 <- getStudy("SDY139")
+##' cm_df <- sdy139$interventions$cm_l$cm_df
+##' @export Interventions
+##' @exportClass Interventions
 Interventions <- setRefClass("Interventions", 
                              fields = list(
                                cm_l="list",
@@ -112,14 +119,23 @@ Interventions <- setRefClass("Interventions",
                                  su_l <<- getSubstanceUse(data_src, study_id)
                                }
                              ))
-#' Events class
-#' 
-#' @field ae_l Adverse Events data \code{\link{AE}} and supplemental Adverse Events data \code{\link{SUPP}}
-#' @field dv_l Protocol Deviations data \code{\link{DV}} and supplemental Protocol Deviations data \code{\link{SUPPDV}}
-#' @field mh_l Medical History data \code{\link{MH}} and supplemental Medical History data \code{\link{SUPPMH}}
-#' @field apmh_l Associated Persons Medical History data \code{\link{APMH}} and supplemental Associated Persons Medical History data \code{\link{SUPP}}
-#' @export Events
-#' @exportClass Events
+##' Events class
+##' 
+##' @field ae_l Adverse Events data \code{\link{AE}} and supplemental Adverse Events data \code{\link{SUPP}}
+##' @field dv_l Protocol Deviations data \code{\link{DV}} and supplemental Protocol Deviations data \code{\link{SUPPDV}}
+##' @field mh_l Medical History data \code{\link{MH}} and supplemental Medical History data \code{\link{SUPPMH}}
+##' @field apmh_l Associated Persons Medical History data \code{\link{APMH}} and supplemental Associated Persons Medical History data \code{\link{SUPP}}
+##' @examples
+##' library(DBI)
+##' library(sqldf)
+##' studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+##' db_dir <- file.path(studies_dir, "Db")
+##' sqlite_conn <- dbConnect(SQLite(), dbname=file.path(db_dir, "ImmPort.sqlite"))
+##' setImmPortDataSource(sqlite_conn)
+##' sdy139 <- getStudy("SDY139")
+##' ae_df <- sdy139$events$ae_l$ae_df
+##' @export Events
+##' @exportClass Events
 Events <- setRefClass("Events", fields = list(
   ae_l="list",
   dv_l="list",
@@ -134,21 +150,30 @@ methods = list(
     apmh_l <<- getAssociatedPersonsMedicalHistory(data_src, study_id)
   }
 ))
-#' Findings class
-#' 
-#' @field lb_l Laboratory Test Results data \code{\link{LB}} and supplemental Laboratory Test Results data \code{\link{SUPPLB}}
-#' @field pe_l Physical Examination data \code{\link{PE}} and supplemental Physical Examination data \code{\link{SUPPPE}}
-#' @field vs_l Vital Signs data \code{\link{VS}} and supplemental Vital Signs data \code{\link{SUPPVS}}
-#' @field qs_l Questionnaires data \code{\link{QS}} and supplemental Questionnaires data \code{\link{SUPP}}
-#' @field fa_l Findings About data \code{\link{FA}} and supplemental Findings About data \code{\link{SUPPFA}}
-#' @field sr_l Skin Response data \code{\link{SR}} and supplemental Skin Response data \code{\link{SUPP}}
-#' @field pf_l Genetics Findings data \code{\link{PF}} and supplemental Genetics Findings data \code{\link{SUPPPF}}
-#' @field za_l Protein Quantification data \code{\link{ZA}} and supplemental Protein Quantification data \code{\link{SUPPZA}}
-#' @field zb_l Cellular Quantification data \code{\link{ZB}} and supplemental Cellular Quantification data \code{\link{SUPP}}
-#' @field zc_l Nucleic Acid Quantification data \code{\link{ZC}} and supplemental Nucleic Acid Quantification data \code{\link{SUPP}}
-#' @field zd_l Titer Assay Results data \code{\link{ZD}} and supplemental Titer Assay Results data \code{\link{SUPP}}
-#' @export Findings
-#' @exportClass Findings
+##' Findings class
+##' 
+##' @field lb_l Laboratory Test Results data \code{\link{LB}} and supplemental Laboratory Test Results data \code{\link{SUPPLB}}
+##' @field pe_l Physical Examination data \code{\link{PE}} and supplemental Physical Examination data \code{\link{SUPPPE}}
+##' @field vs_l Vital Signs data \code{\link{VS}} and supplemental Vital Signs data \code{\link{SUPPVS}}
+##' @field qs_l Questionnaires data \code{\link{QS}} and supplemental Questionnaires data \code{\link{SUPP}}
+##' @field fa_l Findings About data \code{\link{FA}} and supplemental Findings About data \code{\link{SUPPFA}}
+##' @field sr_l Skin Response data \code{\link{SR}} and supplemental Skin Response data \code{\link{SUPP}}
+##' @field pf_l Genetics Findings data \code{\link{PF}} and supplemental Genetics Findings data \code{\link{SUPPPF}}
+##' @field za_l Protein Quantification data \code{\link{ZA}} and supplemental Protein Quantification data \code{\link{SUPPZA}}
+##' @field zb_l Cellular Quantification data \code{\link{ZB}} and supplemental Cellular Quantification data \code{\link{SUPP}}
+##' @field zc_l Nucleic Acid Quantification data \code{\link{ZC}} and supplemental Nucleic Acid Quantification data \code{\link{SUPP}}
+##' @field zd_l Titer Assay Results data \code{\link{ZD}} and supplemental Titer Assay Results data \code{\link{SUPP}}
+##' @examples
+##' library(DBI)
+##' library(sqldf)
+##' studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+##' db_dir <- file.path(studies_dir, "Db")
+##' sqlite_conn <- dbConnect(SQLite(), dbname=file.path(db_dir, "ImmPort.sqlite"))
+##' setImmPortDataSource(sqlite_conn)
+##' sdy139 <- getStudy("SDY139")
+##' zb_df <- sdy139$findings$zb_l$zb_df
+##' @export Findings
+##' @exportClass Findings
 Findings <- setRefClass("Findings", 
                         fields = list(
                           lb_l="list",
@@ -178,13 +203,22 @@ Findings <- setRefClass("Findings",
                             zd_l <<- getTiterAssayResults(data_src, study_id)
                           }
                         ))
-#' Trial Design class
-#' 
-#' @field ta_l Trial Arms data \code{\link{TA}} and supplemental Trial Arms data \code{\link{SUPP}}
-#' @field ti_l Trial Inclusion Exclusion Criteria data \code{\link{TI}} and supplemental Trial Inclusion Exclusion Criteria data \code{\link{SUPP}}
-#' @field ts_l Trial Summary data \code{\link{TS}} and supplemental Trial Summary data \code{\link{SUPP}}
-#' @export TrialDesign
-#' @exportClass TrialDesign
+##' Trial Design class
+##' 
+##' @field ta_l Trial Arms data \code{\link{TA}} and supplemental Trial Arms data \code{\link{SUPP}}
+##' @field ti_l Trial Inclusion Exclusion Criteria data \code{\link{TI}} and supplemental Trial Inclusion Exclusion Criteria data \code{\link{SUPP}}
+##' @field ts_l Trial Summary data \code{\link{TS}} and supplemental Trial Summary data \code{\link{SUPP}}
+##' @examples
+##' library(DBI)
+##' library(sqldf)
+##' studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+##' db_dir <- file.path(studies_dir, "Db")
+##' sqlite_conn <- dbConnect(SQLite(), dbname=file.path(db_dir, "ImmPort.sqlite"))
+##' setImmPortDataSource(sqlite_conn)
+##' sdy139 <- getStudy("SDY139")
+##' ts_df <- sdy139$trial_design$ts_l$ts_df
+##' @export TrialDesign
+##' @exportClass TrialDesign
 TrialDesign <- setRefClass("TrialDesign", 
                            fields = list(
                              ta_l="list",
@@ -199,16 +233,24 @@ TrialDesign <- setRefClass("TrialDesign",
                              }
                            ))
 
-#' Study class
-#' 
-#' @field special_purpose \code{\link{SpecialPurpose}} 
-#' @field interventions \code{\link{Interventions}} 
-#' @field events \code{\link{Events}} 
-#' @field findings \code{\link{Findings}} 
-#' @field trial_design \code{\link{TrialDesign}} 
-#' @importFrom plyr ldply
-#' @export Study
-#' @exportClass Study
+##' Study class
+##' 
+##' @field special_purpose \code{\link{SpecialPurpose}} 
+##' @field interventions \code{\link{Interventions}} 
+##' @field events \code{\link{Events}} 
+##' @field findings \code{\link{Findings}} 
+##' @field trial_design \code{\link{TrialDesign}} 
+##' @examples
+##' library(DBI)
+##' library(sqldf)
+##' studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+##' db_dir <- file.path(studies_dir, "Db")
+##' sqlite_conn <- dbConnect(SQLite(), dbname=file.path(db_dir, "ImmPort.sqlite"))
+##' setImmPortDataSource(sqlite_conn)
+##' sdy139 <- getStudy("SDY139")
+##' @importFrom plyr ldply
+##' @export Study
+##' @exportClass Study
 Study <- setRefClass("Study", fields = list(
   special_purpose="SpecialPurpose",
   interventions="Interventions",
@@ -313,9 +355,13 @@ Study <- setRefClass("Study", fields = list(
 ##' @param study_id Identifier of a specific study
 ##' @return A study data object where in all data are structured as classes, domains, variables and values (in CDISC format)
 ##' @examples
-##' \dontrun{
-##'   sdy1 <- getStudy("SDY1")
-##' }
+##' library(DBI)
+##' library(sqldf)
+##' studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+##' db_dir <- file.path(studies_dir, "Db")
+##' sqlite_conn <- dbConnect(SQLite(), dbname=file.path(db_dir, "ImmPort.sqlite"))
+##' setImmPortDataSource(sqlite_conn)
+##' sdy139 <- getStudy("SDY139")
 ##' @export
 getStudy <- function(study_id) {
   if (is.null(r <- get0("data_src", envir = RImmPort.env))) {
@@ -339,28 +385,28 @@ getStudy <- function(study_id) {
   study
 }
 
-#' Get names of all domains and their codes
-#' 
-#' The function \code{getListOfDomains} returns a list of all domain names and codes
-#' 
-#' @return A list of of all domain names and codes
-#' @examples
-#'  domains_df <- getListOfDomains()
+##' Get names of all domains and their codes
+##' 
+##' The function \code{getListOfDomains} returns a list of all domain names and codes
+##' 
+##' @return A list of of all domain names and codes
+##' @examples
+##'  domains_df <- getListOfDomains()
 ##' @export
 getListOfDomains <- function() {
   domain_info
 }
 
-#' Get code of a specific domain 
-#' 
-#' The function \code{getListOfDomains} returns the code of a specific domain
-#' 
-#' @param domain Name of a specific domain
-#' @return A list of of all domain names and codes
-#' @examples
-#'  domain <- "Demographics"
-#'  code <- getDomainCode(domain)
-#' @export
+##' Get code of a specific domain 
+##' 
+##' The function \code{getListOfDomains} returns the code of a specific domain
+##' 
+##' @param domain Name of a specific domain
+##' @return A list of of all domain names and codes
+##' @examples
+##'  domain <- "Demographics"
+##'  code <- getDomainCode(domain)
+##' @export
 getDomainCode <- function(domain) {
   domain_info[which(domain_info[,1]==domain), 2]
 }
@@ -371,10 +417,13 @@ getDomainCode <- function(domain) {
 ##' @param study_ids List of study indentifiers
 ##' @return a list of 1) domain data and 2) supplemental domain data of the studies
 ##' @examples
-##' \dontrun{ 
-##'     dm_df <- getDomainDataOfStudies("Demographics", "SDY1")
-##'     dm_df <- getDomainDataOfStudies("Demographics", c("SDY1", "SDY2"))
-##'   }
+##' library(DBI)
+##' library(sqldf)
+##' studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+##' db_dir <- file.path(studies_dir, "Db")
+##' sqlite_conn <- dbConnect(SQLite(), dbname=file.path(db_dir, "ImmPort.sqlite"))
+##' setImmPortDataSource(sqlite_conn)
+##' dm_df <- getDomainDataOfStudies("Demographics", "SDY139")
 ##' @export
 getDomainDataOfStudies <- function(domain, study_ids) {
   if (is.null(r <- get0("data_src", envir = RImmPort.env))) {
@@ -879,14 +928,14 @@ getTiterAssayResultsOfStudies <- function(data_src, study_ids, assay_type="ALL")
 }
 
 
-#' Get a list of Assay Types
-#' 
-#' The function \code{getListOfAssayTypes} returns a list of assay types that ImmPort studies have employed in their experimetal assays
-#' 
-#' @return A list of assay types
-#' @examples
-#'  at_l <- getListOfAssayTypes()
-#' @export
+##' Get a list of Assay Types
+##' 
+##' The function \code{getListOfAssayTypes} returns a list of assay types that ImmPort studies have employed in their experimetal assays
+##' 
+##' @return A list of assay types
+##' @examples
+##'  at_l <- getListOfAssayTypes()
+##' @export
 getListOfAssayTypes <- function() {
   assay_type <- c(
     "ELISA",
@@ -910,10 +959,16 @@ getListOfAssayTypes <- function() {
 ##' @return a list of 1) domain data of specicifc assay technology and 2) any supplemental domain data of the studies
 ##' @author Ravi Shankar
 ##' @examples
-##' \dontrun{ 
-##'     data_l <- getAssayDataOfStudies("SDY1", "ELISA")
-##'     data_l <- getAssayDataOfStudies(c("SDY1", "SDY2"), "Flow")
-##'   }
+##' library(DBI)
+##' library(sqldf)
+##' studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+##' db_dir <- file.path(studies_dir, "Db")
+##' sqlite_conn <- dbConnect(SQLite(), dbname=file.path(db_dir, "ImmPort.sqlite"))
+##' setImmPortDataSource(sqlite_conn)
+##' elispot_l <- getAssayDataOfStudies("SDY139", "ELISPOT")
+##' if (length(elispot_l) > 0)
+##'   names(elispot_l)
+##' head(elispot_l$zb_df)
 ##' @export
 getAssayDataOfStudies <- function(study_ids, assay_type) {
   if (is.null(r <- get0("data_src", envir = RImmPort.env))) {
@@ -946,10 +1001,13 @@ getAssayDataOfStudies <- function(study_ids, assay_type) {
 ##' @param all_study_ids List of study indentifiers to search on
 ##' @return List of study indentifiers
 ##' @examples
-##' \dontrun{ 
-##'    study_ids <- getStudiesWithSpecificDomainData("Demographics")
-##'    study_ids <- getStudiesWithSpecificDomainData("Adverse Events")
-##' }
+##' library(DBI)
+##' library(sqldf)
+##' studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+##' db_dir <- file.path(studies_dir, "Db")
+##' sqlite_conn <- dbConnect(SQLite(), dbname=file.path(db_dir, "ImmPort.sqlite"))
+##' setImmPortDataSource(sqlite_conn)
+##' study_ids <- getStudiesWithSpecificDomainData("Demographics")
 ##' @export
 getStudiesWithSpecificDomainData <- function(domain, all_study_ids = c("ALL")) {
   study_ids = c()
@@ -1339,10 +1397,13 @@ getStudiesWithTiterAssayResults <- function(data_src) {
 ##' @param all_study_ids List of study indentifiers to search on
 ##' @return List of study indentifiers
 ##' @examples
-##' \dontrun{ 
-##'    study_ids <- getStudiesWithSpecificAssayData("ELISA")
-##'    study_ids <- getStudiesWithSpecificAssayData("Flow")
-##' }
+##' library(DBI)
+##' library(sqldf)
+##' studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+##' db_dir <- file.path(studies_dir, "Db")
+##' sqlite_conn <- dbConnect(SQLite(), dbname=file.path(db_dir, "ImmPort.sqlite"))
+##' setImmPortDataSource(sqlite_conn)
+##' study_ids <- getStudiesWithSpecificAssayData("ELISPOT")
 ##' @export
 getStudiesWithSpecificAssayData <- function(assay_type, all_study_ids = c("ALL")) {
   if (is.null(r <- get0("data_src", envir = RImmPort.env))) {
@@ -1385,9 +1446,13 @@ getStudiesWithSpecificAssayData <- function(assay_type, all_study_ids = c("ALL")
 ##' 
 ##' @return List of study indentifiers
 ##' @examples
-##' \dontrun{ 
-##'   study_ids <- getListOfStudies()
-##'   }
+##' library(DBI)
+##' library(sqldf)
+##' studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+##' db_dir <- file.path(studies_dir, "Db")
+##' sqlite_conn <- dbConnect(SQLite(), dbname=file.path(db_dir, "ImmPort.sqlite"))
+##' setImmPortDataSource(sqlite_conn)
+##' study_ids <- getListOfStudies()
 ##' @export
 getListOfStudies <- function() {
   if (is.null(r <- get0("data_src", envir = RImmPort.env))) {
@@ -1424,22 +1489,26 @@ getListOfStudies <- function() {
   study_ids
 } 
 
-#' Merge the Domain dataframe and Supplemental dataframe (long form) 
-#' 
-#' The Domain data list comprises of the the Domain datafrome that is in wide form, and any Supplemental
-#' dataframe that is in long form. The function \code{mergeDomainAndSupplemental} transposes the Supplemental
-#' dataframe into a wide form, and merges it with the Domain dataframe.
-#' 
-#' @param data_list A list of 1) Domain dataframe and 2) any Supplemental dataframe 
-#' @return The merged dataframe
-#' @examples
-#' \dontrun{ 
-#'  l <- getDomainDataOfStudies("Genetics Findings", "SDY208")
-#'  df <- mergeDomainAndSupplemental(l)
-#' }
-#' @importFrom reshape2 dcast 
-#' @importFrom dplyr full_join 
-#' @export
+##' Merge the Domain dataframe and Supplemental dataframe (long form) 
+##' 
+##' The Domain data list comprises of the the Domain datafrome that is in wide form, and any Supplemental
+##' dataframe that is in long form. The function \code{mergeDomainAndSupplemental} transposes the Supplemental
+##' dataframe into a wide form, and merges it with the Domain dataframe.
+##' 
+##' @param data_list A list of 1) Domain dataframe and 2) any Supplemental dataframe 
+##' @return The merged dataframe
+##' @examples
+##' library(DBI)
+##' library(sqldf)
+##' studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+##' db_dir <- file.path(studies_dir, "Db")
+##' sqlite_conn <- dbConnect(SQLite(), dbname=file.path(db_dir, "ImmPort.sqlite"))
+##' setImmPortDataSource(sqlite_conn)
+##' l <- getDomainDataOfStudies("Cellular Quantification", "SDY208")
+##' df <- mergeDomainAndSupplemental(l)
+##' @importFrom reshape2 dcast 
+##' @importFrom dplyr full_join 
+##' @export
 mergeDomainAndSupplemental <- function(data_list) {
   merged_df <- data.frame()
   
@@ -1470,10 +1539,16 @@ mergeDomainAndSupplemental <- function(data_list) {
 ##' @param study_ids List of study indentifiers
 ##' @param data_dir Path to a file folder where the .rds study files will be saved into
 ##' @examples
-##' \dontrun{ 
-##'   serialzeStudyData(study_ids, data_dir)
-##' }
-##' 
+##' library(DBI)
+##' library(sqldf)
+##' studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+##' db_dir <- file.path(studies_dir, "Db")
+##' sqlite_conn <- dbConnect(SQLite(), dbname=file.path(db_dir, "ImmPort.sqlite"))
+##' setImmPortDataSource(sqlite_conn)
+##' # the folder where the .rds files will be stored
+##' rds_dir <- file.path(studies_dir, "Rds")
+##' study_ids <- c('SDY139', 'SDY208')
+##' serialzeStudyData(study_ids, rds_dir)
 ##' @export
 serialzeStudyData  <- function(study_ids, data_dir) {
   if (is.null(r <- get0("data_src", envir = RImmPort.env))) {
@@ -1499,20 +1574,22 @@ serialzeStudyData  <- function(study_ids, data_dir) {
   } # next study_id
 }
 
-#' Load the Serialized Data of a Study
-#' 
-#' Load the serialzed data (.rds) file of a specific domain of a study study from the directory where 
-#' the file is located
-#' 
-#' @param study_id Study indentifier
-#' @param data_dir Path to a file folder where the .rds study files reside
-#' @param domain Domain of interest
-#' @return A study data object where in all data are structured as classes, domains, variables and values (in CDISC format)
-#' 
-#' @examples
-#' \dontrun{ 
-#'   loadSerializedStudyData(data_dir, study_ids, domain)
-#' }
+##' Load the Serialized Data of a Study
+##' 
+##' Load the serialzed data (.rds) file of a specific domain of a study study from the directory where 
+##' the file is located
+##' 
+##' @param study_id Study indentifier
+##' @param data_dir Path to a file folder where the .rds study files reside
+##' @param domain Domain of interest
+##' @return A study data object where in all data are structured as classes, domains, variables and values (in CDISC format)
+##' 
+##' @examples
+##' studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+##' # the folder where the .rds files will be stored
+##' rds_dir <- file.path(studies_dir, "Rds")
+##' # load the serialized data of study `SDY208` 
+##' loadSerializedStudyData(data_dir, 'SDY208', "Demographics")
 ##' @export
 loadSerializedStudyData <- function(data_dir, study_id, domain) {
   study_path <- file.path(data_dir, study_id)

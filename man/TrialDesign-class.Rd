@@ -17,4 +17,14 @@ Trial Design class
 
 \item{\code{ts_l}}{Trial Summary data \code{\link{TS}} and supplemental Trial Summary data \code{\link{SUPP}}}
 }}
+\examples{
+library(DBI)
+library(sqldf)
+studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+db_dir <- file.path(studies_dir, "Db")
+sqlite_conn <- dbConnect(SQLite(), dbname=file.path(db_dir, "ImmPort.sqlite"))
+setImmPortDataSource(sqlite_conn)
+sdy139 <- getStudy("SDY139")
+ts_df <- sdy139$trial_design$ts_l$ts_df
+}
 

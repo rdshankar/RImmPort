@@ -33,4 +33,14 @@ Findings class
 
 \item{\code{zd_l}}{Titer Assay Results data \code{\link{ZD}} and supplemental Titer Assay Results data \code{\link{SUPP}}}
 }}
+\examples{
+library(DBI)
+library(sqldf)
+studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+db_dir <- file.path(studies_dir, "Db")
+sqlite_conn <- dbConnect(SQLite(), dbname=file.path(db_dir, "ImmPort.sqlite"))
+setImmPortDataSource(sqlite_conn)
+sdy139 <- getStudy("SDY139")
+zb_df <- sdy139$findings$zb_l$zb_df
+}
 

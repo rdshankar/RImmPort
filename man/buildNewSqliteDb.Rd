@@ -16,8 +16,12 @@ The function \code{buildSqliteDb} builds a sqlite db of ImmPort study data. It t
 study files in the TSV (Tab) format.
 }
 \examples{
-\dontrun{
-  buildNewSqliteDb(data_dir, db_dir)
-}
+studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+# set tab_dir to the folder where the zip files are located
+tab_dir <- file.path(studies_dir, "Tab")
+# set db_dir to the folder where the database file 'ImmPort.sqlite' should be stored
+db_dir <- file.path(studies_dir, "Db")
+# build a new ImmPort SQLite database with the data in the downloaded zip files
+# buildNewSqliteDb(tab_dir, db_dir) 
 }
 

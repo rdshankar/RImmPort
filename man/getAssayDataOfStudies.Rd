@@ -18,10 +18,16 @@ a list of 1) domain data of specicifc assay technology and 2) any supplemental d
 Get specific assay data of one or more studies from the ImmPort database
 }
 \examples{
-\dontrun{ 
-    data_l <- getAssayDataOfStudies("SDY1", "ELISA")
-    data_l <- getAssayDataOfStudies(c("SDY1", "SDY2"), "Flow")
-  }
+library(DBI)
+library(sqldf)
+studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+db_dir <- file.path(studies_dir, "Db")
+sqlite_conn <- dbConnect(SQLite(), dbname=file.path(db_dir, "ImmPort.sqlite"))
+setImmPortDataSource(sqlite_conn)
+elispot_l <- getAssayDataOfStudies("SDY139", "ELISPOT")
+if (length(elispot_l) > 0)
+  names(elispot_l)
+head(elispot_l$zb_df)
 }
 \author{
 Ravi Shankar

@@ -16,9 +16,15 @@ Load specific studies from the database and save it in .rds format in
 a local file directory
 }
 \examples{
-\dontrun{ 
-  serialzeStudyData(study_ids, data_dir)
-}
-
+library(DBI)
+library(sqldf)
+studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+db_dir <- file.path(studies_dir, "Db")
+sqlite_conn <- dbConnect(SQLite(), dbname=file.path(db_dir, "ImmPort.sqlite"))
+setImmPortDataSource(sqlite_conn)
+# the folder where the .rds files will be stored
+rds_dir <- file.path(studies_dir, "Rds")
+study_ids <- c('SDY139', 'SDY208')
+serialzeStudyData(study_ids, rds_dir)
 }
 

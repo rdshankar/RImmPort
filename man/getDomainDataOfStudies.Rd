@@ -18,9 +18,12 @@ a list of 1) domain data and 2) supplemental domain data of the studies
 Get specific domain data of one or more studies from the ImmPort database
 }
 \examples{
-\dontrun{ 
-    dm_df <- getDomainDataOfStudies("Demographics", "SDY1")
-    dm_df <- getDomainDataOfStudies("Demographics", c("SDY1", "SDY2"))
-  }
+library(DBI)
+library(sqldf)
+studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
+db_dir <- file.path(studies_dir, "Db")
+sqlite_conn <- dbConnect(SQLite(), dbname=file.path(db_dir, "ImmPort.sqlite"))
+setImmPortDataSource(sqlite_conn)
+dm_df <- getDomainDataOfStudies("Demographics", "SDY139")
 }
 
