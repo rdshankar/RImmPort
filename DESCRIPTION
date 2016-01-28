@@ -23,5 +23,9 @@ Imports:
     RSQLite
 Suggests:
     knitr
+biocViews:
+    BiomedicalInformatics,
+    DataImport,
+    DataRepresentation
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1
