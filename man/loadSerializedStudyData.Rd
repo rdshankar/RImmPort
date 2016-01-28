@@ -25,6 +25,6 @@ studies_dir <- system.file("extdata", "ImmPortStudies", package = "RImmPort")
 # the folder where the .rds files will be stored
 rds_dir <- file.path(studies_dir, "Rds")
 # load the serialized data of study `SDY208` 
-loadSerializedStudyData(data_dir, 'SDY208', "Demographics")
+loadSerializedStudyData(rds_dir, 'SDY208', "Demographics")
 }
 

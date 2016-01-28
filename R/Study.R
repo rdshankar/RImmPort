@@ -1589,7 +1589,7 @@ serialzeStudyData  <- function(study_ids, data_dir) {
 ##' # the folder where the .rds files will be stored
 ##' rds_dir <- file.path(studies_dir, "Rds")
 ##' # load the serialized data of study `SDY208` 
-##' loadSerializedStudyData(data_dir, 'SDY208', "Demographics")
+##' loadSerializedStudyData(rds_dir, 'SDY208', "Demographics")
 ##' @export
 loadSerializedStudyData <- function(data_dir, study_id, domain) {
   study_path <- file.path(data_dir, study_id)
