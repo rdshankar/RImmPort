@@ -23,7 +23,12 @@ getFcsResults <- function(conn,study_id, measurement_types) {
                 "visit_name", "visit_min_start_day", "visit_max_start_day", "visit_order",
                 "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
                 "study_time_t0_event", "study_time_t0_event_specify",
-                "file_name")
+                "file_name",
+                "base_parent_population", 
+                "population_cell_number", "population_cell_number_unit",
+                "population_defnition_reported", "population_name_reported")
+  fcf_cols <- c("experiment_sample_accession",
+                "control_files_names")
   
   far_cols <- c("experiment_sample_accession",
                 "base_parent_population", 
@@ -57,7 +62,8 @@ getFcsResults <- function(conn,study_id, measurement_types) {
                       bs.study_time_collected_unit,
                       bs.study_time_t0_event,
                       bs.study_time_t0_event_specify,
-                      fi.name
+                      fi.name,
+                      \"\", \"\", \"\", \"\", \"\"
                     
                     FROM  
                       biosample bs
@@ -95,21 +101,45 @@ getFcsResults <- function(conn,study_id, measurement_types) {
                       getTimePointReference(study_time_t0_event, study_time_t0_event_specify))
     sql_stmt <- paste("
                       SELECT distinct
-                      far.expsample_accession,
-                      far.base_parent_population, 
-                      far.population_cell_number, 
-                      far.population_cell_number_unit,
-                      far.population_defnition_reported, 
-                      far.population_name_reported
+                        bs2es.expsample_accession,
+                        fi.name
                       FROM  
-                      fcs_analyzed_result far
+                        biosample bs
+                      INNER JOIN
+                        biosample_2_expsample bs2es ON bs.biosample_accession=bs2es.biosample_accession
+                      INNER JOIN
+                        expsample_2_file_info es2fi ON bs2es.expsample_accession=es2fi.expsample_accession
+                      INNER JOIN
+                        file_info fi ON es2fi.file_info_id=fi.file_info_id                    
                       WHERE 
-                      far.study_accession in (\'", study_id,"\')",sep="")
+                        bs.study_accession in (\'", study_id,"\') AND
+                        fi.purpose IN (\'Flow cytometry compensation or control\')  
+                      ORDER BY bs.subject_accession",sep="")
     
+    fcf_df <- dbGetQuery(conn,statement=sql_stmt)
+    colnames(fcf_df) <- fcf_cols 
+    if (nrow(fcf_df) >0) {
+      fcf_df <- aggregate(control_files_names~experiment_sample_accession,paste,collapse="|",data=fcf_df)
+    }
+    fcs_df <- merge(fcs_df ,fcf_df, by="experiment_sample_accession")
     
-    far_df <- dbGetQuery(conn,statement=sql_stmt)
-    colnames(far_df) <- far_cols 
-    fcs_df <- merge(fcs_df ,far_df, all=TRUE)
+#     sql_stmt <- paste("
+#                       SELECT distinct
+#                       far.expsample_accession,
+#                       far.base_parent_population, 
+#                       far.population_cell_number, 
+#                       far.population_cell_number_unit,
+#                       far.population_defnition_reported, 
+#                       far.population_name_reported
+#                       FROM  
+#                       fcs_analyzed_result far
+#                       WHERE 
+#                       far.study_accession in (\'", study_id,"\')",sep="")
+#     
+#     
+#     far_df <- dbGetQuery(conn,statement=sql_stmt)
+#     colnames(far_df) <- far_cols 
+#     fcs_df <- merge(fcs_df ,far_df, all=TRUE)
   }
   
   cat("done", "\n")

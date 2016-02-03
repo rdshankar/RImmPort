@@ -20,7 +20,7 @@ globalVariables(c("subject_id", "experiment_title", "assay_purpose", "measuremen
                   "visit_name", "visit_min_start_day", "visit_max_start_day", "visit_order",
                   "elapsed_time_of_specimen_collection", "time_point_reference",
                   "biosample_accession", "file_name", "ZBSEQ", "result_id", "cell_type", "spot_number",
-                  "analyte", "cell_number", "ZBBASPOP", "ZBPOPDEF", "ZBSPECSB",
+                  "analyte", "cell_number", "ZBBASPOP", "ZBPOPDEF", "ZBSPECSB", "ZBFCF",
                   "VISITMIN", "VISITMAX",
                   "ZBSPTRT", 
                   "ZBTRTAMV", "ZBTRTAMU",
@@ -47,12 +47,14 @@ globalVariables(c("subject_id", "experiment_title", "assay_purpose", "measuremen
 ##   cq_l <- getCellularQuantification(data_src, "SDY1", "Flow")
 ## }
 ##' @importFrom dplyr %>%
+##' @importFrom plyr rename
 ##' @importFrom data.table as.data.table is.data.table setDT := .N 
 getCellularQuantification <- function(data_src, study_id, assay_type="ALL") {
     cat("loading Cellular Quantification data....")
   
-    cq_cols <- c("STUDYID", "DOMAIN", "USUBJID", "ZBSEQ", "ZBTEST", "ZBCAT", "ZBMETHOD", "ZBPOPDEF", "ZBPOPNAM", "ZBORRES", 
-               "ZBORRESU", "ZBBASPOP", "ZBSPEC", "VISITNUM", "VISIT", "ZBELTM", "ZBTPTREF", "ZBREFID", 
+    cq_cols <- c("STUDYID", "DOMAIN", "USUBJID", "ZBSEQ", "ZBTEST", "ZBCAT", "ZBMETHOD", 
+                  "ZBPOPDEF", "ZBPOPNAM", "ZBORRES", "ZBORRESU", "ZBBASPOP", 
+                 "ZBSPEC", "VISITNUM", "VISIT", "ZBELTM", "ZBTPTREF", "ZBREFID", 
                "ZBXFN")
   
     suppcq_cols <- c("STUDYID", "RDOMAIN", "USUBJID", "IDVAR", "IDVARVAL", "QNAM", "QLABEL", "QVAL")
@@ -68,7 +70,8 @@ getCellularQuantification <- function(data_src, study_id, assay_type="ALL") {
         flow_df <- getFcsResults(data_src, study_id, "")
         if (nrow(flow_df) > 0) {
             flow_df <- select(flow_df, STUDYID = study_id, USUBJID = subject_id, ZBSEQ = sequence, ZBTEST = experiment_title, 
-                ZBCAT = assay_purpose, ZBMETHOD = measurement_technique, ZBBASPOP = base_parent_population, ZBORRES = population_cell_number, 
+                ZBCAT = assay_purpose, ZBMETHOD = measurement_technique, 
+                ZBBASPOP = base_parent_population, ZBORRES = population_cell_number, 
                 ZBORRESU = population_cell_number_unit, ZBPOPDEF = population_defnition_reported, ZBPOPNAM = population_name_reported, 
                 ZBSPEC = specimen_type, ZBSPECSB = specimen_subtype, 
                 ZBSPTRT = specimen_treatment, 
@@ -77,17 +80,17 @@ getCellularQuantification <- function(data_src, study_id, assay_type="ALL") {
                 ZBTRTTMV = treatment_temperature_value, ZBTRTTMU = treatment_temperature_unit,
                 VISIT = visit_name, VISITNUM = visit_order,  VISITMIN = visit_min_start_day, VISITMAX = visit_max_start_day, 
                 ZBELTM = elapsed_time_of_specimen_collection, ZBTPTREF = time_point_reference, 
-                ZBREFID = biosample_accession, ZBXFN = file_name)
+                ZBREFID = biosample_accession, ZBXFN = file_name, ZBFCF=control_files_names)
             
             flow_df$DOMAIN <- "ZB"
             
-            qnam_values = c("ZBSPECSB",
+            qnam_values = c("ZBSPECSB", "ZBFCF",
                             "VISITMIN", "VISITMAX",
                             "ZBSPTRT", 
                             "ZBTRTAMV", "ZBTRTAMU",
                             "ZBTRTDUV", "ZBTRTDUU",
                             "ZBTRTTMV", "ZBTRTTMU")
-            qlabel_values= c("Specimen Subtype",
+            qlabel_values= c("Specimen Subtype", "Control Files Names",
                              "Planned Visit Minimum Start Day", "Planned Visit Maximum Start Day",
                              "Specimen Treatment", 
                              "Specimen Treatment Amount Value", "Specimen Treatment Amount Unit",
@@ -95,9 +98,6 @@ getCellularQuantification <- function(data_src, study_id, assay_type="ALL") {
                              "Specimen Treatment Temperature Value", "Specimen Treatment Temperature Unit")
             
             
-#             flow_df <- flow_df[, c("STUDYID", "DOMAIN", "USUBJID", "ZBSEQ", "ZBTEST", "ZBCAT", "ZBMETHOD", "ZBPOPDEF", "ZBPOPNAM", "ZBORRES", 
-#                                    "ZBORRESU", "ZBBASPOP", "ZBSPEC", "ZBSPECSB", "VISIT", "ZBELTM", "ZBTPTREF", "ZBREFID", 
-#                                    "ZBXFN")]
             flow_df <- transform(flow_df, ZBSEQ = as.integer(ZBSEQ))
             setDT(flow_df)[, `:=`(ZBSEQ, seq_len(.N)), by = "USUBJID"]
             flow_df <- as.data.frame(flow_df)
@@ -109,7 +109,7 @@ getCellularQuantification <- function(data_src, study_id, assay_type="ALL") {
                                value.name = "QVAL")
             
             suppflow_df <- transform(suppflow_df, QLABEL = unlist(qlabel_values[QNAM]))
-            suppflow_df <- rename(suppflow_df, c("DOMAIN" = "RDOMAIN", "ZBSEQ" = "IDVARVAL"))
+            suppflow_df <- plyr::rename(suppflow_df, c("DOMAIN" = "RDOMAIN", "ZBSEQ" = "IDVARVAL"))
             suppflow_df$IDVAR <- "ZBSEQ"
             
             
@@ -118,7 +118,7 @@ getCellularQuantification <- function(data_src, study_id, assay_type="ALL") {
             # remove rows that have empty QVAL values
             suppflow_df <- subset(suppflow_df,QVAL!="")      
             
-            flow_df <- subset(flow_df, select = -c(ZBSPECSB, 
+            flow_df <- subset(flow_df, select = -c(ZBSPECSB, ZBFCF,
                                                    VISITMIN, VISITMAX,
                                                    ZBSPTRT, 
                                                    ZBTRTAMV, ZBTRTAMU,
@@ -147,8 +147,8 @@ getCellularQuantification <- function(data_src, study_id, assay_type="ALL") {
         if (nrow(elp_df) > 0) {
           elp_df <- elp_df %>% 
             select(STUDYID = study_id, USUBJID = subject_id, ZBSEQ = result_id, ZBTEST = experiment_title, 
-                                      ZBCAT = assay_purpose, ZBMETHOD = measurement_technique, ZBBASPOP=cell_type, ZBORRES = spot_number, 
-                                      ZBPOPDEF = analyte, cell_number, 
+                                      ZBCAT = assay_purpose, ZBMETHOD = measurement_technique, 
+                                      ZBBASPOP=cell_type, ZBORRES = spot_number, ZBPOPDEF = analyte, cell_number, 
                                       ZBSPEC = specimen_type, ZBSPECSB = specimen_subtype,
                                       ZBSPTRT = specimen_treatment, 
                                       ZBTRTAMV = treatment_amount_value, ZBTRTAMU = treatment_amount_unit,
@@ -187,7 +187,7 @@ getCellularQuantification <- function(data_src, study_id, assay_type="ALL") {
                               value.name = "QVAL")
           
           suppelp_df <- transform(suppelp_df, QLABEL = unlist(qlabel_values[QNAM]))
-          suppelp_df <- rename(suppelp_df, c("DOMAIN" = "RDOMAIN", "ZBSEQ" = "IDVARVAL"))
+          suppelp_df <- plyr::rename(suppelp_df, c("DOMAIN" = "RDOMAIN", "ZBSEQ" = "IDVARVAL"))
           suppelp_df$IDVAR <- "ZBSEQ"
           
           
@@ -306,6 +306,7 @@ NULL
 ##'   \tabular{ll}{
 ##'     \strong{QNAM} \tab \strong{QLABEL} \cr
 ##'     ZBSPECSB \tab Specimen Subtype \cr
+##'     ZBFCF \tab Control Files Names \cr
 ##'     VISITMIN \tab Planned Visit Minimum Start Day \cr
 ##'     VISITMAX \tab Planned Visit Maximum Start Day \cr
 ##'     ZBSPTRT \tab Specimen Treatment \cr
