@@ -26,6 +26,7 @@ globalVariables(c("VSSEQ", "QNAM", "QVAL", "VSTOD"))
 #   getVitalSigns(data_src, "SDY1")
 # }
 #' @importFrom DBI dbGetQuery
+#' @importFrom plyr rename
 #' @importFrom data.table as.data.table is.data.table .N :=
 getVitalSigns <- function(data_src, study_id) {
     cat("loading Vital Signs data....")

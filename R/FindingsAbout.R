@@ -26,6 +26,7 @@ globalVariables(c("FASEQ", "QNAM", "QVAL", "FATOD"))
 #   getFindingsAbout(data_src, "SDY1")
 # }
 #' @importFrom DBI dbGetQuery
+#' @importFrom plyr rename
 #' @importFrom data.table as.data.table is.data.table .N :=
 getFindingsAbout <- function(data_src, study_id) {
     cat("loading Findings About data....")

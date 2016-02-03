@@ -29,6 +29,7 @@ globalVariables(c("LBSEQ", "QNAM", "QVAL", "LBSPECSB", "VISITMIN", "VISITMAX", "
 # }
 #' @importFrom DBI dbGetQuery
 #' @importFrom data.table as.data.table is.data.table .N :=
+#' @importFrom plyr rename
 #' @importFrom plyr ddply
 getLaboratoryTestResults <- function(data_src, study_id) {
     cat("loading Laboratory Test Results data....")

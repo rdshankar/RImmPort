@@ -27,6 +27,7 @@ globalVariables(c("DVSEQ", "QNAM", "QVAL", "DVRELAE", "DVREASON", "DVRESOL",
 #   getProtocolDeviations(data_src, "SDY1")
 # }
 #' @importFrom DBI dbGetQuery
+##' @importFrom plyr rename
 #' @importFrom data.table as.data.table is.data.table .N :=
 getProtocolDeviations <- function(data_src, study_id) {
     cat("loading Protocol Deviations data....")

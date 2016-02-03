@@ -45,6 +45,7 @@ globalVariables(c("subject_id", "result_id", "experiment_title", "assay_purpose"
 #   # get study SDY1's Titer Assay data that was generated using HAI assay
 #   ta_l <- getTiterAssayResults(data_src, "SDY1", "HAI")
 # }
+#' @importFrom plyr rename
 getTiterAssayResults <- function(data_src, study_id, assay_type="ALL") {
   cat("loading Titer Assay Results data....")
   

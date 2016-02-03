@@ -46,6 +46,7 @@ globalVariables(c("subject_id", "experiment_title", "assay_purpose", "measuremen
 ##   nq_l <- getNucleicAcidQuantification(data_src, "SDY1", "PCR")
 ## }
 ##' @importFrom dplyr select
+##' @importFrom plyr rename
 getNucleicAcidQuantification <- function(data_src, study_id, assay_type="ALL") {
   cat("loading Nucleic Acid Quantification data....")
 
@@ -112,7 +113,7 @@ getNucleicAcidQuantification <- function(data_src, study_id, assay_type="ALL") {
                            value.name = "QVAL")
         
         supppcr_df <- transform(supppcr_df, QLABEL = unlist(qlabel_values[QNAM]))
-        supppcr_df <- rename(supppcr_df, c("DOMAIN" = "RDOMAIN", "ZCSEQ" = "IDVARVAL"))
+        supppcr_df <- plyr::rename(supppcr_df, c("DOMAIN" = "RDOMAIN", "ZCSEQ" = "IDVARVAL"))
         supppcr_df$IDVAR <- "ZCSEQ"
         
         

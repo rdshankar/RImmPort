@@ -27,6 +27,7 @@ globalVariables(c("PESEQ", "QNAM", "QVAL", "PETOD"))
 #   getPhysicalExamination(data_src, "SDY1")
 # }
 #' @importFrom DBI dbGetQuery
+#' @importFrom plyr rename
 #' @importFrom data.table as.data.table is.data.table .N :=
 getPhysicalExamination <- function(data_src, study_id) {
     cat("loading Physical Examination data....")

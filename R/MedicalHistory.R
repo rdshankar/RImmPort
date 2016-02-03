@@ -28,6 +28,7 @@ globalVariables(c("MHSEQ", "QNAM", "QVAL", "MHAGE", "MHAGEU", "MHTOD"))
 #   getMedicalHistory(data_src, "SDY1")
 # }
 #' @importFrom DBI dbGetQuery
+#' @importFrom plyr rename
 #' @importFrom data.table as.data.table is.data.table .N :=
 getMedicalHistory <- function(data_src, study_id) {
     cat("loading Medical History data....")

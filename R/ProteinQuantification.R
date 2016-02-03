@@ -100,7 +100,7 @@ getProteinQuantification <- function(data_src, study_id, assay_type="ALL") {
                                  variable.name = "QNAM", 
                                  value.name = "QVAL")
             supp_els_df <- transform(supp_els_df, QLABEL = unlist(qlabel_values[QNAM]))
-            supp_els_df <- rename(supp_els_df, c("DOMAIN" = "RDOMAIN", "ZASEQ" = "IDVARVAL"))
+            supp_els_df <- plyr::rename(supp_els_df, c("DOMAIN" = "RDOMAIN", "ZASEQ" = "IDVARVAL"))
             supp_els_df$IDVAR <- "ZASEQ"
             
             supp_els_df <- supp_els_df[supppq_cols]
@@ -168,7 +168,7 @@ getProteinQuantification <- function(data_src, study_id, assay_type="ALL") {
                                            variable.name = "QNAM", 
                                            value.name = "QVAL")
             supp_mbaa_df <- transform(supp_mbaa_df, QLABEL = unlist(qlabel_values[QNAM]))
-            supp_mbaa_df <- rename(supp_mbaa_df, c("DOMAIN" = "RDOMAIN", "ZASEQ" = "IDVARVAL"))
+            supp_mbaa_df <- plyr::rename(supp_mbaa_df, c("DOMAIN" = "RDOMAIN", "ZASEQ" = "IDVARVAL"))
             supp_mbaa_df$IDVAR <- "ZASEQ"
             
             supp_mbaa_df <- supp_mbaa_df[supppq_cols]

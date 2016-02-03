@@ -110,7 +110,7 @@ getGeneticsFindings <- function(data_src, study_id, assay_type="ALL") {
                                     value.name = "QVAL")
         
         supphla_df <- transform(supphla_df, QLABEL = unlist(qlabel_values[QNAM]))
-        supphla_df <- rename(supphla_df, c("DOMAIN" = "RDOMAIN", "PFSEQ" = "IDVARVAL"))
+        supphla_df <- plyr::rename(supphla_df, c("DOMAIN" = "RDOMAIN", "PFSEQ" = "IDVARVAL"))
         supphla_df$IDVAR <- "PFSEQ"
         
         
@@ -189,7 +189,7 @@ getGeneticsFindings <- function(data_src, study_id, assay_type="ALL") {
                                      value.name = "QVAL")
         
         supparr_df <- transform(supparr_df, QLABEL = unlist(qlabel_values[QNAM]))
-        supparr_df <- rename(supparr_df, c("DOMAIN" = "RDOMAIN", "PFSEQ" = "IDVARVAL"))
+        supparr_df <- plyr::rename(supparr_df, c("DOMAIN" = "RDOMAIN", "PFSEQ" = "IDVARVAL"))
         supparr_df$IDVAR <- "PFSEQ"
         
         
