@@ -120,8 +120,10 @@ getFcsResults <- function(conn,study_id, measurement_types) {
     colnames(fcf_df) <- fcf_cols 
     if (nrow(fcf_df) >0) {
       fcf_df <- aggregate(control_files_names~experiment_sample_accession,paste,collapse="|",data=fcf_df)
+      fcs_df <- merge(fcs_df ,fcf_df, by="experiment_sample_accession")
+    } else {
+      fcs_df["control_files_names"] = ""
     }
-    fcs_df <- merge(fcs_df ,fcf_df, by="experiment_sample_accession")
     
 #     sql_stmt <- paste("
 #                       SELECT distinct
