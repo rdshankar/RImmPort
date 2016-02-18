@@ -80,17 +80,17 @@ getCellularQuantification <- function(data_src, study_id, assay_type="ALL") {
                 ZBTRTTMV = treatment_temperature_value, ZBTRTTMU = treatment_temperature_unit,
                 VISIT = visit_name, VISITNUM = visit_order,  VISITMIN = visit_min_start_day, VISITMAX = visit_max_start_day, 
                 ZBELTM = elapsed_time_of_specimen_collection, ZBTPTREF = time_point_reference, 
-                ZBREFID = biosample_accession, ZBXFN = file_name, ZBFCF=control_files_names)
+                ZBREFID = experiment_sample_accession, ZBREFIDP = biosample_accession, ZBXFN = file_name, ZBFCF=control_files_names)
             
             flow_df$DOMAIN <- "ZB"
             
-            qnam_values = c("ZBSPECSB", "ZBFCF",
+            qnam_values = c("ZBSPECSB", "ZBREFIDP", "ZBFCF",
                             "VISITMIN", "VISITMAX",
                             "ZBSPTRT", 
                             "ZBTRTAMV", "ZBTRTAMU",
                             "ZBTRTDUV", "ZBTRTDUU",
                             "ZBTRTTMV", "ZBTRTTMU")
-            qlabel_values= c("Specimen Subtype", "Control Files Names",
+            qlabel_values= c("Specimen Subtype", "Source Specimen Identifier", "Control Files Names",
                              "Planned Visit Minimum Start Day", "Planned Visit Maximum Start Day",
                              "Specimen Treatment", 
                              "Specimen Treatment Amount Value", "Specimen Treatment Amount Unit",
@@ -118,7 +118,7 @@ getCellularQuantification <- function(data_src, study_id, assay_type="ALL") {
             # remove rows that have empty QVAL values
             suppflow_df <- subset(suppflow_df,QVAL!="")      
             
-            flow_df <- subset(flow_df, select = -c(ZBSPECSB, ZBFCF,
+            flow_df <- subset(flow_df, select = -c(ZBSPECSB, ZBREFIDP, ZBFCF,
                                                    VISITMIN, VISITMAX,
                                                    ZBSPTRT, 
                                                    ZBTRTAMV, ZBTRTAMU,
@@ -156,13 +156,13 @@ getCellularQuantification <- function(data_src, study_id, assay_type="ALL") {
                                       ZBTRTTMV = treatment_temperature_value, ZBTRTTMU = treatment_temperature_unit,
                                       VISIT = visit_name, VISITNUM = visit_order,  VISITMIN = visit_min_start_day, VISITMAX = visit_max_start_day, 
                                       ZBELTM = elapsed_time_of_specimen_collection, ZBTPTREF = time_point_reference,  
-                                      ZBREFID = biosample_accession, ZBXFN = file_name) %>% 
+                                      ZBREFID = experiment_sample_accession, ZBREFIDP = biosample_accession, ZBXFN = file_name) %>% 
             mutate(ZBORRESU = paste(cell_number, ZBBASPOP))  %>% 
             mutate(ZBPOPNAM = ZBPOPDEF) 
             
           elp_df$DOMAIN <- "ZB"
 
-          qnam_values = c("ZBSPECSB",
+          qnam_values = c("ZBSPECSB", "ZBREFIDP",
                           "VISITMIN", "VISITMAX",
                           "ZBSPTRT", 
                           "ZBTRTAMV", "ZBTRTAMU",
@@ -196,7 +196,7 @@ getCellularQuantification <- function(data_src, study_id, assay_type="ALL") {
           # remove rows that have empty QVAL values
           suppelp_df <- subset(suppelp_df,QVAL!="")      
           
-          elp_df <- subset(elp_df, select = -c(ZBSPECSB, 
+          elp_df <- subset(elp_df, select = -c(ZBSPECSB, ZBREFIDP,
                                                VISITMIN, VISITMAX,
                                                ZBSPTRT, 
                                                ZBTRTAMV, ZBTRTAMU,
@@ -306,6 +306,7 @@ NULL
 ##'   \tabular{ll}{
 ##'     \strong{QNAM} \tab \strong{QLABEL} \cr
 ##'     ZBSPECSB \tab Specimen Subtype \cr
+##'     ZBREFIDP \tab Source Specimen Identifier \cr
 ##'     ZBFCF \tab Control Files Names \cr
 ##'     VISITMIN \tab Planned Visit Minimum Start Day \cr
 ##'     VISITMAX \tab Planned Visit Maximum Start Day \cr
