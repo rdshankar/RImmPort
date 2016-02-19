@@ -62,7 +62,7 @@ setImmPortDataSource <- function(data_src){
     }
   }
   
-  return 0
+  0
 }
 
 ##' Special Purpose class
@@ -1576,7 +1576,8 @@ serialzeStudyData  <- function(study_ids, data_dir) {
       }
     } # next domain
   } # next study_id
-  return 0
+  
+  0
 }
 
 ##' Load the Serialized Data of a Study

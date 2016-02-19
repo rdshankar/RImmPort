@@ -318,6 +318,6 @@ buildNewSqliteDb <- function(data_dir, db_dir) {
     dbGetQuery(db, i)
   }
   
-  return dbname
+  dbname
 }
 
