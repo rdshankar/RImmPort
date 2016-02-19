@@ -24,6 +24,7 @@ The following table enumerates the values in QNAM and QLABEL variables {
     \strong{QNAM} \tab \strong{QLABEL} \cr
     PFPOPAR \tab Geographic Area of the Population \cr
     PFSPECSB \tab Specimen Subtype \cr
+    PFREFIDP \tab Source Specimen Identifier \cr
     VISITMIN \tab Planned Visit Minimum Start Day \cr
     VISITMAX \tab Planned Visit Maximum Start Day \cr
     PFSPTRT \tab Specimen Treatment \cr

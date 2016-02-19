@@ -10,6 +10,9 @@ setImmPortDataSource(data_src)
 \item{data_src}{A connection handle to ImmPort (MySQL or SQLite) database instance or 
 a directory handle to folder where study RImmPort-formatted (.rds) files located}
 }
+\value{
+0 for success and 1 for error
+}
 \description{
 The function \code{setImmPortDataSource} sets the data source variable in RImmPort environment, 
 to the connection handle to the MySQL or SQLite database, or to the file directory where the 

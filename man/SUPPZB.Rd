@@ -23,6 +23,7 @@ The following table enumerates the values in QNAM and QLABEL variables {
   \tabular{ll}{
     \strong{QNAM} \tab \strong{QLABEL} \cr
     ZBSPECSB \tab Specimen Subtype \cr
+    ZBREFIDP \tab Source Specimen Identifier \cr
     ZBFCF \tab Control Files Names \cr
     VISITMIN \tab Planned Visit Minimum Start Day \cr
     VISITMAX \tab Planned Visit Maximum Start Day \cr

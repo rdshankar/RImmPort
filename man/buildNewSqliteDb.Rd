@@ -11,6 +11,9 @@ buildNewSqliteDb(data_dir, db_dir)
 
 \item{db_dir}{File directory where the sqlite database will be stored}
 }
+\value{
+The SQLite database name
+}
 \description{
 The function \code{buildSqliteDb} builds a sqlite db of ImmPort study data. It takes in as input the 
 study files in the TSV (Tab) format.
@@ -22,6 +25,6 @@ tab_dir <- file.path(studies_dir, "Tab")
 # set db_dir to the folder where the database file 'ImmPort.sqlite' should be stored
 db_dir <- file.path(studies_dir, "Db")
 # build a new ImmPort SQLite database with the data in the downloaded zip files
-# buildNewSqliteDb(tab_dir, db_dir) 
+# dbname <- buildNewSqliteDb(tab_dir, db_dir) 
 }
 
