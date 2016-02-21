@@ -39,7 +39,7 @@ domain_info <- structure(data.frame(
 ##' 
 ##' @param data_src A connection handle to ImmPort (MySQL or SQLite) database instance or 
 ##' a directory handle to folder where study RImmPort-formatted (.rds) files located
-##' @return 0 for success and 1 for error
+##' @return 1 if successful
 ##' @examples
 ##' library(DBI)
 ##' library(sqldf)
@@ -62,7 +62,7 @@ setImmPortDataSource <- function(data_src){
     }
   }
   
-  0
+  return(1)
 }
 
 ##' Special Purpose class
@@ -1541,7 +1541,7 @@ mergeDomainAndSupplemental <- function(data_list) {
 ##' 
 ##' @param study_ids List of study indentifiers
 ##' @param data_dir Path to a file folder where the .rds study files will be saved into
-##' @return 0 for success and 1 for error
+##' @return List of study indentifiers that were serialized successfully
 ##' @examples
 ##' library(DBI)
 ##' library(sqldf)
@@ -1577,7 +1577,7 @@ serialzeStudyData  <- function(study_ids, data_dir) {
     } # next domain
   } # next study_id
   
-  0
+  study_ids
 }
 
 ##' Load the Serialized Data of a Study

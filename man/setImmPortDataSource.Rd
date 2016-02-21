@@ -11,7 +11,7 @@ setImmPortDataSource(data_src)
 a directory handle to folder where study RImmPort-formatted (.rds) files located}
 }
 \value{
-0 for success and 1 for error
+1 if successful
 }
 \description{
 The function \code{setImmPortDataSource} sets the data source variable in RImmPort environment, 
