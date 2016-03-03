@@ -367,9 +367,15 @@ Study <- setRefClass("Study", fields = list(
 ##' sdy139 <- getStudy("SDY139")
 ##' @export
 getStudy <- function(study_id) {
-  if (is.null(r <- get0("data_src", envir = RImmPort.env))) {
+  if (exists("data_src", envir = RImmPort.env)) {
+    r <- get("data_src", envir = RImmPort.env)
+  } else {
     stop("ImmPort data source is not set: See ?setImmPortDataSource() ")
   }
+  
+#   if (is.null(r <- get0("data_src", envir = RImmPort.env))) {
+#     stop("ImmPort data source is not set: See ?setImmPortDataSource() ")
+#   }
   
   data_src <- RImmPort.env$data_src
   
@@ -429,9 +435,15 @@ getDomainCode <- function(domain) {
 ##' dm_df <- getDomainDataOfStudies("Demographics", "SDY139")
 ##' @export
 getDomainDataOfStudies <- function(domain, study_ids) {
-  if (is.null(r <- get0("data_src", envir = RImmPort.env))) {
+  if (exists("data_src", envir = RImmPort.env)) {
+    r <- get("data_src", envir = RImmPort.env)
+  } else {
     stop("ImmPort data source is not set: See ?setImmPortDataSource() ")
   }
+
+#   if (is.null(r <- get0("data_src", envir = RImmPort.env))) {
+#     stop("ImmPort data source is not set: See ?setImmPortDataSource() ")
+#   }
   
   data_src <- RImmPort.env$data_src
   
@@ -974,9 +986,15 @@ getListOfAssayTypes <- function() {
 ##' head(elispot_l$zb_df)
 ##' @export
 getAssayDataOfStudies <- function(study_ids, assay_type) {
-  if (is.null(r <- get0("data_src", envir = RImmPort.env))) {
+  if (exists("data_src", envir = RImmPort.env)) {
+    r <- get("data_src", envir = RImmPort.env)
+  } else {
     stop("ImmPort data source is not set: See ?setImmPortDataSource() ")
   }
+  
+#   if (is.null(r <- get0("data_src", envir = RImmPort.env))) {
+#     stop("ImmPort data source is not set: See ?setImmPortDataSource() ")
+#   }
   
   data_src <- RImmPort.env$data_src
   
@@ -1015,9 +1033,15 @@ getAssayDataOfStudies <- function(study_ids, assay_type) {
 getStudiesWithSpecificDomainData <- function(domain, all_study_ids = c("ALL")) {
   study_ids = c()
   
-  if (is.null(r <- get0("data_src", envir = RImmPort.env))) {
+  if (exists("data_src", envir = RImmPort.env)) {
+    r <- get("data_src", envir = RImmPort.env)
+  } else {
     stop("ImmPort data source is not set: See ?setImmPortDataSource() ")
   }
+  
+  #   if (is.null(r <- get0("data_src", envir = RImmPort.env))) {
+  #     stop("ImmPort data source is not set: See ?setImmPortDataSource() ")
+  #   }
   
   data_src <- RImmPort.env$data_src
   
@@ -1409,9 +1433,15 @@ getStudiesWithTiterAssayResults <- function(data_src) {
 ##' study_ids <- getStudiesWithSpecificAssayData("ELISPOT")
 ##' @export
 getStudiesWithSpecificAssayData <- function(assay_type, all_study_ids = c("ALL")) {
-  if (is.null(r <- get0("data_src", envir = RImmPort.env))) {
+  if (exists("data_src", envir = RImmPort.env)) {
+    r <- get("data_src", envir = RImmPort.env)
+  } else {
     stop("ImmPort data source is not set: See ?setImmPortDataSource() ")
   }
+  
+  #   if (is.null(r <- get0("data_src", envir = RImmPort.env))) {
+  #     stop("ImmPort data source is not set: See ?setImmPortDataSource() ")
+  #   }
   
   data_src <- RImmPort.env$data_src
   
@@ -1458,9 +1488,15 @@ getStudiesWithSpecificAssayData <- function(assay_type, all_study_ids = c("ALL")
 ##' study_ids <- getListOfStudies()
 ##' @export
 getListOfStudies <- function() {
-  if (is.null(r <- get0("data_src", envir = RImmPort.env))) {
+  if (exists("data_src", envir = RImmPort.env)) {
+    r <- get("data_src", envir = RImmPort.env)
+  } else {
     stop("ImmPort data source is not set: See ?setImmPortDataSource() ")
   }
+  
+  #   if (is.null(r <- get0("data_src", envir = RImmPort.env))) {
+  #     stop("ImmPort data source is not set: See ?setImmPortDataSource() ")
+  #   }
   
   data_src <- RImmPort.env$data_src
   if ((class(data_src)[1] == 'MySQLConnection') || 
@@ -1555,9 +1591,15 @@ mergeDomainAndSupplemental <- function(data_list) {
 ##' serialzeStudyData(study_ids, rds_dir)
 ##' @export
 serialzeStudyData  <- function(study_ids, data_dir) {
-  if (is.null(r <- get0("data_src", envir = RImmPort.env))) {
+  if (exists("data_src", envir = RImmPort.env)) {
+    r <- get("data_src", envir = RImmPort.env)
+  } else {
     stop("ImmPort data source is not set: See ?setImmPortDataSource() ")
   }
+  
+  #   if (is.null(r <- get0("data_src", envir = RImmPort.env))) {
+  #     stop("ImmPort data source is not set: See ?setImmPortDataSource() ")
+  #   }
   
   data_src <- RImmPort.env$data_src
   
