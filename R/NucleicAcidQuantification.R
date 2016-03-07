@@ -78,7 +78,7 @@ getNucleicAcidQuantification <- function(data_src, study_id, assay_type="ALL") {
       
       pcr_df <- getPcrResults(data_src, study_id, "")
       if (nrow(pcr_df) > 0) {
-        pcr_df <- select(pcr_df, STUDYID = study_id, USUBJID = subject_id, ZCSEQ = result_id, ZCTEST = experiment_title, 
+        pcr_df <- select(pcr_df, STUDYID = study_id, USUBJID = subject_id, ZCSEQ = sequence, ZCTEST = experiment_title, 
                          ZCCAT = assay_purpose, ZCMETHOD = measurement_technique, 
                          ZCENTRZD = entrez_gene_id, ZCGENNAM = gene_name, ZCGENSYM = gene_symbol,
                          ZCTHRESH = threshold_cycles, ZCORRES = value_reported, ZCORRESU = unit_reported,

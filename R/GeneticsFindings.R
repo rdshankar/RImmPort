@@ -65,7 +65,7 @@ getGeneticsFindings <- function(data_src, study_id, assay_type="ALL") {
     if ((assay_type == "ALL") || (assay_type =="HLA Typing")) {
       # get HLA Typing results
         
-      #   hla_column_names <- c("study_id", "subject_id", "result_id", "result_set_id",
+      #   hla_column_names <- c("study_id", "subject_id", "sequence", "result_set_id",
       #                         "allele_1", "allele_2", 
       #                         "locus_name", "pop_area_name", 
       #                         "experiment_title", "assay_purpose", "measurement_technique",
@@ -153,7 +153,7 @@ getGeneticsFindings <- function(data_src, study_id, assay_type="ALL") {
       arr_df <- getArrayResults(data_src, study_id, "")
       if (nrow(arr_df) > 0) {
         arr_df <- arr_df %>% 
-          select(STUDYID = study_id, USUBJID = subject_id, PFSEQ = result_id, PFXFN = dataset_id,
+          select(STUDYID = study_id, USUBJID = subject_id, PFSEQ = sequence, PFXFN = dataset_id,
                          PFTEST = experiment_title, PFCAT = assay_purpose, PFMETHOD = measurement_technique, 
                          PFSPEC = specimen_type, PFSPECSB = specimen_subtype, 
                          PFSPTRT = specimen_treatment, 

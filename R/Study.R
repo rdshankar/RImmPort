@@ -1670,6 +1670,10 @@ covertElaspsedTimeToISO8601Format <- function(time, time_unit) {
   if (is.na(time) | is.na(time_unit)) 
     return(NA)
   
+  if (is.null(time) |is.null(time_unit))
+    return(NULL)
+  
+  
   if (time_unit %in% c("Years", "Months", "Days")) {
     if (time < 0) {
       eltm <- "-P"

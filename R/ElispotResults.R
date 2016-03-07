@@ -12,20 +12,22 @@ getElispotResults <- function(conn,study_id, measurement_types) {
 #   options(useFancyQuotes = FALSE)
 #   measurement_types <- paste(mapply(sQuote, measurement_types), collapse=", ")
   
-  elispot_cols <- c("study_id", "subject_id", "result_id",
+  elispot_cols <- c("study_id", "subject_id", "sequence",
                     "analyte", "comments", 
                     "cell_number", "cell_type", "spot_number", 
                     "experiment_title", "assay_purpose", "measurement_technique",
                     "experiment_sample_accession",
                     "biosample_accession", "specimen_type", "specimen_subtype",
-                    "specimen_treatment", 
-                    "treatment_amount_value", "treatment_amount_unit",
-                    "treatment_duration_value", "treatment_duration_unit",
-                    "treatment_temperature_value", "treatment_temperature_unit",
                     "visit_name", "visit_min_start_day", "visit_max_start_day", "visit_order",
                     "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
                     "study_time_t0_event", "study_time_t0_event_specify",
                     "file_name")
+
+  tr_cols <- c("experiment_sample_accession",
+               "specimen_treatment", 
+               "treatment_amount_value", "treatment_amount_unit",
+               "treatment_duration_value", "treatment_duration_unit",
+               "treatment_temperature_value", "treatment_temperature_unit")
   
   sql_stmt <- paste("
                     SELECT distinct
@@ -44,13 +46,6 @@ getElispotResults <- function(conn,study_id, measurement_types) {
                     bs.biosample_accession,
                     bs.type,
                     bs.subtype,
-                    tr.name,
-                    tr.amount_value,
-                    tr.amount_unit,
-                    tr.duration_value,
-                    tr.duration_unit,
-                    tr.temperature_value,
-                    tr.temperature_unit,
                     pv.visit_name,
                     pv.min_start_day,
                     pv.max_start_day,
@@ -59,23 +54,15 @@ getElispotResults <- function(conn,study_id, measurement_types) {
                     bs.study_time_collected_unit,
                     bs.study_time_t0_event,
                     bs.study_time_t0_event_specify,
-                    fi.name
+                    \"\"
                     FROM  
                       elispot_result elp
 					          INNER JOIN
 						          experiment ex ON elp.experiment_accession=ex.experiment_accession
 					          INNER JOIN
 						          biosample bs ON elp.biosample_accession=bs.biosample_accession
-                    LEFT OUTER JOIN
-                      expsample_2_treatment es2tr ON elp.expsample_accession=es2tr.expsample_accession
-                    LEFT OUTER JOIN
-                      treatment tr ON es2tr.treatment_accession=tr.treatment_accession
                     INNER JOIN
                       planned_visit pv ON bs.planned_visit_accession=pv.planned_visit_accession
-                    LEFT OUTER JOIN
-                      expsample_2_file_info es2fi ON elp.expsample_accession=es2fi.expsample_accession
-                    LEFT OUTER JOIN
-                      file_info fi ON es2fi.file_info_id=fi.file_info_id
                     WHERE elp.study_accession in (\'", study_id,"\')  
                     ORDER BY elp.subject_accession",sep="")
   
@@ -84,12 +71,60 @@ getElispotResults <- function(conn,study_id, measurement_types) {
   if (nrow(elispot_df) > 0) {
     colnames(elispot_df) <- elispot_cols 
 
-    elispot_df <- ddply(elispot_df, .(study_id, subject_id, result_id), mutate, elapsed_time_of_specimen_collection = 
-                      covertElaspsedTimeToISO8601Format(study_time_of_specimen_collection, 
-                                                        unit_of_study_time_of_specimen_collection))
+    elispot_df$elapsed_time_of_specimen_collection = mapply(covertElaspsedTimeToISO8601Format, elispot_df$study_time_of_specimen_collection, 
+                                                        elispot_df$unit_of_study_time_of_specimen_collection)
     
-    elispot_df <- ddply(elispot_df, .(study_id, subject_id, result_id), mutate, time_point_reference = 
-                      getTimePointReference(study_time_t0_event, study_time_t0_event_specify))
+    elispot_df$time_point_reference = mapply(getTimePointReference, elispot_df$study_time_t0_event, 
+                                         elispot_df$study_time_t0_event_specify)
+    
+    sql_stmt <- paste("
+                      SELECT distinct
+                      elp.expsample_accession,
+                      tr.name,
+                      tr.amount_value,
+                      tr.amount_unit,
+                      tr.duration_value,
+                      tr.duration_unit,
+                      tr.temperature_value,
+                      tr.temperature_unit
+                      FROM  
+                      elispot_result elp
+                      INNER JOIN
+                      expsample_2_treatment es2tr ON elp.expsample_accession=es2tr.expsample_accession
+                      INNER JOIN
+                      treatment tr ON es2tr.treatment_accession=tr.treatment_accession
+                      WHERE 
+                      elp.study_accession in (\'", study_id,"\')",sep="")
+    
+    tr_df <- dbGetQuery(conn,statement=sql_stmt)
+    colnames(tr_df) <- tr_cols 
+    
+    if (nrow(tr_df) >0) {
+      tr_df <- aggregate(. ~ experiment_sample_accession,paste,collapse="||",data=tr_df)
+      elispot_df <- merge(elispot_df ,tr_df, by="experiment_sample_accession")
+    } else {
+      elispot_df["specimen_treatment"] = ""
+      elispot_df["treatment_amount_value"] = ""
+      elispot_df["treatment_amount_unit"] = ""
+      elispot_df["treatment_duration_value"] = ""
+      elispot_df["treatment_duration_unit"] = ""
+      elispot_df["treatment_temperature_value"] = ""
+      elispot_df["treatment_temperature_unit"] = ""
+    }
+    
+#     elispot_df <- transform(elispot_df, sequence = as.integer(sequence))
+#     setDT(elispot_df)[, `:=`(sequence, seq_len(.N)), by = "subject_id"]
+    setDT(elispot_df)
+    setorder(elispot_df, "subject_id")
+    elispot_df <- as.data.frame(elispot_df)
+    
+    
+#     elispot_df <- ddply(elispot_df, .(study_id, subject_id, sequence), mutate, elapsed_time_of_specimen_collection = 
+#                       covertElaspsedTimeToISO8601Format(study_time_of_specimen_collection, 
+#                                                         unit_of_study_time_of_specimen_collection))
+#     
+#     elispot_df <- ddply(elispot_df, .(study_id, subject_id, sequence), mutate, time_point_reference = 
+#                       getTimePointReference(study_time_t0_event, study_time_t0_event_specify))
     
   }
   
@@ -106,10 +141,6 @@ getCountOfElispotResults <- function(conn,study_id) {
 						          experiment ex ON elp.experiment_accession=ex.experiment_accession
 					          INNER JOIN
 						          biosample bs ON elp.biosample_accession=bs.biosample_accession
-                    LEFT OUTER JOIN
-                      expsample_2_file_info es2fi ON elp.expsample_accession=es2fi.expsample_accession
-                    LEFT OUTER JOIN
-                      file_info fi ON es2fi.file_info_id=fi.file_info_id
                     WHERE elp.study_accession in (\'", study_id,"\')", sep="")
   
   count <- dbGetQuery(conn,statement=sql_stmt)

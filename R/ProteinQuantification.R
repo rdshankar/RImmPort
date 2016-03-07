@@ -67,7 +67,7 @@ getProteinQuantification <- function(data_src, study_id, assay_type="ALL") {
         measurement_types <- list("Protein_Quantification", "Cytokine_Quantification")
         els_df <- getElisaResults(data_src, study_id, "")
         if (nrow(els_df) > 0) {
-            els_df <- select(els_df, STUDYID = study_id, USUBJID = subject_id, ZASEQ = result_id, ZATEST = experiment_title, 
+            els_df <- select(els_df, STUDYID = study_id, USUBJID = subject_id, ZASEQ = sequence, ZATEST = experiment_title, 
                 ZACAT = assay_purpose, ZAMETHOD = measurement_technique, ZAANALYT = analyte, ZAORRES = value, ZAORRESU = unit, 
                 ZASPEC = specimen_type, ZASPECSB = specimen_subtype, 
                 ZASPTRT = specimen_treatment, 
@@ -134,7 +134,7 @@ getProteinQuantification <- function(data_src, study_id, assay_type="ALL") {
         mbaa_df <- getMbaaResults(data_src, study_id, "")
         if (nrow(mbaa_df) > 0) {
             mbaa_df <- mbaa_df %>% 
-              select(STUDYID = study_id, USUBJID = subject_id, ZASEQ = result_id, ZATEST = experiment_title, 
+              select(STUDYID = study_id, USUBJID = subject_id, ZASEQ = sequence, ZATEST = experiment_title, 
                 ZACAT = assay_purpose, ZAMETHOD = measurement_technique, ZAANALYT = analyte, ZAORRES = concentration_value, 
                 ZAORRESU = concentration_unit, ZASPEC = specimen_type, ZASPECSB = specimen_subtype, 
                 ZASPTRT = specimen_treatment, 

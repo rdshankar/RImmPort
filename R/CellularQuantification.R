@@ -98,10 +98,10 @@ getCellularQuantification <- function(data_src, study_id, assay_type="ALL") {
                              "Specimen Treatment Temperature Value", "Specimen Treatment Temperature Unit")
             
             
-            flow_df <- transform(flow_df, ZBSEQ = as.integer(ZBSEQ))
-            setDT(flow_df)[, `:=`(ZBSEQ, seq_len(.N)), by = "USUBJID"]
-            flow_df <- as.data.frame(flow_df)
-            
+#             flow_df <- transform(flow_df, ZBSEQ = as.integer(ZBSEQ))
+#             setDT(flow_df)[, `:=`(ZBSEQ, seq_len(.N)), by = "USUBJID"]
+#             flow_df <- as.data.frame(flow_df)
+             
             suppflow_df <- melt(flow_df, 
                                id = c("STUDYID", "DOMAIN", "USUBJID", "ZBSEQ"), 
                                measure = qnam_values, 
@@ -146,7 +146,7 @@ getCellularQuantification <- function(data_src, study_id, assay_type="ALL") {
         elp_df <- getElispotResults(data_src, study_id, "")
         if (nrow(elp_df) > 0) {
           elp_df <- elp_df %>% 
-            select(STUDYID = study_id, USUBJID = subject_id, ZBSEQ = result_id, ZBTEST = experiment_title, 
+            select(STUDYID = study_id, USUBJID = subject_id, ZBSEQ = sequence, ZBTEST = experiment_title, 
                                       ZBCAT = assay_purpose, ZBMETHOD = measurement_technique, 
                                       ZBBASPOP=cell_type, ZBORRES = spot_number, ZBPOPDEF = analyte, cell_number, 
                                       ZBSPEC = specimen_type, ZBSPECSB = specimen_subtype,

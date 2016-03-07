@@ -11,7 +11,7 @@ NULL
 
 # call to globalVariables to prevent from generating NOTE: no visible binding for global variable <variable name>
 # this hack is to satisfy CRAN (http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when)
-globalVariables(c("subject_id", "result_id", "experiment_title", "assay_purpose", "measurement_technique",
+globalVariables(c("subject_id", "sequence", "experiment_title", "assay_purpose", "measurement_technique",
                   "virus_strain", "result_in_original_units", "original_units",
                   "specimen_type", "specimen_subtype", "specimen_treatment", 
                   "treatment_amount_value", "treatment_amount_unit",
@@ -63,7 +63,7 @@ getTiterAssayResults <- function(data_src, study_id, assay_type="ALL") {
     if ((assay_type == "ALL") || (assay_type =="HAI")) {
       # get HAI results
       
-      #   hai_assay_column_names <- c("study_id", "subject_id", "result_id",
+      #   hai_assay_column_names <- c("study_id", "subject_id", "sequence",
       #                               "result_in_original_units", "original_units", 
       #                               "experiment_title", "assay_purpose", "measurement_technique",
       #                               "biosample_accession", "specimen_type", "specimen_subtype",
@@ -73,7 +73,7 @@ getTiterAssayResults <- function(data_src, study_id, assay_type="ALL") {
   
       hai_df <- getHaiResults(data_src, study_id, "")
       if (nrow(hai_df) > 0) {
-        hai_df <- select(hai_df, STUDYID = study_id, USUBJID = subject_id, ZDSEQ = result_id, ZDTEST = experiment_title, 
+        hai_df <- select(hai_df, STUDYID = study_id, USUBJID = subject_id, ZDSEQ = sequence, ZDTEST = experiment_title, 
                           ZDCAT = assay_purpose, ZDMETHOD = measurement_technique, ZDSTRAIN = virus_strain, 
                           ZDORRES = result_in_original_units, ZDORRESU = original_units,  
                           ZDSPEC = specimen_type, ZDSPECSB = specimen_subtype, 
@@ -136,7 +136,7 @@ getTiterAssayResults <- function(data_src, study_id, assay_type="ALL") {
       
       nat_df <- getNeutAbTiterResults(data_src, study_id, "")
       if (nrow(nat_df) > 0) {
-        nat_df <- select(nat_df, STUDYID = study_id, USUBJID = subject_id, ZDSEQ = result_id, ZDTEST = experiment_title, 
+        nat_df <- select(nat_df, STUDYID = study_id, USUBJID = subject_id, ZDSEQ = sequence, ZDTEST = experiment_title, 
                          ZDCAT = assay_purpose, ZDMETHOD = measurement_technique, ZDSTRAIN = virus_strain, 
                          ZDORRES = result_in_original_units, ZDORRESU = original_units,  
                          ZDSPEC = specimen_type, ZDSPECSB = specimen_subtype, 
