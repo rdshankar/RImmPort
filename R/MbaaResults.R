@@ -99,8 +99,9 @@ getMbaaResults <- function(conn,study_id, measurement_types) {
     colnames(tr_df) <- tr_cols 
     
     if (nrow(tr_df) >0) {
-      tr_df <- aggregate(. ~ experiment_sample_accession,paste,collapse="||",data=tr_df)
-      mbaa_df <- merge(mbaa_df ,tr_df, by="experiment_sample_accession")
+#      tr_df <- aggregate(. ~ experiment_sample_accession,paste,collapse="||",data=tr_df)
+      tr_df <- setDF(setDT(tr_df)[, lapply(.SD, paste, collapse="||"), by="experiment_sample_accession"])
+      mbaa_df <- merge(mbaa_df ,tr_df, by="experiment_sample_accession", all.x = TRUE)
     } else {
       mbaa_df["specimen_treatment"] = ""
       mbaa_df["treatment_amount_value"] = ""

@@ -5,7 +5,7 @@
 globalVariables(c("sequence", "dataset_id", "study_time_of_specimen_collection", "unit_of_study_time_of_specimen_collection",
                   "study_time_t0_event", "study_time_t0_event_specify"))
 
-#' @importFrom data.table as.data.table is.data.table .N :=
+#' @importFrom data.table as.data.table is.data.table .N := setorder
 getArrayResults <- function(conn, study_id, measurement_type) {
     cat("loading Array Results data....")
 
@@ -181,8 +181,9 @@ getArrayResults <- function(conn, study_id, measurement_type) {
       colnames(tr_df) <- tr_cols 
       
       if (nrow(tr_df) >0) {
-        tr_df <- aggregate(. ~ experiment_sample_accession,paste,collapse="||",data=tr_df)
-        array_df <- merge(array_df ,tr_df, by="experiment_sample_accession")
+        #tr_df <- aggregate(. ~ experiment_sample_accession,paste,collapse="||",data=tr_df)
+        tr_df <- setDF(setDT(tr_df)[, lapply(.SD, paste, collapse="||"), by="experiment_sample_accession"])
+        array_df <- merge(array_df ,tr_df, by="experiment_sample_accession", all.x = TRUE)
       } else {
         array_df["specimen_treatment"] = ""
         array_df["treatment_amount_value"] = ""

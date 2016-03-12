@@ -97,8 +97,9 @@ getElisaResults <- function(conn,study_id, measurement_types) {
     colnames(tr_df) <- tr_cols 
     
     if (nrow(tr_df) >0) {
-      tr_df <- aggregate(. ~ experiment_sample_accession,paste,collapse="||",data=tr_df)
-      elisa_df <- merge(elisa_df ,tr_df, by="experiment_sample_accession")
+      #tr_df <- aggregate(. ~ experiment_sample_accession,paste,collapse="||",data=tr_df)
+      tr_df <- setDF(setDT(tr_df)[, lapply(.SD, paste, collapse="||"), by="experiment_sample_accession"])
+      elisa_df <- merge(elisa_df ,tr_df, by="experiment_sample_accession", all.x = TRUE)
     } else {
       elisa_df["specimen_treatment"] = ""
       elisa_df["treatment_amount_value"] = ""

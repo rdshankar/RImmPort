@@ -48,7 +48,7 @@ globalVariables(c("subject_id", "experiment_title", "assay_purpose", "measuremen
 ## }
 ##' @importFrom dplyr %>%
 ##' @importFrom plyr rename
-##' @importFrom data.table as.data.table is.data.table setDT := .N 
+##' @importFrom data.table as.data.table is.data.table setDT setDF := .N 
 getCellularQuantification <- function(data_src, study_id, assay_type="ALL") {
     cat("loading Cellular Quantification data....")
   

@@ -89,8 +89,9 @@ getHaiResults <- function(conn,study_id, measurement_type) {
     colnames(tr_df) <- tr_cols 
     
     if (nrow(tr_df) >0) {
-      tr_df <- aggregate(. ~ experiment_sample_accession,paste,collapse="||",data=tr_df)
-      hai_df <- merge(hai_df ,tr_df, by="experiment_sample_accession")
+      #tr_df <- aggregate(. ~ experiment_sample_accession,paste,collapse="||",data=tr_df)
+      tr_df <- setDF(setDT(tr_df)[, lapply(.SD, paste, collapse="||"), by="experiment_sample_accession"])
+      hai_df <- merge(hai_df ,tr_df, by="experiment_sample_accession", all.x = TRUE)
     } else {
       hai_df["specimen_treatment"] = ""
       hai_df["treatment_amount_value"] = ""
@@ -104,9 +105,8 @@ getHaiResults <- function(conn,study_id, measurement_type) {
 #     hai_df <- transform(hai_df, sequence = as.integer(sequence))
 #     setDT(hai_df)[, `:=`(sequence, seq_len(.N)), by = "subject_id"]
     setDT(hai_df)
-    setorder(hai_df, "subject_id")
-    hai_df <- as.data.frame(hai_df)
-    
+    hai_df <- setDF(setorder(hai_df, "subject_id"))
+
 #     hai_df <- ddply(hai_df, .(study_id, subject_id, result_id), mutate, elapsed_time_of_specimen_collection = 
 #                       covertElaspsedTimeToISO8601Format(study_time_of_specimen_collection, 
 #                                                         unit_of_study_time_of_specimen_collection))

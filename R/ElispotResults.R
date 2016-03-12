@@ -100,8 +100,9 @@ getElispotResults <- function(conn,study_id, measurement_types) {
     colnames(tr_df) <- tr_cols 
     
     if (nrow(tr_df) >0) {
-      tr_df <- aggregate(. ~ experiment_sample_accession,paste,collapse="||",data=tr_df)
-      elispot_df <- merge(elispot_df ,tr_df, by="experiment_sample_accession")
+#      tr_df <- aggregate(. ~ experiment_sample_accession,paste,collapse="||",data=tr_df)
+      tr_df <- setDF(setDT(tr_df)[, lapply(.SD, paste, collapse="||"), by="experiment_sample_accession"])
+      elispot_df <- merge(elispot_df ,tr_df, by="experiment_sample_accession", all.x = TRUE)
     } else {
       elispot_df["specimen_treatment"] = ""
       elispot_df["treatment_amount_value"] = ""
