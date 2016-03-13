@@ -59,16 +59,16 @@ getDemographics <- function(data_src,study_id) {
     colnames(dm_df) <- dm_cols 
     suppdm_df <- data.frame()
   
-    if (nrow(dm_df) > 0) {
-    
-      if ('Homo sapiens' %in% dm_df$SPECIES) {
-        #remove "SPECIES", "STRAIN", "SBSTRAIN" columns
-        dm_df[,c("SPECIES", "STRAIN", "SBSTRAIN")] <- list(NULL)
-      } else {
-        #remove "RACE", "ETHNIC" columns
-        dm_df[,c("RACE", "ETHNIC")] <- list(NULL)    
-      }
-    }
+#     if (nrow(dm_df) > 0) {
+#     
+#       if ('Homo sapiens' %in% dm_df$SPECIES) {
+#         #remove "SPECIES", "STRAIN", "SBSTRAIN" columns
+#         dm_df[,c("SPECIES", "STRAIN", "SBSTRAIN")] <- list(NULL)
+#       } else {
+#         #remove "RACE", "ETHNIC" columns
+#         dm_df[,c("RACE", "ETHNIC")] <- list(NULL)    
+#       }
+#     }
   } else {
     l <- loadSerializedStudyData(data_src, study_id, "Demographics")
     dm_df <- l[[1]]
